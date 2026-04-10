@@ -156,7 +156,7 @@ export function calidadPorSemana(auditados) {
       efectividadSug:  e.total > 0 ? e.correcto / e.total : 0,
       efectividadCaso: cd.totalCasos > 0 ? cd.correctoCasos / cd.totalCasos : 0,
     }
-  }).sort((a, b) => String(a.week).localeCompare(String(b.week)))
+  }).sort((a, b) => Number(a.week) - Number(b.week))
 }
 
 export function concentracionDesvios(auditados) {
