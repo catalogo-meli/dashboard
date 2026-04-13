@@ -10,7 +10,7 @@ import { ANTIGUEDAD_SEGMENTOS, labelSegmento } from '../config/segments.js'
 export const PRESETS = [
   { id: 'all',    label: 'Todo el período' },
   { id: 'week',   label: 'Esta semana' },
-  { id: 'last2w', label: 'Últimas 2 semanas' },
+  { id: 'lastweek', label: 'Semana anterior' },
   { id: 'month',  label: 'Último mes' },
   { id: 'custom', label: 'Personalizado' },
 ]
@@ -21,9 +21,16 @@ function presetToDates(id) {
     const d = new Date(now); d.setDate(now.getDate() - ((now.getDay() || 7) - 1)); d.setHours(0,0,0,0)
     return { fechaDesde: d, fechaHasta: null }
   }
-  if (id === 'last2w') {
-    const d = new Date(now); d.setDate(now.getDate() - 13); d.setHours(0,0,0,0)
-    return { fechaDesde: d, fechaHasta: null }
+  if (id === 'lastweek') {
+    // Semana anterior completa: lunes a domingo de la semana pasada
+    const dayOfWeek = now.getDay() || 7 // lunes=1 ... domingo=7
+    const lastMonday = new Date(now)
+    lastMonday.setDate(now.getDate() - dayOfWeek - 6)
+    lastMonday.setHours(0, 0, 0, 0)
+    const lastSunday = new Date(lastMonday)
+    lastSunday.setDate(lastMonday.getDate() + 6)
+    lastSunday.setHours(23, 59, 59, 999)
+    return { fechaDesde: lastMonday, fechaHasta: lastSunday }
   }
   if (id === 'month') {
     const d = new Date(now); d.setDate(now.getDate() - 29); d.setHours(0,0,0,0)

@@ -70,7 +70,7 @@ export function holdPorSemana(historico) {
     if (r.idLink) e.idsUnicos.add(r.idLink)
     e.byFlujo[r.flujo] = (e.byFlujo[r.flujo] || 0) + 1
   }
-  return Array.from(map.values()).map(e => ({ ...e, idsUnicos: e.idsUnicos.size })).sort((a, b) => String(a.week).localeCompare(String(b.week)))
+  return Array.from(map.values()).map(e => ({ ...e, idsUnicos: e.idsUnicos.size })).sort((a, b) => Number(a.week) - Number(b.week))
 }
 
 /**

@@ -133,6 +133,7 @@ export function normalizeMaoRow(raw) {
     sugerenciaId: (raw['ID_CDM'] || '').trim(),     dominio:     (raw['DOMINIO'] || '').trim() || null,
     usuario:     (raw['COLABORADOR'] || '').trim(),
     resolucion:  (raw['RESOLUCION'] || '').trim() || null,
+    suggestionReason: (raw['RESOLUCION'] || '').trim() || null, // equivalente a suggestion_reason en SdC
     auditor:     (raw['Auditor'] || '').trim(),
     estadoFinal,
     motivoRechazo,

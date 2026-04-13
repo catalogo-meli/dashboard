@@ -270,7 +270,9 @@ export function CalidadModule({ model, auditados, auditadosMao }) {
               <Legend wrapperStyle={{ fontSize:'0.75rem', color:'var(--text3)' }} />
               <Line type="monotone" dataKey={()=>0.9} name="Target 90%" stroke="var(--red)" strokeWidth={1} strokeDasharray="4 2" dot={false} legendType="none" />
               <Line type="monotone" dataKey="efectividadSug" name={fuente === 'sdc' ? 'Por sugerencia_id (principal)' : fuente === 'mao' ? 'Acciones correctas' : 'Registros correctos'} stroke="var(--green)" strokeWidth={2} dot={{ r:3 }} />
-              <Line type="monotone" dataKey="efectividadCaso" name="Por id_caso (contextual)" stroke="var(--accent2)" strokeWidth={2} strokeDasharray="5 3" dot={{ r:3 }} />
+              {vocab.mostrarCasos && (
+                <Line type="monotone" dataKey="efectividadCaso" name="Por id_caso (contextual)" stroke="var(--accent2)" strokeWidth={2} strokeDasharray="5 3" dot={{ r:3 }} />
+              )}
             </LineChart>
           </ResponsiveContainer>
         </div>
