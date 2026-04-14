@@ -264,7 +264,7 @@ export function useGlobalFilters(joinedData, activeTab) {
     return {
       usuarios:          toOpts(allUsers, uCounts),
       flujos:            toOpts([...new Set(hist.map(r => r.flujo))], flCounts),
-      equipos:           toOpts([...new Set(hist.map(r => r.equipo)).filter(Boolean)], eqCounts),
+      equipos:           toOpts([...new Set(hist.map(r => r.equipo))].filter(Boolean), eqCounts),
       auditores:         toOpts([...new Set(aud.map(r => r.auditor))], auCounts),
       dominios:          toOpts([...new Set(aud.map(r => r.dominio))], doCounts),
       suggestionReasons: toOpts([...new Set(aud.map(r => r.suggestionReason))], srCounts),
