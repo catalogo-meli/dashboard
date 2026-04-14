@@ -372,7 +372,7 @@ export function CalidadModule({ model, auditados, auditadosMao }) {
               <BarChart data={porDominio.slice(0,10)} layout="vertical" margin={{ top:0, right:10, left:0, bottom:0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
                 <XAxis type="number" tick={{ fill:'var(--text3)', fontSize:10 }} tickFormatter={v=>`${Math.round(v*100)}%`} domain={[0,1]} />
-                <YAxis type="category" dataKey="dominio" tick={{ fill:'var(--text3)', fontSize:10 }} width={130} />
+                <YAxis type="category" dataKey="dominio" tick={{ fill:'var(--text3)', fontSize:10 }} width={Math.min(220, Math.max(100, (porDominio.slice(0,10).reduce((max, e) => Math.max(max, (e.dominio||'').length), 0) * 6.5)))} />
                 <Tooltip content={<CustomTooltip valueFormatter={v=>`${Math.round(v*100)}%`} />} />
                 <Bar dataKey="efectividad" name="Efectividad" radius={[0,3,3,0]}>
                   {porDominio.slice(0,10).map((e,i)=>(
