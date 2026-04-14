@@ -204,24 +204,19 @@ export function CalidadModule({ model, auditados, auditadosMao }) {
       </div>
 
       {/* ── Disponibilidad de fuentes ── */}
-      <div style={{
-        display:'grid', gridTemplateColumns: hasSdc && hasMao ? '1fr 1fr' : '1fr',
-        gap:'0.5rem',
-      }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem' }}>
         <FuenteStatus
           label="SdC"
           available={hasSdc}
           active={fuente === 'sdc' || fuente === 'combinado'}
           count={auditados?.length || 0}
         />
-        {(hasMao || !hasSdc) && (
-          <FuenteStatus
-            label="MAO"
-            available={hasMao}
-            active={fuente === 'mao' || fuente === 'combinado'}
-            count={auditadosMao?.length || 0}
-          />
-        )}
+        <FuenteStatus
+          label="MAO"
+          available={hasMao}
+          active={fuente === 'mao' || fuente === 'combinado'}
+          count={auditadosMao?.length || 0}
+        />
       </div>
 
       {autoSwitched && (
