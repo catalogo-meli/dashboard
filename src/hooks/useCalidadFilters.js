@@ -1,12 +1,7 @@
-/**
- * HOOK: useCalidadFilters
- * Filtros contextuales de Calidad — separados para no contaminar otros tabs
- * Se aplican sobre el resultado ya filtrado por useGlobalFilters
- */
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { readFromURL, writeToURL } from '../utils/selectors/queryState.js'
 
-const EMPTY_CAL = { auditor: null, dominio: null, suggestionReason: null, calidad: null, colaborador: null }
+const EMPTY_CAL = { auditor: null, dominio: null, suggestionReason: null, calidad: null }
 
 const CAL_LABELS = {
   correcto: 'Correcto', desvio_leve: 'Desvío leve',
@@ -16,17 +11,19 @@ const CAL_LABELS = {
 export function useCalidadFilters(globalFiltered) {
   const url = readFromURL()
   const [calFilters, setCalFilters] = useState({
-    auditor: url.auditor || null,
-    dominio: url.dominio || null,
+    auditor:          url.auditor          || null,
+    dominio:          url.dominio          || null,
     suggestionReason: url.suggestionReason || null,
-    calidad: url.calidad || null,
-    colaborador: url.calColab || null,
+    calidad:          url.calidad          || null,
   })
 
   useEffect(() => {
-    writeToURL({ auditor: calFilters.auditor, dominio: calFilters.dominio,
-                 suggestionReason: calFilters.suggestionReason, calidad: calFilters.calidad,
-                 calColab: calFilters.colaborador })
+    writeToURL({
+      auditor:          calFilters.auditor,
+      dominio:          calFilters.dominio,
+      suggestionReason: calFilters.suggestionReason,
+      calidad:          calFilters.calidad,
+    })
   }, [calFilters])
 
   const setCalFilter = useCallback((key, value) => {
@@ -38,11 +35,10 @@ export function useCalidadFilters(globalFiltered) {
   const auditadosFiltrados = useMemo(() => {
     const base = globalFiltered?.auditados || []
     return base.filter(r => {
-      if (calFilters.auditor && r.auditor !== calFilters.auditor) return false
-      if (calFilters.dominio && r.dominio !== calFilters.dominio) return false
+      if (calFilters.auditor          && r.auditor          !== calFilters.auditor)          return false
+      if (calFilters.dominio          && r.dominio          !== calFilters.dominio)          return false
       if (calFilters.suggestionReason && r.suggestionReason !== calFilters.suggestionReason) return false
-      if (calFilters.calidad && r.calidad !== calFilters.calidad) return false
-      if (calFilters.colaborador && r.usuario !== calFilters.colaborador) return false
+      if (calFilters.calidad          && r.calidad          !== calFilters.calidad)          return false
       return true
     })
   }, [globalFiltered?.auditados, calFilters])
@@ -51,7 +47,7 @@ export function useCalidadFilters(globalFiltered) {
     const chips = []
     const meta = {
       auditor: 'Auditor', dominio: 'Dominio',
-      suggestionReason: 'Código', calidad: 'Desvío', colaborador: 'Colaborador',
+      suggestionReason: 'Código', calidad: 'Desvío',
     }
     for (const [key, label] of Object.entries(meta)) {
       const val = calFilters[key]
@@ -64,7 +60,5 @@ export function useCalidadFilters(globalFiltered) {
     return chips
   }, [calFilters])
 
-  const activeCalCount = calChips.length
-
-  return { calFilters, setCalFilter, resetCalFilters, auditadosFiltrados, calChips, activeCalCount }
+  return { calFilters, setCalFilter, resetCalFilters, auditadosFiltrados, calChips, activeCalCount: calChips.length }
 }

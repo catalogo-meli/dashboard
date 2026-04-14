@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useDataLoader } from './hooks/useDataLoader.js'
-import { useGlobalFilters, PRESETS } from './hooks/useGlobalFilters.js'
+import { useGlobalFilters } from './hooks/useGlobalFilters.js'
 import { useCalidadFilters } from './hooks/useCalidadFilters.js'
 import { useDashboardModel } from './hooks/useDashboardModel.js'
 import { FiltersBar } from './components/FiltersBar.jsx'
@@ -31,7 +31,6 @@ const TABS = [
   { id: 'individual',    label: 'Personas' },
 ]
 
-// Formato: "Jueves 2 de abril de 2026 · 22:38" — hora de Buenos Aires
 function formatDatetimeBsAs(date) {
   if (!date) return null
   const opts = { timeZone: 'America/Argentina/Buenos_Aires' }
@@ -40,7 +39,6 @@ function formatDatetimeBsAs(date) {
   const month   = date.toLocaleDateString('es-AR', { ...opts, month: 'long' })
   const year    = date.toLocaleDateString('es-AR', { ...opts, year: 'numeric' })
   const time    = date.toLocaleTimeString('es-AR', { ...opts, hour: '2-digit', minute: '2-digit', hour12: false })
-  // Capitalizar weekday y month
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1)
   return `${cap(weekday)} ${day} de ${month} de ${year} · ${time}`
 }
@@ -55,34 +53,26 @@ export default function App() {
 
   const equipoMap  = useMemo(() => buildEquipoMap(equipo), [equipo])
   const joinedData = useMemo(() => ({
-    historico:   joinWithEquipo(historico   || [], equipoMap),
-    finalizadas: joinWithEquipo(finalizadas || [], equipoMap),
-    auditados:   joinWithEquipo(auditados   || [], equipoMap),
-    auditados_mao: joinWithEquipo(auditados_mao || [], equipoMap),
+    historico:     joinWithEquipo(historico      || [], equipoMap),
+    finalizadas:   joinWithEquipo(finalizadas    || [], equipoMap),
+    auditados:     joinWithEquipo(auditados      || [], equipoMap),
+    auditados_mao: joinWithEquipo(auditados_mao  || [], equipoMap),
     hold: hold || [],
   }), [historico, finalizadas, auditados, auditados_mao, hold, equipoMap])
 
-  const { filters, filtered, options, setFilter, resetFilters, activeChips, activeCount } =
-    useGlobalFilters(joinedData)
+  const {
+    filters, state, filtered, options,
+    setModo, setYear, setSubYear, setMonth, setWeek, setFechaDesde, setFechaHasta,
+    setSegFilter, resetFilters,
+    activeChips, activeCount,
+    availability, availableYears, weeksForYear, monthsForYear,
+  } = useGlobalFilters(joinedData, activeTab)
 
   const { calFilters, setCalFilter, resetCalFilters, auditadosFiltrados, calChips, activeCalCount } =
     useCalidadFilters(filtered)
 
   const filteredWithCal = useMemo(() => ({ ...filtered, auditados: auditadosFiltrados }), [filtered, auditadosFiltrados])
 
-  const optionsWithCal = useMemo(() => {
-    const aud = filtered?.auditados || []
-    const counts = new Map()
-    for (const r of aud) {
-      if (r.usuario) counts.set(r.usuario, (counts.get(r.usuario) || 0) + 1)
-    }
-    const colaboradoresCalidad = [...counts.entries()]
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .map(([v, count]) => ({ value: v, label: v, count }))
-    return { ...options, colaboradoresCalidad }
-  }, [options, filtered?.auditados])
-
-  // MAO: aplicar mismo filtrado global (fecha, usuario, equipo, rol, etc.)
   const auditadosMaoFiltrados = useMemo(() => {
     const mao = joinedData.auditados_mao || []
     return mao.filter(r => {
@@ -90,10 +80,10 @@ export default function App() {
       if (filters.fechaHasta && r.fecha > filters.fechaHasta) return false
       if (filters.usuario && r.usuario !== filters.usuario) return false
       if (filters.equipo  && r.equipo  !== filters.equipo)  return false
-      if (filters.rol     && r.rol     !== filters.rol)     return false
       return true
     })
   }, [joinedData.auditados_mao, filters])
+
   const rawData = { historico: historico||[], finalizadas: finalizadas||[], auditados: auditados||[], auditados_mao: auditados_mao||[], hold: hold||[] }
 
   const model = useDashboardModel({
@@ -101,18 +91,17 @@ export default function App() {
     equipo: equipo||[], holdLoadedAt: loadedAt,
   })
 
+  function handleTabChange(tabId) { setActiveTab(tabId); writeToURL({ tab: tabId }) }
+
   function navigateTo(tabId, extraFilters) {
-    if (extraFilters) for (const [k, v] of Object.entries(extraFilters)) setFilter(k, v)
+    if (extraFilters) for (const [k, v] of Object.entries(extraFilters)) setSegFilter(k, v)
     setActiveTab(tabId)
     writeToURL({ tab: tabId })
   }
-  function handleTabChange(tabId) { setActiveTab(tabId); writeToURL({ tab: tabId }) }
 
   async function handleExportAll() {
     const { prodModel, calidadModel, friccionModel, equipoModel, filteredHistorico } = model
-    const snap = filtered.hold || []
-
-    // Enriquecer snapshot con días en HOLD (mismo cálculo que FriccionModule)
+    const snap = filtered?.hold || []
     const primerHoldMap = new Map()
     for (const r of (filteredHistorico || [])) {
       if (r.status !== 'HOLD' || !r.idLink || !r.usuario) continue
@@ -131,11 +120,9 @@ export default function App() {
         diasEnHold: pf ? Math.max(0, Math.floor((hoy - pf) / 86400000)) : null,
       }
     })
-
     const totalHold = friccionModel?.kpisHold?.totalRegistros || 0
     const byUsuarioHold = Object.entries(friccionModel?.kpisHold?.byUsuario || {})
       .map(([usuario, total]) => ({ usuario, total }))
-
     const date = new Date().toISOString().slice(0, 10)
     await downloadZIP([
       { name: 'productividad_colaboradores.csv',  rows: formatProductividadColab(prodModel?.ranking) },
@@ -150,10 +137,9 @@ export default function App() {
     ], `catalogo_dashboard_${date}.zip`)
   }
 
-  const errorEntries = Object.entries(errors)
-  const hasPartial   = errorEntries.length > 0 && !loading && (historico?.length)
-  const allChips     = [...activeChips, ...calChips]
+  const allChips      = [...activeChips, ...calChips]
   const datetimeLabel = formatDatetimeBsAs(loadedAt)
+  const errorEntries  = Object.entries(errors)
 
   return (
     <div className="app">
@@ -198,12 +184,16 @@ export default function App() {
       </nav>
 
       <FiltersBar
-        filters={filters} options={optionsWithCal}
-        setFilter={setFilter} resetFilters={resetFilters}
-        calFilters={calFilters} setCalFilter={setCalFilter}
-        resetCalFilters={resetCalFilters}
+        filters={filters} state={state} options={options}
+        setModo={setModo} setYear={setYear} setSubYear={setSubYear}
+        setMonth={setMonth} setWeek={setWeek}
+        setFechaDesde={setFechaDesde} setFechaHasta={setFechaHasta}
+        setSegFilter={setSegFilter} resetFilters={resetFilters}
+        calFilters={calFilters} setCalFilter={setCalFilter} resetCalFilters={resetCalFilters}
         allChips={allChips} activeCount={activeCount + activeCalCount}
         activeTab={activeTab}
+        availability={availability} availableYears={availableYears}
+        weeksForYear={weeksForYear} monthsForYear={monthsForYear}
       />
 
       <main className="main">
@@ -220,7 +210,7 @@ export default function App() {
             {activeTab === 'productividad' && <ProductividadModule model={model}/>}
             {activeTab === 'calidad'       && <CalidadModule model={model} auditados={filteredWithCal.auditados} auditadosMao={auditadosMaoFiltrados}/>}
             {activeTab === 'friccion'      && <FriccionModule model={model} holdSnapshot={hold||[]} holdLoadedAt={loadedAt} historicoCompleto={historico||[]} filters={filters}/>}
-            {activeTab === 'equipo'        && <EquipoModule model={model} equipo={equipo||[]} equipoError={errors?.equipo} navigateTo={navigateTo} setFilter={setFilter}/>}
+            {activeTab === 'equipo'        && <EquipoModule model={model} equipo={equipo||[]} equipoError={errors?.equipo} navigateTo={navigateTo} setFilter={setSegFilter}/>}
             {activeTab === 'individual'    && <IndividualModule model={model} equipo={equipo||[]} options={options} filteredHistorico={model.filteredHistorico||[]} auditados={filteredWithCal.auditados||[]}/>}
           </>
         )}

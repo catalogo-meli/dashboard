@@ -1,123 +1,211 @@
-/**
- * FILTERS BAR v4
- * - Período: Todo el período / Esta semana / Últimas 2 semanas / Último mes / Personalizado
- * - Fechas custom: solo visibles cuando preset === 'personalizado'
- * - Segmentar: flujo, equipo, rol, ubicación (sin colaboradores, antigüedad, tipo)
- * - Panel avanzado de Calidad colapsable
- * - Chips removibles
- */
 import { useState } from 'react'
-import { PRESETS } from '../hooks/useGlobalFilters.js'
 import { COPY } from '../config/copy.js'
 
+function toInputDate(d) {
+  if (!d) return ''
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+}
+
+function Divider() {
+  return <div style={{ width:1, height:20, background:'var(--border)', margin:'0 6px', flexShrink:0 }} />
+}
+
+function GroupLabel({ children }) {
+  return <span style={{ fontSize:'0.68rem', color:'var(--text3)', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.07em', flexShrink:0 }}>{children}</span>
+}
+
+function ModeBtn({ active, onClick, children }) {
+  return (
+    <button
+      className={`filter-preset-btn${active ? ' active' : ''}`}
+      onClick={onClick}
+    >{children}</button>
+  )
+}
+
+function Sel({ value, onChange, placeholder, opts }) {
+  return (
+    <select className="filter-select" value={value} onChange={e => onChange(e.target.value || null)}>
+      <option value="">{placeholder}</option>
+      {opts.map(o => (
+        <option key={o.value} value={String(o.value)} disabled={o.disabled}>
+          {o.label}{!o.disabled && o.count != null && o.count > 0 ? ` (${o.count.toLocaleString('es-AR')})` : ''}
+        </option>
+      ))}
+    </select>
+  )
+}
+
+function YearSel({ year, years, onChange }) {
+  if (!years.length) return null
+  return (
+    <select className="filter-select" value={year} onChange={e => onChange(parseInt(e.target.value))}
+      style={{ minWidth:72 }}>
+      {years.map(y => <option key={y} value={y}>{y}</option>)}
+    </select>
+  )
+}
+
 export function FiltersBar({
-  filters, options, setFilter, resetFilters,
+  filters, state, options,
+  setModo, setYear, setSubYear, setMonth, setWeek, setFechaDesde, setFechaHasta,
+  setSegFilter, resetFilters,
   calFilters, setCalFilter, resetCalFilters,
   allChips, activeCount, activeTab,
+  availability, availableYears, weeksForYear, monthsForYear,
 }) {
-  const [advOpen, setAdvOpen] = useState(false)
-  const isCalidad = activeTab === 'calidad'
+  const [calOpen, setCalOpen] = useState(false)
+  const isCalidad  = activeTab === 'calidad'
   const hasCalChips = allChips.some(c => c.contextual)
-  const isCustom = filters.preset === 'custom'
+  const modo = state.modo
 
   return (
     <div className="filters-wrap">
-      {/* Fila principal */}
+
+      {/* ── Fila principal ── */}
       <div className="filters-bar">
-        {/* ── Período ── */}
-        <span className="filter-group-label">Período</span>
+
+        {/* PERÍODO: selector de modo */}
+        <GroupLabel>Período</GroupLabel>
         <div className="filter-preset-group">
-          {PRESETS.map(p => (
-            <button
-              key={p.id}
-              className={`filter-preset-btn${filters.preset === p.id ? ' active' : ''}`}
-              onClick={() => setFilter('preset', p.id)}
-            >{p.label}</button>
-          ))}
+          <ModeBtn active={modo==='year'}   onClick={()=>setModo('year')}>Año</ModeBtn>
+          <ModeBtn active={modo==='month'}  onClick={()=>setModo('month')}>Mes</ModeBtn>
+          <ModeBtn active={modo==='week'}   onClick={()=>setModo('week')}>Semana</ModeBtn>
+          <ModeBtn active={modo==='custom'} onClick={()=>setModo('custom')}>Personalizado</ModeBtn>
         </div>
 
-        {/* Fechas custom — solo visibles en modo Personalizado */}
-        {isCustom && (
+        {/* Sub-controles por modo */}
+        {modo === 'year' && (
           <>
-            <input type="date" className="filter-date" title={COPY.filtros.fechaDesde}
-              value={filters.fechaDesde ? toInputDate(filters.fechaDesde) : ''}
-              onChange={e => setFilter('fechaDesde', e.target.value ? new Date(e.target.value+'T00:00:00') : null)} />
-            <span className="filter-date-sep">→</span>
-            <input type="date" className="filter-date" title={COPY.filtros.fechaHasta}
-              value={filters.fechaHasta ? toInputDate(filters.fechaHasta) : ''}
-              onChange={e => setFilter('fechaHasta', e.target.value ? new Date(e.target.value+'T23:59:59') : null)} />
+            <YearSel year={state.year} years={availableYears} onChange={setYear} />
+            <div className="filter-preset-group">
+              {[
+                { id:'all', label:'Todo el año' },
+                { id:'q1',  label:'Q1' },
+                { id:'q2',  label:'Q2' },
+                { id:'q3',  label:'Q3' },
+                { id:'q4',  label:'Q4' },
+              ].map(({ id, label }) => {
+                const hasData = availability.yearSet.has(state.year)
+                return (
+                  <button key={id}
+                    className={`filter-preset-btn${state.subYear===id?' active':''}`}
+                    disabled={!hasData}
+                    onClick={() => setSubYear(id)}
+                    style={{ opacity: hasData ? 1 : 0.38, cursor: hasData ? 'pointer' : 'default' }}
+                  >{label}</button>
+                )
+              })}
+            </div>
           </>
         )}
 
-        {/* ── Segmentación ── */}
-        <Div />
-        <span className="filter-group-label">Segmentar</span>
+        {modo === 'month' && (
+          <>
+            <YearSel year={state.year} years={availableYears} onChange={setYear} />
+            <div className="filter-preset-group" style={{ flexWrap:'wrap', maxWidth:320 }}>
+              {monthsForYear.map(({ month, label, hasData }) => (
+                <button key={month}
+                  className={`filter-preset-btn${state.month===month?' active':''}`}
+                  disabled={!hasData}
+                  onClick={() => setMonth(month)}
+                  style={{ opacity: hasData ? 1 : 0.38, cursor: hasData ? 'pointer' : 'default' }}
+                >{label}</button>
+              ))}
+            </div>
+          </>
+        )}
 
-        <Sel value={filters.flujo||''} onChange={v=>setFilter('flujo',v||null)}
-          label={COPY.filtros.flujo} placeholder={COPY.placeholder.flujo}
-          opts={options.flujos||[]} />
+        {modo === 'week' && (
+          <>
+            <YearSel year={state.year} years={availableYears} onChange={setYear} />
+            <div style={{ display:'flex', gap:2, flexWrap:'wrap', maxWidth:520 }}>
+              {weeksForYear.map(({ week, label, hasData }) => (
+                <button key={week}
+                  className={`filter-preset-btn${state.week===week?' active':''}`}
+                  disabled={!hasData}
+                  onClick={() => setWeek(week)}
+                  style={{ opacity: hasData ? 1 : 0.38, cursor: hasData ? 'pointer' : 'default', fontSize:'0.7rem', padding:'3px 7px' }}
+                >{label}</button>
+              ))}
+            </div>
+          </>
+        )}
 
-        <Sel value={filters.equipo||''} onChange={v=>setFilter('equipo',v||null)}
-          label={COPY.filtros.equipo} placeholder={COPY.placeholder.equipo}
-          opts={options.equipos||[]} />
+        {modo === 'custom' && (
+          <>
+            <input type="date" className="filter-date"
+              value={filters.fechaDesde ? toInputDate(filters.fechaDesde) : ''}
+              onChange={e => setFechaDesde(e.target.value ? new Date(e.target.value + 'T00:00:00') : null)} />
+            <span className="filter-date-sep">→</span>
+            <input type="date" className="filter-date"
+              value={filters.fechaHasta ? toInputDate(filters.fechaHasta) : ''}
+              onChange={e => setFechaHasta(e.target.value ? new Date(e.target.value + 'T23:59:59') : null)} />
+          </>
+        )}
 
-        <Sel value={filters.rol||''} onChange={v=>setFilter('rol',v||null)}
-          label={COPY.filtros.rol} placeholder={COPY.placeholder.rol}
-          opts={options.roles||[]} />
+        <Divider />
 
-        <Sel value={filters.ubicacion||''} onChange={v=>setFilter('ubicacion',v||null)}
-          label={COPY.filtros.ubicacion} placeholder={COPY.placeholder.ubicacion}
-          opts={options.ubicaciones||[]} />
+        {/* SEGMENTO */}
+        <GroupLabel>Segmento</GroupLabel>
 
-        {/* Panel avanzado de Calidad */}
+        <Sel value={filters.flujo||''} onChange={v=>setSegFilter('flujo',v)}
+          placeholder="Todos los flujos" opts={options.flujos||[]} />
+
+        <Sel value={filters.equipo||''} onChange={v=>setSegFilter('equipo',v)}
+          placeholder="Todos los equipos" opts={options.equipos||[]} />
+
+        <Sel value={filters.usuario||''} onChange={v=>setSegFilter('usuario',v)}
+          placeholder="Todos los colaboradores" opts={options.usuarios||[]} />
+
+        {/* CALIDAD — solo en tab calidad */}
         {isCalidad && (
           <>
-            <Div />
+            <Divider />
             <button
-              className={`filter-advanced-btn${advOpen?' active':''}${hasCalChips?' has-active':''}`}
-              onClick={() => setAdvOpen(o=>!o)}
+              className={`filter-advanced-btn${calOpen?' active':''}${hasCalChips?' has-active':''}`}
+              onClick={() => setCalOpen(o => !o)}
             >
-              Calidad {hasCalChips && <span className="filter-advanced-dot"/>}
-              <span className="filter-advanced-caret">{advOpen?'▴':'▾'}</span>
+              Calidad {hasCalChips && <span className="filter-advanced-dot" />}
+              <span className="filter-advanced-caret">{calOpen ? '▴' : '▾'}</span>
             </button>
           </>
         )}
 
         {activeCount > 0 && (
           <>
-            <Div />
-            <button className="filter-reset" onClick={resetFilters} title="Quitar todos los filtros">✕ Limpiar</button>
+            <Divider />
+            <button className="filter-reset" onClick={() => { resetFilters(); resetCalFilters() }}>✕ Limpiar</button>
           </>
         )}
       </div>
 
-      {/* Panel contextual de Calidad */}
-      {isCalidad && advOpen && (
+      {/* Panel CALIDAD expandible */}
+      {isCalidad && calOpen && (
         <div className="filters-advanced-panel" style={{ flexWrap:'wrap', gap:'0.5rem 0.75rem', alignItems:'center' }}>
-          <span className="filter-label" style={{ flexBasis:'100%', marginBottom:'-0.25rem' }}>Solo en Calidad:</span>
+          <GroupLabel>Calidad</GroupLabel>
+
           <Sel value={calFilters.auditor||''} onChange={v=>setCalFilter('auditor',v||null)}
-            label={COPY.filtros.auditor} placeholder={COPY.placeholder.auditor}
-            opts={options.auditores||[]} />
-          <Sel value={calFilters.colaborador||''} onChange={v=>setCalFilter('colaborador',v||null)}
-            label="Colaborador auditado" placeholder="Todos los colaboradores"
-            opts={options.colaboradoresCalidad||[]} />
+            placeholder="Todos los auditores" opts={options.auditores||[]} />
+
           <Sel value={calFilters.dominio||''} onChange={v=>setCalFilter('dominio',v||null)}
-            label={COPY.filtros.dominio} placeholder={COPY.placeholder.dominio}
-            opts={options.dominios||[]} />
+            placeholder="Todos los dominios" opts={options.dominios||[]} />
+
           <Sel value={calFilters.suggestionReason||''} onChange={v=>setCalFilter('suggestionReason',v||null)}
-            label={COPY.filtros.suggestionReason} placeholder={COPY.placeholder.suggestionReason}
-            opts={options.suggestionReasons||[]} />
+            placeholder="Todos los códigos" opts={options.suggestionReasons||[]} />
+
           <Sel value={calFilters.calidad||''} onChange={v=>setCalFilter('calidad',v||null)}
-            label={COPY.filtros.calidad} placeholder={COPY.placeholder.calidad}
+            placeholder="Todos los desvíos"
             opts={[
-              {value:'correcto',label:'Correcto',count:null},
-              {value:'desvio_leve',label:'Desvío leve',count:null},
-              {value:'desvio_grave',label:'Desvío grave',count:null},
-              {value:'sin_clasificar',label:'Sin clasificar',count:null},
+              { value:'correcto',      label:'Correcto' },
+              { value:'desvio_leve',   label:'Desvío leve' },
+              { value:'desvio_grave',  label:'Desvío grave' },
+              { value:'sin_clasificar',label:'Sin clasificar' },
             ]} />
+
           {hasCalChips && (
-            <button className="filter-reset" style={{marginLeft:'auto'}} onClick={resetCalFilters}>
-              ✕ Limpiar filtros de Calidad
+            <button className="filter-reset" style={{ marginLeft:'auto' }} onClick={resetCalFilters}>
+              ✕ Limpiar Calidad
             </button>
           )}
         </div>
@@ -129,8 +217,8 @@ export function FiltersBar({
           {allChips.map(chip => (
             <button
               key={chip.key}
-              className={`filter-chip${chip.contextual?' contextual':''}`}
-              onClick={() => chip.contextual ? setCalFilter(chip.key, null) : setFilter(chip.key, null)}
+              className={`filter-chip${chip.contextual ? ' contextual' : ''}`}
+              onClick={() => chip.contextual ? setCalFilter(chip.key, null) : setSegFilter(chip.key, null)}
               title={`Quitar filtro: ${chip.label}`}
             >
               <span className="filter-chip-label">{chip.label}:</span>
@@ -139,7 +227,8 @@ export function FiltersBar({
             </button>
           ))}
           {allChips.length > 1 && (
-            <button className="filter-chip filter-chip-clear" onClick={() => { resetFilters(); resetCalFilters(); }}>
+            <button className="filter-chip filter-chip-clear"
+              onClick={() => { resetFilters(); resetCalFilters() }}>
               Quitar todos
             </button>
           )}
@@ -147,25 +236,4 @@ export function FiltersBar({
       )}
     </div>
   )
-}
-
-function Sel({ value, onChange, label, placeholder, opts }) {
-  return (
-    <select className="filter-select" value={value}
-      onChange={e=>onChange(e.target.value||null)} title={label} aria-label={label}>
-      <option value="">{placeholder}</option>
-      {opts.map(o => (
-        <option key={o.value} value={String(o.value)}>
-          {o.label}{o.count!=null&&o.count>0?` (${o.count.toLocaleString('es-AR')})` :''}
-        </option>
-      ))}
-    </select>
-  )
-}
-function Div() {
-  return <div style={{width:1,height:20,background:'var(--border)',margin:'0 4px',flexShrink:0}} />
-}
-function toInputDate(d) {
-  if (!d) return ''
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Cell, Legend } from 'recharts'
 import { calcCalidadKPIs, calidadPorSemana, calidadPorUsuario, calidadPorAuditor, calidadPorDominio, calidadPorError, concentracionDesvios } from '../utils/metrics/calidadMetrics.js'
 import { CALIDAD_LABELS, CALIDAD_COLORS } from '../utils/normalizers.js'
@@ -13,6 +13,41 @@ function PctCell({ val, total, type }) {
   const pct = total > 0 ? Math.round(val/total*100) : 0
   const color = type==='correcto'?'var(--green)':type==='desvio_grave'?'var(--red)':type==='desvio_leve'?'var(--yellow)':'var(--slate)'
   return <span style={{ color, fontWeight:600 }}>{val} <span style={{ color:'var(--text3)', fontWeight:400 }}>({pct}%)</span></span>
+}
+
+function FuenteStatus({ label, available, active, count }) {
+  const color = available ? (label === 'SdC' ? 'var(--green)' : 'var(--accent2)') : 'var(--border2)'
+  const bg    = available ? (label === 'SdC' ? 'rgba(34,197,94,0.06)' : 'rgba(99,102,241,0.06)') : 'var(--bg3)'
+  return (
+    <div style={{
+      display:'flex', alignItems:'center', justifyContent:'space-between',
+      padding:'0.55rem 0.85rem',
+      background: bg,
+      border:`1px solid ${color}`,
+      borderLeft:`3px solid ${color}`,
+      borderRadius:'var(--radius-sm)',
+    }}>
+      <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
+        <span style={{ fontSize:'0.8rem', fontWeight:700, color: available ? color : 'var(--text3)' }}>{label}</span>
+        <span style={{ fontSize:'0.72rem', color: available ? 'var(--text3)' : 'var(--text3)', fontWeight: available ? 400 : 600 }}>
+          {available ? 'disponible' : 'sin datos en este período'}
+        </span>
+        {active && available && (
+          <span style={{
+            fontSize:'0.65rem', fontWeight:700, color:'#fff',
+            background: label === 'SdC' ? 'var(--green)' : 'var(--accent2)',
+            padding:'2px 7px', borderRadius:99, textTransform:'uppercase', letterSpacing:'0.04em',
+          }}>viendo</span>
+        )}
+      </div>
+      <div style={{ textAlign:'right' }}>
+        {available
+          ? <span style={{ fontSize:'0.78rem', fontWeight:600, color:'var(--text2)' }}>{count.toLocaleString('es-AR')} registros</span>
+          : <span style={{ fontSize:'0.72rem', color:'var(--text3)' }}>—</span>
+        }
+      </div>
+    </div>
+  )
 }
 
 function FuenteToggle({ value, onChange, hasMao }) {
@@ -42,8 +77,22 @@ function FuenteToggle({ value, onChange, hasMao }) {
 export function CalidadModule({ model, auditados, auditadosMao }) {
   const { calidadModel } = model
   const [fuente, setFuente] = useState('sdc')
+  const [autoSwitched, setAutoSwitched] = useState(false)
 
+  const hasSdc = (auditados?.length || 0) > 0
   const hasMao = (auditadosMao?.length || 0) > 0
+
+  useEffect(() => {
+    if (fuente === 'sdc' && !hasSdc && hasMao) {
+      setFuente('mao')
+      setAutoSwitched(true)
+    } else if (fuente === 'mao' && !hasMao && hasSdc) {
+      setFuente('sdc')
+      setAutoSwitched(true)
+    } else {
+      setAutoSwitched(false)
+    }
+  }, [hasSdc, hasMao, fuente])
 
   const auditadosActivos = useMemo(() => {
     if (fuente === 'mao')       return auditadosMao || []
@@ -80,7 +129,17 @@ export function CalidadModule({ model, auditados, auditadosMao }) {
     return a
   }, [kpis, porDominio, porUsuario])
 
-    if (!auditadosActivos?.length) return <EmptyState message={fuente === 'mao' ? 'No hay datos de auditorías MAO cargados.' : COPY.empty} />
+  if (!hasSdc && !hasMao) return (
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'0.75rem', padding:'3rem 1.5rem', textAlign:'center' }}>
+      <span style={{ fontSize:'2rem' }}>📭</span>
+      <span style={{ fontSize:'0.92rem', fontWeight:600, color:'var(--text2)' }}>Sin auditorías en este período</span>
+      <span style={{ fontSize:'0.8rem', color:'var(--text3)', maxWidth:320 }}>
+        No hay datos de SdC ni MAO para el corte seleccionado. Probá con otra semana o ampliá el período.
+      </span>
+    </div>
+  )
+
+  if (!auditadosActivos?.length) return <EmptyState message={fuente === 'mao' ? 'No hay datos MAO para este corte. Cambiá la fuente o el período.' : 'No hay datos SdC para este corte. Cambiá la fuente o el período.'} />
   if (!kpis) return <EmptyState message={COPY.empty} />
 
     const prevKpis = fuente === 'sdc' ? calidadModel?.prevKpis : null
@@ -130,10 +189,6 @@ export function CalidadModule({ model, auditados, auditadosMao }) {
     colHeader:      'Reg.',
   }
 
-  const fuenteLabel = fuente === 'sdc' ? 'Sugerencias de Corrección (SdC)'
-    : fuente === 'mao' ? 'MAO (Multivariable Auto Optin)'
-    : 'SdC + MAO combinado'
-
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>
 
@@ -144,11 +199,45 @@ export function CalidadModule({ model, auditados, auditadosMao }) {
           <FuenteToggle value={fuente} onChange={setFuente} hasMao={hasMao} />
         </div>
         <span style={{ fontSize:'0.72rem', color:'var(--text3)' }}>
-          {fuenteLabel} · {formatNumber(auditadosActivos.length)} registros
-          {!hasMao && <span style={{ marginLeft:8, color:'var(--text3)', fontStyle:'italic' }}>MAO: subí auditados_mao.csv para activar</span>}
+          {formatNumber(auditadosActivos.length)} registros
         </span>
       </div>
 
+      {/* ── Disponibilidad de fuentes ── */}
+      <div style={{
+        display:'grid', gridTemplateColumns: hasSdc && hasMao ? '1fr 1fr' : '1fr',
+        gap:'0.5rem',
+      }}>
+        <FuenteStatus
+          label="SdC"
+          available={hasSdc}
+          active={fuente === 'sdc' || fuente === 'combinado'}
+          count={auditados?.length || 0}
+        />
+        {(hasMao || !hasSdc) && (
+          <FuenteStatus
+            label="MAO"
+            available={hasMao}
+            active={fuente === 'mao' || fuente === 'combinado'}
+            count={auditadosMao?.length || 0}
+          />
+        )}
+      </div>
+
+      {autoSwitched && (
+        <div style={{
+          display:'flex', alignItems:'flex-start', gap:'0.6rem',
+          padding:'0.6rem 0.85rem',
+          background:'rgba(251,146,60,0.08)', border:'1px solid rgba(251,146,60,0.3)',
+          borderRadius:'var(--radius-sm)', fontSize:'0.78rem', color:'#fb923c',
+        }}>
+          <span style={{ fontWeight:700, flexShrink:0, marginTop:1 }}>↻</span>
+          <span>
+            <strong>Mostrando {fuente === 'mao' ? 'MAO' : 'SdC'}</strong> — no hay datos de {fuente === 'mao' ? 'SdC' : 'MAO'} en este período.
+            {' '}<span style={{ color:'var(--text3)' }}>Cambiá el período si necesitás ver la otra fuente.</span>
+          </span>
+        </div>
+      )}
       <div className="metric-note">
         📊 {COPY.modules.calidadPrincipal}
       </div>

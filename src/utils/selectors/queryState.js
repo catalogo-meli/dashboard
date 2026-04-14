@@ -1,12 +1,9 @@
-/**
- * QUERY STATE
- * Lectura y escritura de filtros en URL query params
- */
-
 export const URL_PARAM_KEYS = [
-  'tab','preset','desde','hasta','semana','usuario','flujo',
-  'rol','equipo','ubicacion','segAnti','extUser','status',
-  'auditor','dominio','suggestionReason','calidad',
+  'tab',
+  'pmodo','pyear','psuby','pmonth','pweek',
+  'desde','hasta',
+  'usuario','flujo','equipo',
+  'auditor','dominio','suggestionReason','calidad','calColab',
 ]
 
 export function readFromURL() {
@@ -19,7 +16,7 @@ export function readFromURL() {
 export function writeToURL(obj) {
   const p = new URLSearchParams()
   for (const [k, v] of Object.entries(obj)) {
-    if (v != null && v !== '' && v !== 'all' && v !== false) p.set(k, String(v))
+    if (v != null && v !== '' && v !== false) p.set(k, String(v))
   }
   const qs = p.toString()
   window.history.replaceState({}, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname)
