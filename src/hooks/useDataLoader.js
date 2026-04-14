@@ -23,10 +23,22 @@ const NORMALIZERS = {
   auditados_mao: normalizeMao,
 }
 
-// Version de caché — incrementar cuando cambia la estructura de datos
-const CACHE_VERSION = 'v5'
+const CACHE_VERSION = 'v6'
 
 function cacheKey(id) { return `catalogo_${CACHE_VERSION}_${id}` }
+
+const DATE_FIELDS = ['fecha', 'fechaIngreso']
+
+function rehydrateDates(rows) {
+  if (!rows?.length) return rows
+  return rows.map(r => {
+    const out = { ...r }
+    for (const f of DATE_FIELDS) {
+      if (typeof out[f] === 'string' && out[f]) out[f] = new Date(out[f])
+    }
+    return out
+  })
+}
 
 function readCache(id) {
   try {
@@ -37,7 +49,7 @@ function readCache(id) {
       sessionStorage.removeItem(cacheKey(id))
       return null
     }
-    return data
+    return rehydrateDates(data)
   } catch { return null }
 }
 
@@ -56,7 +68,7 @@ function clearCache(id) {
 // Limpiar cachés de versiones anteriores
 function clearOldCaches() {
   try {
-    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_dash_']
+    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_dash_']
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i)
       if (key && oldPrefixes.some(p => key.startsWith(p))) {
@@ -127,7 +139,7 @@ async function loadDataset(source) {
 
 export function useDataLoader() {
   const [state, setState] = useState({
-    historico: null, finalizadas: null, auditados: null,
+    historico: null, auditados: null,
     hold: null, equipo: null, auditados_mao: null,
     loading: true, errors: {}, loadedAt: null,
   })
@@ -185,7 +197,6 @@ export function useDataLoader() {
     if (mounted.current) {
       setState({
         historico:     results.historico      || [],
-        finalizadas:   results.finalizadas    || [],
         auditados:     results.auditados      || [],
         hold:          results.hold           || [],
         equipo:        results.equipo         || [],

@@ -49,16 +49,16 @@ export default function App() {
     return TABS.find(tab => tab.id === t)?.id || 'resumen'
   })
 
-  const { historico, finalizadas, auditados, hold, equipo, auditados_mao, loading, errors, loadedAt, reload } = useDataLoader()
+  const { historico, auditados, hold, equipo, auditados_mao, loading, errors, loadedAt, reload } = useDataLoader()
 
   const equipoMap  = useMemo(() => buildEquipoMap(equipo), [equipo])
   const joinedData = useMemo(() => ({
     historico:     joinWithEquipo(historico      || [], equipoMap),
-    finalizadas:   joinWithEquipo(finalizadas    || [], equipoMap),
+    finalizadas:   [],
     auditados:     joinWithEquipo(auditados      || [], equipoMap),
     auditados_mao: joinWithEquipo(auditados_mao  || [], equipoMap),
     hold: hold || [],
-  }), [historico, finalizadas, auditados, auditados_mao, hold, equipoMap])
+  }), [historico, auditados, auditados_mao, hold, equipoMap])
 
   const {
     filters, state, filtered, options,
@@ -84,7 +84,7 @@ export default function App() {
     })
   }, [joinedData.auditados_mao, filters])
 
-  const rawData = { historico: historico||[], finalizadas: finalizadas||[], auditados: auditados||[], auditados_mao: auditados_mao||[], hold: hold||[] }
+  const rawData = { historico: historico||[], finalizadas: [], auditados: auditados||[], auditados_mao: auditados_mao||[], hold: hold||[] }
 
   const model = useDashboardModel({
     rawData, filtered: filteredWithCal, filters,
