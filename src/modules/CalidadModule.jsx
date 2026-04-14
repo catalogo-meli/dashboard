@@ -368,7 +368,7 @@ export function CalidadModule({ model, auditados, auditadosMao }) {
           <div className="card">
             <div className="card-title" style={{ marginBottom:'0.5rem' }}>Por dominio — efectividad</div>
             <div className="card-subtitle" style={{ marginBottom:'0.75rem' }}>Top 10 · color = estado vs target 90%</div>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={Math.max(220, porDominio.slice(0,10).length * 28)}>
               <BarChart data={porDominio.slice(0,10)} layout="vertical" margin={{ top:0, right:10, left:0, bottom:0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
                 <XAxis type="number" tick={{ fill:'var(--text3)', fontSize:10 }} tickFormatter={v=>`${Math.round(v*100)}%`} domain={[0,1]} />
