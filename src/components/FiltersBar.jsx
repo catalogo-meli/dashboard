@@ -185,12 +185,7 @@ export function FiltersBar({
 
           <Sel value={calFilters.calidad||''} onChange={v=>setCalFilter('calidad',v||null)}
             placeholder="Todos los desvíos"
-            opts={[
-              { value:'correcto',      label:'Correcto' },
-              { value:'desvio_leve',   label:'Desvío leve' },
-              { value:'desvio_grave',  label:'Desvío grave' },
-              { value:'sin_clasificar',label:'Sin clasificar' },
-            ]} />
+            opts={options.calidadOpts||[]} />
 
           {hasCalChips && (
             <button className="filter-reset" style={{ marginLeft:'auto' }} onClick={resetCalFilters}>

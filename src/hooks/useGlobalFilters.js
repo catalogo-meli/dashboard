@@ -260,6 +260,11 @@ export function useGlobalFilters(joinedData, activeTab) {
     const auCounts = countBy(aud, r => r.auditor)
     const doCounts = countBy(aud, r => r.dominio)
     const srCounts = countBy(aud, r => r.suggestionReason)
+    const calCounts = countBy(aud, r => r.calidad)
+    const CAL_LABELS = { correcto:'Correcto', desvio_leve:'Desvío leve', desvio_grave:'Desvío grave', sin_clasificar:'Sin clasificar' }
+    const calidadOpts = ['correcto','desvio_leve','desvio_grave','sin_clasificar']
+      .filter(c => (calCounts[c] || 0) > 0)
+      .map(c => ({ value: c, label: CAL_LABELS[c] }))
     const allUsers = [...new Set(hist.map(r => r.usuario))]
     return {
       usuarios:          toOpts(allUsers, uCounts),
@@ -268,6 +273,7 @@ export function useGlobalFilters(joinedData, activeTab) {
       auditores:         toOpts([...new Set(aud.map(r => r.auditor))], auCounts),
       dominios:          toOpts([...new Set(aud.map(r => r.dominio))], doCounts),
       suggestionReasons: toOpts([...new Set(aud.map(r => r.suggestionReason))], srCounts),
+      calidadOpts,
     }
   }, [joinedData, dateRange])
 
