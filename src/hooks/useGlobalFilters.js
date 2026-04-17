@@ -263,7 +263,7 @@ export function useGlobalFilters(joinedData, activeTab) {
     const calCounts = countBy(aud, r => r.calidad)
     const CAL_LABELS = { correcto:'Correcto', desvio_leve:'Desvío leve', desvio_grave:'Desvío grave', sin_clasificar:'Sin clasificar' }
     const calidadOpts = ['correcto','desvio_leve','desvio_grave','sin_clasificar']
-      .filter(c => (calCounts[c] || 0) > 0)
+      .filter(c => (calCounts.get(c) || 0) > 0)
       .map(c => ({ value: c, label: CAL_LABELS[c] }))
     const allUsers = [...new Set(hist.map(r => r.usuario))]
     return {
