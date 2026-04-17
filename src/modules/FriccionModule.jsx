@@ -77,7 +77,7 @@ export function FriccionModule({ model, holdSnapshot, holdLoadedAt, historicoCom
 
   // Agrupaciones alternativas para gráfico de evolución de bloqueos
   const bloqueosDiario = useMemo(() => {
-    const hist = historicoCompleto || model?.filteredHistorico || []
+    const hist = model?.filteredHistorico || []
     const map = new Map()
     for (const r of hist) {
       if (r.status !== 'HOLD' || !r.fechaKey) continue
@@ -89,10 +89,10 @@ export function FriccionModule({ model, holdSnapshot, holdLoadedAt, historicoCom
     return [...map.values()]
       .map(e => ({ key: e.key, total: e.total, idsUnicos: e.setIds.size }))
       .sort((a, b) => a.key.localeCompare(b.key))
-  }, [historicoCompleto, model?.filteredHistorico])
+  }, [model?.filteredHistorico])
 
   const bloqueosMensual = useMemo(() => {
-    const hist = historicoCompleto || model?.filteredHistorico || []
+    const hist = model?.filteredHistorico || []
     const map = new Map()
     for (const r of hist) {
       if (r.status !== 'HOLD' || !r.fecha) continue
@@ -105,7 +105,7 @@ export function FriccionModule({ model, holdSnapshot, holdLoadedAt, historicoCom
     return [...map.values()]
       .map(e => ({ key: e.key, total: e.total, idsUnicos: e.setIds.size }))
       .sort((a, b) => a.key.localeCompare(b.key))
-  }, [historicoCompleto, model?.filteredHistorico])
+  }, [model?.filteredHistorico])
 
   const bloqueosData = granBloqueos === 'diario' ? bloqueosDiario
     : granBloqueos === 'mensual' ? bloqueosMensual

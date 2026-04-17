@@ -100,7 +100,6 @@ export function ProductividadModule({ model }) {
       </div>
 
       {/* ── CAPACIDAD + TAREAS en la misma fila ───────────────── */}
-      <SectionLabel>Capacidad</SectionLabel>
       <div className="grid grid-4">
         <KPIv6 label={COPY.kpis.colaborActivos.label} value={colabActivos}
           help={COPY.kpis.colaborActivos.help} icon="👥" color="var(--accent)" />
@@ -112,12 +111,7 @@ export function ProductividadModule({ model }) {
           help={COPY.kpis.prodPorDia.help} icon="⚡" color="var(--green)" d={dDia} />
       </div>
 
-      <SectionLabel>Tareas</SectionLabel>
-      <div className="metric-note">Una tarea = un registro en el histórico operativo. Distinto de IDs.</div>
-
       {/* ── IDs TRABAJADOS ───────────────────────────────────── */}
-      <SectionLabel>IDs trabajados</SectionLabel>
-      <div className="metric-note">Un ID = un producto distinto accionado. Una tarea puede involucrar varios IDs. Si el campo estaba vacío, se asume 1 por tarea (regla de negocio).</div>
       <div className="grid grid-4">
         <KPIv6 label={COPY.kpis.idsTC.label} value={formatNumber(kpis.totalIds)}
           help={COPY.kpis.idsTC.help} icon="🔗" color="#38bdf8" d={dIds} />
@@ -229,9 +223,6 @@ export function ProductividadModule({ model }) {
                 )
               })}
             </div>
-            <div className="metric-note" style={{ marginTop:'0.5rem' }}>
-              IDs/tarea &gt; 1x significa que las tareas de ese flujo accionan múltiples productos en promedio.
-            </div>
           </div>
         )}
       </div>
@@ -250,7 +241,6 @@ export function ProductividadModule({ model }) {
           <div className="card-header">
             <div>
               <div className="card-title">Ranking completo por colaborador</div>
-              <div className="card-subtitle">Tareas e IDs son columnas separadas. No son sinónimos.</div>
             </div>
             <ExportCSVButton
               data={formatProductividadColab(ranking)}
@@ -290,14 +280,6 @@ export function ProductividadModule({ model }) {
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-function SectionLabel({ children }) {
-  return (
-    <div style={{ fontSize:'0.68rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.08em', color:'var(--text3)' }}>
-      {children}
     </div>
   )
 }
