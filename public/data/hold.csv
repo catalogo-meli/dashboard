@@ -1,101 +1,150 @@
 Fecha,Usuario,Flujo de Tarea,ID - LINK,Status,Iniciativa,Incidencias,IDs trabajados,Comentarios
-20/04/2026,ext_agnovare,Soporte,16931431,HOLD,Inf. Oportunidad de mejora,Herramientas,1,FEFE-13436 Se espera creacion GTIN 7909342677419 GROUP ID 73743571 SOPM-8249
-20/04/2026,ext_agnovare,Soporte,17126091,HOLD,Sugerencias de corrección,Herramientas,1,FEFE-13547 Se crea hijo en MLM18985577 GROUP ID 81607123 SOPM-8786
-20/04/2026,ext_agnovare,Soporte,17144579,HOLD,Sugerencias de corrección,Herramientas,1,FEFE-13547 Esperando creacion hijo en MLM27782158 GROUP ID 81595461 SOPM-8764
-20/04/2026,ext_agnovare,Soporte,17201022 SOPM-9042,HOLD,Inf. Oportunidad de mejora,Activar,1,Se crea sonajeros con EAN 074451169173 GROUP ID 82511537
-20/04/2026,ext_agnovare,Soporte,17195858 SOPM-8988,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,Esperando impactos en MLB66819006 GROUP ID 82933255 SOPM-8988
-20/04/2026,ext_dadi,Enhancement,Identificador: 17083766,HOLD,MAO,Activar,1,Brand Central - ID del grupo: 83048331
-20/04/2026,ext_deparede,Soporte,17149786 - SOPM-8527,HOLD,Sugerencias de corrección,Soporte,1,"DATA_CABLES_AND_ADAPTERS-  ID del grupo: 81774607
+21/04/2026,ext_agnovare,Soporte,16931431,HOLD,Inf. Oportunidad de mejora,Herramientas,1,FEFE-13436 Se espera creacion GTIN 7909342677419 GROUP ID 73743571 SOPM-8249
+21/04/2026,ext_agnovare,Soporte,17126091,HOLD,Sugerencias de corrección,Herramientas,1,FEFE-13547 Se crea hijo en MLM18985577 GROUP ID 81607123 SOPM-8786
+21/04/2026,ext_agnovare,Soporte,17144579,HOLD,Sugerencias de corrección,Herramientas,1,FEFE-13547 Esperando creacion hijo en MLM27782158 GROUP ID 81595461 SOPM-8764
+21/04/2026,ext_agnovare,Soporte,17201022 SOPM-9042,HOLD,Inf. Oportunidad de mejora,Activar,1,Se crea sonajeros con EAN 074451169173 GROUP ID 82511537
+21/04/2026,ext_agnovare,Soporte,17195858 SOPM-8988,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,Esperando impactos en MLB66819006 GROUP ID 82933255 SOPM-8988
+21/04/2026,ext_dadi,Enhancement,Identificador: 17083766,HOLD,MAO,Activar,1,Brand Central - ID del grupo: 83048331
+21/04/2026,ext_dadi,Enhancement,Identificador: 17305002,HOLD,MAO,Activar,1,Brand Central -ID del grupo: 83617297
+21/04/2026,ext_deparede,Soporte,17149786 - SOPM-8527,HOLD,Sugerencias de corrección,Soporte,1,"DATA_CABLES_AND_ADAPTERS-  ID del grupo: 81774607
 ID del padre: MLB42203057
 sdc
 Velocidade máxima de transferência de dados 480 - FEFE 13671"
-20/04/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS384709388,HOLD,,,1,FEFE-13661 - ID del grupo: 69581095- esperando impacto masivo - 270 ids
-20/04/2026,ext_flagusti,Demanda,17266931 MLMS405649822 - 83329171,HOLD,,Activar,1,
-20/04/2026,ext_flagusti,Enhancement,17220698,HOLD,MAO,Impacto BC/CMS,7,
-20/04/2026,ext_flagusti,Enhancement,17279513 83564435,HOLD,MAO,Activar,1,
-20/04/2026,ext_francof,Enhancement,17278166,HOLD,MAO,Impacto BC/CMS,2,Group ID: 55504134. Creacion variante Beige.
-20/04/2026,ext_igcuevas,Enhancement,16766016,HOLD,MAO,,1,bc: 80447549
-20/04/2026,ext_jotrimar,Soporte,16742334 SOPM-7926,HOLD,Sugerencias de Creación,Soporte,10,Reportado con SUBA
-20/04/2026,ext_jotrimar,Soporte,16787976 SOPM-8001,HOLD,Sugerencias de Creación,Soporte,1,reportado con SUBA
-20/04/2026,ext_jotrimar,Soporte,17166026 SOPM-8887,HOLD,Sugerencias de Creación,Soporte,1,Reportado en SUBA
-20/04/2026,ext_jotrimar,Soporte,17184735 SOPM-8956,HOLD,Unificación de familias,Unificación/Separación,3,
-20/04/2026,ext_jotrimar,Soporte,17192596 SOPM-8965,HOLD,KV,,1,Se espera RTA de Meli
-20/04/2026,ext_jotrimar,Soporte,17201033 SOPM-9056,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,GR ID 82459051
-20/04/2026,ext_jotrimar,Soporte,17201045 SOPM-9028,HOLD,Inf. Oportunidad de mejora,Activar,1,ID del grupo: 82511445
-20/04/2026,ext_jotrimar,Soporte,17201021 SOPM-9027,HOLD,Inf. Oportunidad de mejora,Esperando respuesta,1,
-20/04/2026,ext_jotrimar,Soporte,17201004 SOPM-9055,HOLD,Sugerencias de corrección,Esperando respuesta,1,
-20/04/2026,ext_juawagne,Demanda,MLB6487012828,HOLD,,,1,Error no carga la tarjeta de creacion
-20/04/2026,ext_juawagne,Demanda,17280485 / MLCS405602881,HOLD,,,1,duplicado merge id 22106538
-20/04/2026,ext_matiam,Soporte,SOPM-8964//17192606,HOLD,Sugerencias de corrección,Soporte,1,Derivado a meli
-20/04/2026,ext_matiam,Soporte,SOPM-8995//17195855,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,Grupo en impacto
-20/04/2026,ext_mibrizue,Demanda,MLB6630966122,HOLD,,Impacto BC/CMS,1,
-20/04/2026,ext_ramiherr,Soporte,16931432,HOLD,Inf. Oportunidad de mejora,Fallo Impacto Manual,1,derivado (en jira figura wait for impact por que en ese estado quedo el error)- SOPM-8254 - creacion flia 77823371 . error FEFE-13436
-20/04/2026,ext_ramiherr,Soporte,17158757,HOLD,Sugerencias de corrección,,34,"derviado - a meli despues de analisis de todos los casos - file adjuntado - SOPM-8875
+21/04/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS384709388,HOLD,,,1,FEFE-13661 - ID del grupo: 69581095- esperando impacto masivo - 270 ids
+21/04/2026,ext_flagusti,Demanda,17266931 MLMS405649822 - 83329171,HOLD,,Activar,1,
+21/04/2026,ext_flagusti,Enhancement,17304742 - 83607661,HOLD,MAO,,1,
+21/04/2026,ext_flagusti,Enhancement,17304801 - 55538414,HOLD,MAO,,2,
+21/04/2026,ext_flagusti,Enhancement,17304526 -55538464,HOLD,MAO,,1,
+21/04/2026,ext_flagusti,Enhancement,17304659 - 55538920,HOLD,MAO,Activar,5,
+21/04/2026,ext_flagusti,Enhancement,17305340 - 83617285,HOLD,MAO,Activar,2,
+21/04/2026,ext_flagusti,Enhancement,17304963 - 83505807,HOLD,MAO,Activar,3,
+21/04/2026,ext_flagusti,Enhancement,17305730,HOLD,MAO,Impacto BC/CMS,2,
+21/04/2026,ext_flagusti,Enhancement,17305386,HOLD,MAO,Impacto BC/CMS,1,
+21/04/2026,ext_flagusti,Enhancement,17305826 - 83623295,HOLD,MAO,Activar,2,
+21/04/2026,ext_flagusti,Enhancement,17306285 - 83617845,HOLD,MAO,Activar,3,
+21/04/2026,ext_flagusti,Enhancement,17306016 - 83623637,HOLD,MAO,Activar,1,
+21/04/2026,ext_flagusti,Enhancement,17305978 - 83623681,HOLD,MAO,Activar,1,
+21/04/2026,ext_francof,Enhancement,17305096,HOLD,MAO,,1,Group ID: 55538912. Creacion de familia
+21/04/2026,ext_francof,Enhancement,17304914,HOLD,MAO,,2,"Group ID:83623381. Creacion familia, Moto G15 variante + funda."
+21/04/2026,ext_igcuevas,Enhancement,16766016,HOLD,MAO,,1,bc: 80447549
+21/04/2026,ext_igjerez,Enhancement,17279788,HOLD,MAO,Activar,2,ID del grupo: 55538186         ID del grupo: 83607513          
+21/04/2026,ext_igjerez,Enhancement,17304804,HOLD,MAO,Activar,1,ID del grupo: 83607733
+21/04/2026,ext_igjerez,Enhancement,17304419,HOLD,MAO,Activar,1,ID del grupo: 83607849
+21/04/2026,ext_igjerez,Enhancement,17305790,HOLD,MAO,Activar,1,ID del grupo: 83505813
+21/04/2026,ext_igjerez,Enhancement,17305352,HOLD,MAO,Activar,4,ID del grupo: 83617571
+21/04/2026,ext_igjerez,Enhancement,17305522,HOLD,MAO,Activar,1,ID del grupo: 83617615
+21/04/2026,ext_igjerez,Enhancement,17305896,HOLD,MAO,Activar,1,ID del grupo: 83615055
+21/04/2026,ext_joastori,Enhancement,17305172,HOLD,MAO,Activar,1,Pend. Activacion: ID del grupo: 55538726  ID del padre: MLB39934769
+21/04/2026,ext_joastori,Enhancement,17304831,HOLD,MAO,Activar,2,Pend. Activacion: ID del grupo: 83617055  ID del padre: MLB68000044
+21/04/2026,ext_joavgust,Enhancement,17305076,HOLD,MAO,Activar,1,"ID del grupo: 55538928 ID del padre: MLM59319929
+"
+21/04/2026,ext_jotrimar,Soporte,16742334 SOPM-7926,HOLD,Sugerencias de Creación,Soporte,10,Reportado con SUBA
+21/04/2026,ext_jotrimar,Soporte,16787976 SOPM-8001,HOLD,Sugerencias de Creación,Soporte,1,reportado con SUBA
+21/04/2026,ext_jotrimar,Soporte,17166026 SOPM-8887,HOLD,Sugerencias de Creación,Soporte,1,Reportado en SUBA
+21/04/2026,ext_jotrimar,Soporte,17184735 SOPM-8956,HOLD,Unificación de familias,Unificación/Separación,3,
+21/04/2026,ext_jotrimar,Soporte,17192596 SOPM-8965,HOLD,KV,,1,Se espera RTA de Meli
+21/04/2026,ext_jotrimar,Soporte,17201033 SOPM-9056,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,GR ID 82459051
+21/04/2026,ext_jotrimar,Soporte,17201045 SOPM-9028,HOLD,Inf. Oportunidad de mejora,Activar,1,ID del grupo: 82511445
+21/04/2026,ext_jotrimar,Soporte,17201021 SOPM-9027,HOLD,Inf. Oportunidad de mejora,Esperando respuesta,1,
+21/04/2026,ext_jotrimar,Soporte,17201004 SOPM-9055,HOLD,Sugerencias de corrección,Esperando respuesta,1,
+21/04/2026,ext_juawagne,Demanda,MLB6487012828,HOLD,,,1,Error no carga la tarjeta de creacion
+21/04/2026,ext_juawagne,Demanda,17280485 / MLCS405602881,HOLD,,,1,duplicado merge id 22106538
+21/04/2026,ext_matiam,Soporte,SOPM-8964//17192606,HOLD,Sugerencias de corrección,Soporte,1,Derivado a meli
+21/04/2026,ext_matiam,Soporte,SOPM-8995//17195855,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,Grupo en impacto
+21/04/2026,ext_mibrizue,Demanda,MLB6630966122,HOLD,,Impacto BC/CMS,1,
+21/04/2026,ext_ramiherr,Soporte,16931432,HOLD,Inf. Oportunidad de mejora,Fallo Impacto Manual,1,derivado (en jira figura wait for impact por que en ese estado quedo el error)- SOPM-8254 - creacion flia 77823371 . error FEFE-13436
+21/04/2026,ext_ramiherr,Soporte,17158757,HOLD,Sugerencias de corrección,,34,"derviado - a meli despues de analisis de todos los casos - file adjuntado - SOPM-8875
 
 
 https://docs.google.com/spreadsheets/d/1l-14RNgHBXPi3HgUrSRA01RDLP3N3I-4emyLofln-2w/edit?usp=sharing"
-20/04/2026,ext_sancjoaq,Demanda,16608182 - MLMS384178504,HOLD,,Activar,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13651
-20/04/2026,ext_siosanch,Soporte,16821315 - SOPM-8034,HOLD,Inf. Oportunidad de mejora,Esperando respuesta,14,Analisis 14 IDs. WFI
-20/04/2026,ext_siosanch,Demanda,Identificador: 16938385 - MLBS390381495,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"Modificaciones masivas, total IDs: +300"
-20/04/2026,ext_siosanch,Demanda,Identificador: 16941010 - MLBS390646512,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"Modificaciones masivas, total IDs: +900"
-20/04/2026,ext_siosanch,Soporte,17144555 - SOPM-8733,HOLD,Sugerencias de Creación,Soporte,1,Derivado a equipo interno
-20/04/2026,ext_siosanch,Soporte,17180419 - SOPM-8948,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,
-20/04/2026,ext_siosanch,Soporte,17195860 - SOPM-9001,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82014167
+21/04/2026,ext_sancjoaq,Demanda,16608182 - MLMS384178504,HOLD,,Activar,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13651
+21/04/2026,ext_siosanch,Soporte,16821315 - SOPM-8034,HOLD,Inf. Oportunidad de mejora,Esperando respuesta,14,Analisis 14 IDs. WFI
+21/04/2026,ext_siosanch,Demanda,Identificador: 16938385 - MLBS390381495,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"Modificaciones masivas, total IDs: +300"
+21/04/2026,ext_siosanch,Demanda,Identificador: 16941010 - MLBS390646512,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"Modificaciones masivas, total IDs: +900"
+21/04/2026,ext_siosanch,Soporte,17144555 - SOPM-8733,HOLD,Sugerencias de Creación,Soporte,1,Derivado a equipo interno
+21/04/2026,ext_siosanch,Soporte,17180419 - SOPM-8948,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,
+21/04/2026,ext_siosanch,Soporte,17195860 - SOPM-9001,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82014167
 ID del padre: MLM27966860"
-20/04/2026,ext_siosanch,Demanda,Identificador: 17226079 - MLBS404703668,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82511151
+21/04/2026,ext_siosanch,Demanda,Identificador: 17226079 - MLBS404703668,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82511151
 ID del padre: MLB11406060"
-20/04/2026,ext_siosanch,Demanda,Identificador: 17229558 - MLMS404761142,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82571319
+21/04/2026,ext_siosanch,Demanda,Identificador: 17229558 - MLMS404761142,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82571319
 ID del padre: MLM61338847"
-20/04/2026,ext_siosanch,Demanda,Identificador: 17234432 - MLAS404634745,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82571585
+21/04/2026,ext_siosanch,Demanda,Identificador: 17234432 - MLAS404634745,HOLD,Sugerencias de corrección,Impacto BC/CMS,1,"ID del grupo: 82571585
 ID del padre: MLA40701183"
-20/04/2026,ext_siosanch,Demanda,Identificador: 17241362 - MLMS404666617,HOLD,,Impacto BC/CMS,1,
-20/04/2026,ext_tibareir,Demanda,MLMS404850252,HOLD,,,1,
-20/04/2026,ext_zograzia,Demanda,MLB4600216623,HOLD,,,1,
-20/04/2026,ext_daiperey,Enhancement,16765179,HOLD,,,1,
-20/04/2026,ext_daiperey,Demanda,17262398,HOLD,,,1,
-20/04/2026,ext_daiperey,Enhancement,17277722,HOLD,,,1,
-20/04/2026,ext_daiperey,Demanda,17291883 - MLMS405937737,HOLD,,Activar,1,
-20/04/2026,ext_agnovare,Soporte,16931431,HOLD,Inf. Oportunidad de Mejora,Herramientas,1,FEFE-13436 Se espera creacion GTIN 7909342677419 GROUP ID 73743571 SOPM-8249
-20/04/2026,ext_agnovare,Soporte,17126091,HOLD,Sugerencias de Corrección,Herramientas,1,FEFE-13547 Se crea hijo en MLM18985577 GROUP ID 81607123 SOPM-8786
-20/04/2026,ext_agnovare,Soporte,17144579,HOLD,Sugerencias de Corrección,Herramientas,1,FEFE-13547 Esperando creacion hijo en MLM27782158 GROUP ID 81595461 SOPM-8764
-20/04/2026,ext_agnovare,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS387222458,HOLD,Inf. Oportunidad de Mejora,Activar,1,SOPM-9042 Se crea sonajeros con EAN 074451169173 GROUP ID 82511537
-20/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9100,HOLD,Sugerencias de Corrección,Herramientas,1,FEFE-13554 SOPM-9100 en MLM50124147
-20/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9203,HOLD,Merge,Merge,2,Se espera merge con id 38480851
-20/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9205,HOLD,Unificación de familias,Esperando respuesta,2,WFI por error en id pasado
-20/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9231,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,Ya vino en ready_to_import Group ID: 83533015 | Sub Status: READY_TO_IMPORT
-20/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9236,HOLD,Inf. Oportunidad de Mejora,Activar,1,Esperando creacion de EAN 756774002381
-20/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9190,HOLD,Sugerencias de Corrección,,1,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS404711583
-20/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9219,HOLD,Sugerencias de Corrección,,1,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS405266176
-20/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9207,HOLD,Sugerencias de Corrección,,2,Revisar: 59414211 producto de  1 unidad
-20/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9244,HOLD,Sugerencias de Corrección,,1,Eliminacion de clip
-20/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9239,HOLD,Sugerencias de Corrección,Soporte,1,Eliminacion de clip
-20/04/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9081,HOLD,Sugerencias de Corrección,Herramientas,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13547
-20/04/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9172,HOLD,Unificación de familias,Unificación/Separación,41,"Se debe esperar el impacto de los merges , para luego seguir separando las familias"
-20/04/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9174,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,
-20/04/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9200,HOLD,KV,Soporte,1,Se espera RTA de Meli
-20/04/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9221,HOLD,Sugerencias de Corrección,,1,
-20/04/2026,ext_jotrimar,Demanda,https://produto.mercadolivre.com.br/MLB-2966424021-cabo-fio-pp-4-x-4mm-30-metros-sil-cobre-_JM,HOLD,,,1,
-20/04/2026,ext_jotrimar,Demanda,https://produto.mercadolivre.com.br/MLB-3739893367,HOLD,,Activar,1,ID del grupo: 83543013
-20/04/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-8928,HOLD,Inf. Oportunidad de Mejora,Activar,2,
-20/04/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9126,HOLD,Unificación de familias,Merge,3,"2 merges, 1 unif"
-20/04/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9216,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,
-20/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-8254,HOLD,,,1,55503262 creacion
-20/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9171?isEligibleForUserSurvey=true,HOLD,,Fallo Impacto Manual,1,
-20/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9218,HOLD,,,1,wfi
-20/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9069,HOLD,Sugerencias de Creación,Soporte,1,Derivado a Meli
-20/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9217,HOLD,Sugerencias de Creación,Esperando respuesta,3,WFI
-20/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9229,HOLD,Inf. Oportunidad de Mejora,Activar,1,83564267 / Creacion de familia
-20/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9249,HOLD,KV,Esperando respuesta,2,WFI
-20/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9234,HOLD,Denuncias BPP,Soporte,1,Derivado a equipo interno
-20/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9254,HOLD,Sugerencias de Creación,Esperando respuesta,1,
-20/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9256,HOLD,,,2,WIP
-20/04/2026,ext_tibareir,Enhancement,17220579,HOLD,MAO,Activar,1,
-20/04/2026,ext_tibareir,Enhancement,17277693,HOLD,MAO,Activar,2,
-20/04/2026,ext_tibareir,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS405248073,HOLD,,Merge,1,
-20/04/2026,ext_tibareir,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS405216743,HOLD,,Activar,1,
-20/04/2026,ext_tibareir,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS406122908,HOLD,,Unificación/Separación,1,
-20/04/2026,ext_toarruss,Soporte,17272377,HOLD,Sugerencias de Corrección,,1,Esperando respuesta- https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9247
-20/04/2026,ext_toarruss,Soporte,17272385,HOLD,Sugerencias de Corrección,,1,Esperando respuesta- https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9240
-20/04/2026,ext_toarruss,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS405081109,HOLD,Sugerencias de Corrección,,1,
-20/04/2026,ext_toarruss,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS405260002,HOLD,Sugerencias de Corrección,,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9243
-20/04/2026,ext_toarruss,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS405561128,HOLD,Sugerencias de Corrección,,1,
+21/04/2026,ext_siosanch,Demanda,Identificador: 17241362 - MLMS404666617,HOLD,,Impacto BC/CMS,1,
+21/04/2026,ext_tibareir,Demanda,MLMS404850252,HOLD,,,1,
+21/04/2026,ext_tibareir,Enhancement,17278322,HOLD,MAO,Activar,3,Group ID 83611019
+21/04/2026,ext_tibareir,Enhancement,17279829,HOLD,MAO,Activar,1,55538054
+21/04/2026,ext_tibareir,Demanda,MLMS406192711,HOLD,,Activar,1,
+21/04/2026,ext_tibareir,Demanda,MLCS406376664,HOLD,,Merge,1,
+21/04/2026,ext_tibareir,Enhancement,17305306,HOLD,MAO,Soporte,4,
+21/04/2026,ext_tibareir,Enhancement,17305563,HOLD,MAO,,2,
+21/04/2026,ext_yaportas,Enhancement,17305264,HOLD,MAO,Herramientas,1,FEFE-13542
+21/04/2026,ext_zograzia,Demanda,MLB4600216623,HOLD,,,1,
+21/04/2026,ext_zograzia,Enhancement,17305276,HOLD,MAO,Activar,1,
+21/04/2026,ext_zograzia,Enhancement,17304984,HOLD,MAO,,2,
+21/04/2026,ext_daiperey,Enhancement,16765179,HOLD,,,1,
+21/04/2026,ext_daiperey,Demanda,17262398,HOLD,,,1,
+21/04/2026,ext_daiperey,Demanda,17291883 - MLMS405937737,HOLD,,Activar,1,
+21/04/2026,ext_daiperey,Enhancement,17279360,HOLD,,Activar,1,ID del grupo: 83617159
+21/04/2026,ext_daiperey,Enhancement,17304474,HOLD,,Activar,1,83608011
+21/04/2026,ext_daiperey,Enhancement,17304744,HOLD,,Activar,1,"ID del grupo: 55538798
+"
+21/04/2026,ext_daiperey,Enhancement,17305756,HOLD,,Activar,1,ID del grupo: 83617465
+21/04/2026,ext_daiperey,Enhancement,17305805,HOLD,,Activar,1,"ID del grupo: 83617541
+
+"
+21/04/2026,ext_daiperey,Enhancement,17305884,HOLD,,Activar,1,83463901
+21/04/2026,ext_daiperey,Enhancement,17306057,HOLD,,Activar,1,"ID del grupo: 83623633
+"
+21/04/2026,ext_agnovare,Soporte,16931431,HOLD,Inf. Oportunidad de Mejora,Herramientas,1,FEFE-13436 Se espera creacion GTIN 7909342677419 GROUP ID 73743571 SOPM-8249
+21/04/2026,ext_agnovare,Soporte,17126091,HOLD,Sugerencias de Corrección,Herramientas,1,FEFE-13547 Se crea hijo en MLM18985577 GROUP ID 81607123 SOPM-8786
+21/04/2026,ext_agnovare,Soporte,17144579,HOLD,Sugerencias de Corrección,Herramientas,1,FEFE-13547 Esperando creacion hijo en MLM27782158 GROUP ID 81595461 SOPM-8764
+21/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9100,HOLD,Sugerencias de Corrección,Herramientas,1,FEFE-13554 SOPM-9100 en MLM50124147
+21/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9203,HOLD,Merge,Merge,2,Se espera merge con id 38480851
+21/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9231,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,Ya vino en ready_to_import Group ID: 83533015 | Sub Status: READY_TO_IMPORT
+21/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9266,HOLD,Sugerencias de Corrección,Esperando respuesta,1,WFI por id sugerencia
+21/04/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9267,HOLD,Inf. Oportunidad de Mejora,Activar,1,Se espera creacion con EAN 00090159313861
+21/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9244,HOLD,Sugerencias de Corrección,,1,Eliminacion de clip
+21/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9239,HOLD,Sugerencias de Corrección,Soporte,1,Eliminacion de clip
+21/04/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9268,HOLD,Sugerencias de Corrección,Activar,1,Creacion de child
+21/04/2026,ext_jocambar,Enhancement,,HOLD,MAO,Activar,1,
+21/04/2026,ext_jocambar,Enhancement,,HOLD,MAO,Activar,1,
+21/04/2026,ext_jocambar,Enhancement,,HOLD,MAO,Activar,1,
+21/04/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9174,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,
+21/04/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9200,HOLD,KV,Soporte,1,Se espera RTA de Meli
+21/04/2026,ext_jotrimar,Demanda,https://produto.mercadolivre.com.br/MLB-4535558683,HOLD,,Activar,1,
+21/04/2026,ext_jotrimar,Demanda,https://www.mercadolivre.com.br/ar-condicionado-split-hi-wall-inverter-elgin-eco-12000-btuh/up/MLBU3122025588,HOLD,,Activar,1,
+21/04/2026,ext_jotrimar,Demanda,https://produto.mercadolivre.com.br/MLB-3497259109,HOLD,,Activar,1,
+21/04/2026,ext_jotrimar,Demanda,https://articulo.mercadolibre.com.mx/MLM-2472054615,HOLD,,Activar,1,
+21/04/2026,ext_jotrimar,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS406350334,HOLD,,Unificación/Separación,1,Unificacion a familia 19751999 
+21/04/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-8928,HOLD,Inf. Oportunidad de Mejora,Activar,2,
+21/04/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9126,HOLD,Unificación de familias,Merge,3,"2 merges, 1 unif"
+21/04/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9216,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,
+21/04/2026,ext_matiam,Enhancement,,HOLD,MAO,Activar,1,
+21/04/2026,ext_matiam,Enhancement,,HOLD,MAO,Activar,1,
+21/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-8254,HOLD,,,1,55503262 creacion
+21/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9171?isEligibleForUserSurvey=true,HOLD,,Fallo Impacto Manual,1,
+21/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9218,HOLD,,,1,wfi
+21/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9246,HOLD,,,1,esperando impacto
+21/04/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9259,HOLD,,,1,esperando validacion
+21/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9069,HOLD,Sugerencias de Creación,Soporte,1,Derivado a Meli
+21/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9277,HOLD,KV,Esperando respuesta,8,Analisis y cambio de 8 ids
+21/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9283,HOLD,Sugerencias de Corrección,Activar,2,ID del grupo: 83617943 / Creacion de familia
+21/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9286,HOLD,Unificación de familias,Esperando respuesta,3,WFI
+21/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9288,HOLD,Sugerencias de Corrección,,2,wi
+21/04/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-8912,HOLD,Inf. Oportunidad de Mejora,Herramientas,1,ID del grupo: 83607159 / Creacion de familia. FEFE-13436
+21/04/2026,ext_tibareir,Enhancement,,HOLD,,,1,
+21/04/2026,ext_tibareir,Demanda,,HOLD,,,1,
+21/04/2026,ext_tibareir,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS405248073,HOLD,,Merge,1,
+21/04/2026,ext_tibareir,Demanda,,HOLD,,Unificación/Separación,1,MLAS406372546
+21/04/2026,ext_tibareir,Enhancement,,HOLD,,,1,
+21/04/2026,ext_tibareir,Enhancement,,HOLD,,,1,
+21/04/2026,ext_tibareir,Demanda,,HOLD,,,1,MLCS406376664
+21/04/2026,ext_tibareir,Demanda,,HOLD,,,1,MLMS406192711
+21/04/2026,ext_toarruss,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS405476559,HOLD,Sugerencias de Corrección,,1,
+21/04/2026,ext_toarruss,Soporte,https://catalog-domains.adminml.com/catalogo/bc-admin/productos/MLA63691442,HOLD,Sugerencias de Corrección,,1,Esperar validacion meli
+21/04/2026,ext_toarruss,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS405081109,HOLD,Sugerencias de Corrección,,1,Se llevo a SUBA
+21/04/2026,ext_toarruss,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9279,HOLD,Sugerencias de Corrección,,1,Esperando rta
+21/04/2026,ext_toarruss,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9291,HOLD,Sugerencias de Creación,,1,Esperando rta
+21/04/2026,ext_toarruss,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9292,HOLD,Sugerencias de Creación,,1,Esperando rta
