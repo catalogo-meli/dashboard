@@ -15,6 +15,7 @@ export const DATA_SOURCES = {
   hold: {
     id: 'hold', label: 'HOLD Activo', type: 'csv',
     url: './data/hold.csv', coverageLabel: 'Snapshot 31/03/2026',
+    allowEmpty: true,
   },
   equipo: {
     id: 'equipo', label: 'Equipo Colaboradores', type: 'csv',

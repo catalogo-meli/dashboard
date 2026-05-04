@@ -125,6 +125,7 @@ async function loadDataset(source) {
     : await fetchCsv(source.url)
 
   if (!rawRows || rawRows.length === 0) {
+    if (source.optional || source.allowEmpty) return []
     const err = new Error('EMPTY')
     err.type = 'empty'
     throw err
@@ -166,7 +167,7 @@ export function useDataLoader() {
           const errorType = err.type || 'unknown'
 
           // Datasets opcionales: si no se encuentran, resultado vacío silencioso (sin error)
-          if (source.optional && errorType === 'not_found') {
+          if ((source.optional || source.allowEmpty) && (errorType === 'not_found' || errorType === 'empty')) {
             console.log(`[${source.label}] ℹ️ Archivo opcional no presente — se continúa sin él`)
             results[source.id] = []
             return
