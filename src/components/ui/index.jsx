@@ -6,11 +6,14 @@ import { formatNumber, formatPct, truncate } from '../../utils/parsers.js'
 import { CALIDAD_LABELS, CALIDAD_COLORS } from '../../utils/normalizers.js'
 
 // ─── KPI Card ─────────────────────────────────────────────────────────────────
-export function KPICard({ label, value, sub, icon, color = 'var(--accent)', className = '' }) {
+export function KPICard({ label, value, sub, icon, color = 'var(--accent)', className = '', help }) {
   return (
     <div className={`card ${className}`}>
       <div className="card-header" style={{ marginBottom: '0.5rem' }}>
-        <span className="card-title">{label}</span>
+        <span className="card-title">
+          {label}
+          {help && <span title={help} style={{ color:'var(--text3)', cursor:'help', marginLeft:6 }}>ⓘ</span>}
+        </span>
         {icon && (
           <div className="kpi-icon" style={{ background: `${color}20`, color }}>
             {icon}

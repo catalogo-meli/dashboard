@@ -177,6 +177,17 @@ function MetricHelp({ label, title }) {
   )
 }
 
+const HELP_TEXT = {
+  tareaTipica: 'Es la tarea que queda justo en el medio si ordenamos todas las duraciones de menor a mayor. Sirve para ver el tiempo normal sin que los casos muy largos deformen la lectura.',
+  nueveDeCadaDiez: 'El 90% de las tareas se resolvió en este tiempo o menos. Dicho simple: de cada 10 tareas, 9 entran dentro de este límite y 1 tarda más.',
+  promedio: 'Promedio simple de duración. Puede subir bastante cuando hay pocos casos muy largos.',
+  tareasDia: 'Cantidad de tareas accionadas dividida por los días con actividad dentro del filtro actual.',
+  cortas5: 'Tareas con duración de 5 segundos o menos. Ayuda a detectar resoluciones extremadamente rápidas o posibles registros para revisar.',
+  cortas10: 'Tareas con duración de 10 segundos o menos. Puede señalar tareas muy simples, automatismos o registros a revisar.',
+  mas1h: 'Tareas que tardaron más de 1 hora. Conviene mirarlas como cola larga o posibles casos atípicos.',
+  otroDia: 'Casos donde el inicio y la finalización quedaron en días distintos según el dato de origen.',
+}
+
 export function TiemposCdmModule({ rows, error }) {
   const [granularity, setGranularity] = useState('diario')
   const [macroFilter, setMacroFilter] = useState([])
@@ -244,10 +255,10 @@ export function TiemposCdmModule({ rows, error }) {
   }
 
   const anomalyCards = [
-    { label: 'Resueltas en 5 segundos o menos', value: model.anomalies.corta5.length, sub: `${pct(model.anomalies.corta5.length, model.total)} del total` },
-    { label: 'Resueltas en 10 segundos o menos', value: model.anomalies.corta10.length, sub: `${pct(model.anomalies.corta10.length, model.total)} del total` },
-    { label: 'Más de 1 hora', value: model.anomalies.mayor1h.length, sub: `${pct(model.anomalies.mayor1h.length, model.total)} del total` },
-    { label: 'Finalizadas otro día', value: model.anomalies.distintoDia.length, sub: `${pct(model.anomalies.distintoDia.length, model.total)} del total` },
+    { label: '5 segundos o menos', value: model.anomalies.corta5.length, sub: `${pct(model.anomalies.corta5.length, model.total)} del total`, help: HELP_TEXT.cortas5 },
+    { label: '10 segundos o menos', value: model.anomalies.corta10.length, sub: `${pct(model.anomalies.corta10.length, model.total)} del total`, help: HELP_TEXT.cortas10 },
+    { label: 'Más de 1 hora', value: model.anomalies.mayor1h.length, sub: `${pct(model.anomalies.mayor1h.length, model.total)} del total`, help: HELP_TEXT.mas1h },
+    { label: 'Finalizadas otro día', value: model.anomalies.distintoDia.length, sub: `${pct(model.anomalies.distintoDia.length, model.total)} del total`, help: HELP_TEXT.otroDia },
   ]
 
   return (
@@ -276,14 +287,14 @@ export function TiemposCdmModule({ rows, error }) {
 
       <div className="grid grid-4">
         <KPICard label="Tareas accionadas" value={formatNumber(model.total)} sub={`${model.colaboradores} colaboradores`} icon="📦" />
-        <KPICard label="Tareas/día" value={formatNumber(model.tareasDia)} sub={`${model.dias} días con actividad`} icon="⚡" color="var(--green)" />
-        <KPICard label="Tiempo habitual por tarea" value={formatDuration(model.medianaSeg)} sub={`Promedio: ${formatDuration(model.promedioSeg)}`} icon="⏱️" color="#38bdf8" />
-        <KPICard label="Tiempo de referencia" value={formatDuration(model.p90Seg)} sub="El 90% de las tareas termina antes de este tiempo" icon="📈" color="#fb923c" />
+        <KPICard label="Tareas/día" value={formatNumber(model.tareasDia)} sub={`${model.dias} días con actividad`} icon="⚡" color="var(--green)" help={HELP_TEXT.tareasDia} />
+        <KPICard label="Una tarea típica tarda" value={formatDuration(model.medianaSeg)} sub={`Promedio: ${formatDuration(model.promedioSeg)}`} icon="⏱️" color="#38bdf8" help={`${HELP_TEXT.tareaTipica} ${HELP_TEXT.promedio}`} />
+        <KPICard label="9 de cada 10 tardan hasta" value={formatDuration(model.p90Seg)} sub="Solo el 10% tarda más que este valor" icon="📈" color="#fb923c" help={HELP_TEXT.nueveDeCadaDiez} />
       </div>
 
       <div className="grid grid-4">
         {anomalyCards.map(card => (
-          <KPICard key={card.label} label={card.label} value={formatNumber(card.value)} sub={card.sub} icon="!" color={card.value > 0 ? 'var(--yellow)' : 'var(--slate)'} />
+          <KPICard key={card.label} label={card.label} value={formatNumber(card.value)} sub={card.sub} icon="!" color={card.value > 0 ? 'var(--yellow)' : 'var(--slate)'} help={card.help} />
         ))}
       </div>
 
@@ -292,10 +303,10 @@ export function TiemposCdmModule({ rows, error }) {
           <div>
             <div className="card-title">Evolución temporal</div>
             <div className="card-subtitle">
-              Barras = tareas por flujo. Líneas = tiempo habitual y tiempo de referencia.
+              Barras = tareas por flujo. Líneas = tarea típica y límite de 9 de cada 10.
               <div style={{ marginTop:4 }}>
-                <MetricHelp label="Tiempo habitual" title="Tiempo típico de resolución. Representa el comportamiento central del período y evita que casos extremos distorsionen la lectura." />
-                <MetricHelp label="Tiempo de referencia" title="Marca de referencia superior: el 90% de las tareas se resolvió en este tiempo o menos. Ayuda a ver cuándo los tiempos se alejan del comportamiento habitual." />
+                <MetricHelp label="Tarea típica" title={HELP_TEXT.tareaTipica} />
+                <MetricHelp label="9 de cada 10 tardan hasta" title={HELP_TEXT.nueveDeCadaDiez} />
               </div>
             </div>
           </div>
@@ -311,8 +322,8 @@ export function TiemposCdmModule({ rows, error }) {
               totalKey="total"
               valueFormatter={v => typeof v === 'number' ? formatNumber(Math.round(v)) : v}
               lineFormatters={{
-                'Tiempo habitual': formatDurationFromMinutes,
-                'Tiempo de referencia': formatDurationFromMinutes,
+                'Tarea típica': formatDurationFromMinutes,
+                '9 de cada 10 tardan hasta': formatDurationFromMinutes,
               }} />} />
             <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
             {trendFlujos.map((flujo, idx) => (
@@ -322,8 +333,8 @@ export function TiemposCdmModule({ rows, error }) {
                 fill={COLORS[idx % COLORS.length]}
                 radius={idx === trendFlujos.length - 1 ? [3,3,0,0] : [0,0,0,0]} />
             ))}
-            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Tiempo habitual" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
-            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="Tiempo de referencia" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
+            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Tarea típica" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
+            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="9 de cada 10 tardan hasta" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
@@ -342,7 +353,7 @@ export function TiemposCdmModule({ rows, error }) {
         <div className="card-header">
           <div>
             <div className="card-title">Ranking por colaborador</div>
-            <div className="card-subtitle">Tareas, productividad diaria y tiempos de accionamiento.</div>
+            <div className="card-subtitle">Tareas, productividad diaria, tarea típica y límite de 9 de cada 10.</div>
           </div>
         </div>
         <div className="table-wrap">
@@ -353,10 +364,10 @@ export function TiemposCdmModule({ rows, error }) {
                 <SortTh colKey="equipo" label="Equipo" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="total" label="Tareas" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="tareasDia" label="Tareas/día" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="medianaSeg" label="Tiempo habitual" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="p90Seg" label="Tiempo de referencia" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="pctCorta10" label="Hasta 10 seg." sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="pctMayor1h" label="Más de 1 hora" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="medianaSeg" label="Tarea típica" title={HELP_TEXT.tareaTipica} sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="p90Seg" label="9 de cada 10 hasta" title={HELP_TEXT.nueveDeCadaDiez} sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="pctCorta10" label="10s o menos" title={HELP_TEXT.cortas10} sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="pctMayor1h" label="Más de 1 hora" title={HELP_TEXT.mas1h} sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
               </tr>
             </thead>
             <tbody>
@@ -387,7 +398,7 @@ function BreakdownChart({ title, data, dataKey }) {
       <div className="card-header">
         <div>
           <div className="card-title">{title}</div>
-          <div className="card-subtitle">Volumen y tiempo habitual de accionamiento.</div>
+          <div className="card-subtitle" title={HELP_TEXT.tareaTipica}>Volumen y tiempo típico de accionamiento.</div>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={260}>
@@ -411,7 +422,7 @@ function AnomalyList({ rows }) {
       <div className="card-header">
         <div>
           <div className="card-title">Casos para revisar</div>
-          <div className="card-subtitle">Registros con tiempo inconsistente, tareas de más de 1 hora o finalizadas otro día.</div>
+          <div className="card-subtitle" title="Incluye registros con duración negativa, tareas que superan 1 hora o casos que finalizaron en otro día.">Registros con tiempos atípicos o inconsistentes.</div>
         </div>
       </div>
       {!rows.length ? (
