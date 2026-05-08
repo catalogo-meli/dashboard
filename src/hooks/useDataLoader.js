@@ -11,7 +11,7 @@ import Papa from 'papaparse'
 import { DATA_SOURCES, APP_CONFIG } from '../config/datasources.js'
 import {
   normalizeHistorico, normalizeFinalizadas,
-  normalizeAuditados, normalizeHold, normalizeEquipo, normalizeMao,
+  normalizeAuditados, normalizeHold, normalizeEquipo, normalizeMao, normalizeTiemposCdm,
 } from '../utils/normalizers.js'
 
 const NORMALIZERS = {
@@ -21,13 +21,14 @@ const NORMALIZERS = {
   hold:         normalizeHold,
   equipo:       normalizeEquipo,
   auditados_mao: normalizeMao,
+  tiempos_cdm: normalizeTiemposCdm,
 }
 
-const CACHE_VERSION = 'v7'
+const CACHE_VERSION = 'v8'
 
 function cacheKey(id) { return `catalogo_${CACHE_VERSION}_${id}` }
 
-const DATE_FIELDS = ['fecha', 'fechaIngreso']
+const DATE_FIELDS = ['fecha', 'fechaIngreso', 'fechaFinalizacion']
 
 function rehydrateDates(rows) {
   if (!rows?.length) return rows
@@ -68,7 +69,7 @@ function clearCache(id) {
 // Limpiar cachés de versiones anteriores
 function clearOldCaches() {
   try {
-    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_v6_', 'catalogo_dash_']
+    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_v6_', 'catalogo_v7_', 'catalogo_dash_']
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i)
       if (key && oldPrefixes.some(p => key.startsWith(p))) {
@@ -141,7 +142,7 @@ async function loadDataset(source) {
 export function useDataLoader() {
   const [state, setState] = useState({
     historico: null, auditados: null,
-    hold: null, equipo: null, auditados_mao: null,
+    hold: null, equipo: null, auditados_mao: null, tiempos_cdm: null,
     loading: true, errors: {}, loadedAt: null,
   })
   const mounted = useRef(true)
@@ -202,6 +203,7 @@ export function useDataLoader() {
         hold:          results.hold           || [],
         equipo:        results.equipo         || [],
         auditados_mao: results.auditados_mao  || [],
+        tiempos_cdm:   results.tiempos_cdm    || [],
         loading: false, errors, loadedAt: new Date(),
       })
     }

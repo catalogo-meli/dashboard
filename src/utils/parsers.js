@@ -18,6 +18,26 @@ export function parseDate(raw) {
   m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})(?:\s+.*)?$/)
   if (m) return buildValidDate(Number(m[3]), Number(m[2]), Number(m[1]))
 
+  // DD mmm YYYY en español, usado por tiempos_cdm.csv.
+  m = s.toLowerCase().match(/^(\d{1,2})\s+([a-záéíóúñ]{3,})\s+(\d{4})$/i)
+  if (m) {
+    const month = {
+      ene: 1, enero: 1,
+      feb: 2, febrero: 2,
+      mar: 3, marzo: 3,
+      abr: 4, abril: 4,
+      may: 5, mayo: 5,
+      jun: 6, junio: 6,
+      jul: 7, julio: 7,
+      ago: 8, agosto: 8,
+      sep: 9, sept: 9, septiembre: 9, set: 9, setiembre: 9,
+      oct: 10, octubre: 10,
+      nov: 11, noviembre: 11,
+      dic: 12, diciembre: 12,
+    }[m[2]]
+    return buildValidDate(Number(m[3]), month, Number(m[1]))
+  }
+
   // Serial Excel/Sheets, por si el CSV llega exportado con numero de fecha.
   if (/^\d{5}(\.\d+)?$/.test(s)) {
     const serial = Number(s)

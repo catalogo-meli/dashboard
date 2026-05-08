@@ -10,6 +10,7 @@ import { CalidadModule } from './modules/CalidadModule.jsx'
 import { FriccionModule } from './modules/FriccionModule.jsx'
 import { EquipoModule } from './modules/EquipoModule.jsx'
 import { IndividualModule } from './modules/IndividualModule.jsx'
+import { TiemposCdmModule } from './modules/TiemposCdmModule.jsx'
 import { Spinner } from './components/ui/index.jsx'
 import { APP_CONFIG } from './config/datasources.js'
 import { joinWithEquipo, buildEquipoMap } from './utils/selectors/datasetJoiners.js'
@@ -29,6 +30,7 @@ const TABS = [
   { id: 'friccion',      label: 'Fricción' },
   { id: 'equipo',        label: 'Equipo' },
   { id: 'individual',    label: 'Personas' },
+  { id: 'tiempos_cdm',   label: 'Tiempos CDM' },
 ]
 
 function matchesMulti(value, selected) {
@@ -54,7 +56,7 @@ export default function App() {
     return TABS.find(tab => tab.id === t)?.id || 'resumen'
   })
 
-  const { historico, auditados, hold, equipo, auditados_mao, loading, errors, loadedAt, reload } = useDataLoader()
+  const { historico, auditados, hold, equipo, auditados_mao, tiempos_cdm, loading, errors, loadedAt, reload } = useDataLoader()
 
   const equipoMap  = useMemo(() => buildEquipoMap(equipo), [equipo])
   const joinedData = useMemo(() => ({
@@ -62,8 +64,9 @@ export default function App() {
     finalizadas:   [],
     auditados:     joinWithEquipo(auditados      || [], equipoMap),
     auditados_mao: joinWithEquipo(auditados_mao  || [], equipoMap),
+    tiempos_cdm:   joinWithEquipo(tiempos_cdm    || [], equipoMap),
     hold: hold || [],
-  }), [historico, auditados, auditados_mao, hold, equipoMap])
+  }), [historico, auditados, auditados_mao, tiempos_cdm, hold, equipoMap])
 
   const {
     filters, state, filtered, options,
@@ -89,7 +92,7 @@ export default function App() {
     })
   }, [joinedData.auditados_mao, filters])
 
-  const rawData = { historico: historico||[], finalizadas: [], auditados: auditados||[], auditados_mao: auditados_mao||[], hold: hold||[] }
+  const rawData = { historico: historico||[], finalizadas: [], auditados: auditados||[], auditados_mao: auditados_mao||[], tiempos_cdm: tiempos_cdm||[], hold: hold||[] }
 
   const model = useDashboardModel({
     rawData, filtered: filteredWithCal, filters,
@@ -217,6 +220,7 @@ export default function App() {
             {activeTab === 'friccion'      && <FriccionModule model={model} holdSnapshot={hold||[]} holdLoadedAt={loadedAt} historicoCompleto={historico||[]} filters={filters}/>}
             {activeTab === 'equipo'        && <EquipoModule model={model} equipo={equipo||[]} equipoError={errors?.equipo} navigateTo={navigateTo} setFilter={setSegFilter}/>}
             {activeTab === 'individual'    && <IndividualModule model={model} equipo={equipo||[]} options={options} filteredHistorico={model.filteredHistorico||[]} auditados={filteredWithCal.auditados||[]}/>}
+            {activeTab === 'tiempos_cdm'   && <TiemposCdmModule rows={filtered?.tiempos_cdm || []} />}
           </>
         )}
       </main>

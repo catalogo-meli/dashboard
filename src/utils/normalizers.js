@@ -225,6 +225,55 @@ export function normalizeHold(rows) {
   return rows.map(normalizeHoldRow).filter(r => r.usuario)
 }
 
+function parseDurationSeconds(raw) {
+  const s = String(raw || '').trim()
+  if (!s) return null
+  const sign = s.startsWith('-') ? -1 : 1
+  const parts = s.replace(/^-/, '').split(':').map(Number)
+  if (parts.length !== 3 || parts.some(n => Number.isNaN(n))) return null
+  const [h, m, sec] = parts
+  return sign * (h * 3600 + m * 60 + sec)
+}
+
+export function normalizeTiemposCdmRow(raw) {
+  const fechaFinalizacion = parseDate(get(raw, 'fecha_finalizacion'))
+  const duracionRaw = get(raw, 'duración', 'duracion', 'duraciÃ³n')
+  const duracionSegundos = parseDurationSeconds(duracionRaw)
+  const colaborador = normalizeDimension(get(raw, 'COLABORADOR'), '')
+  const iniciadoVsFinalizado = normalizeDimension(get(raw, 'Iniciado vs Finalizado'), 'Sin dato')
+  const comentarioTl = get(raw, 'Comentario tl', 'Comentario TL') || null
+  const linkCaso = get(raw, 'Link caso') || null
+  return {
+    ...buildDateFields(fechaFinalizacion),
+    idCdm: get(raw, 'ID_CDM'),
+    macroCaja: normalizeDimension(get(raw, 'Macro_caja', 'Macro caja'), 'Sin macro caja'),
+    flujo: normalizeDimension(get(raw, 'Flujo'), 'Sin flujo'),
+    colaborador,
+    usuario: colaborador,
+    iniciadoVsFinalizado,
+    fechaFinalizacion,
+    monthKey: fechaFinalizacion ? `${fechaFinalizacion.getFullYear()}-${String(fechaFinalizacion.getMonth() + 1).padStart(2, '0')}` : null,
+    horaPrimerAsignacion: get(raw, 'hora_primer_asignacion') || null,
+    horaFinalizacion: get(raw, 'hora_finalizacion') || null,
+    duracionRaw,
+    duracionSegundos,
+    duracionMinutos: duracionSegundos != null ? duracionSegundos / 60 : null,
+    linkCaso,
+    comentarioTl,
+    tieneComentario: !!comentarioTl,
+    tieneLink: !!linkCaso,
+    esDuracionNegativa: duracionSegundos != null && duracionSegundos < 0,
+    esDuracionCorta5s: duracionSegundos != null && duracionSegundos >= 0 && duracionSegundos <= 5,
+    esDuracionCorta10s: duracionSegundos != null && duracionSegundos >= 0 && duracionSegundos <= 10,
+    esDuracionMayor1h: duracionSegundos != null && duracionSegundos > 3600,
+    esDistintoDia: iniciadoVsFinalizado.toLowerCase().includes('distinto') || iniciadoVsFinalizado.toLowerCase().includes('otro'),
+  }
+}
+
+export function normalizeTiemposCdm(rows) {
+  return rows.map(normalizeTiemposCdmRow).filter(r => r.idCdm && r.usuario && r.fechaFinalizacion)
+}
+
 // CSV real: ID_MELI,Nombre,Rol,Equipo,Ubicación,Fecha Ingreso,Mail Externo
 // Fechas en formato DD-MM-YYYY (soportado por parsers.js v4)
 // Columnas opcionales: CUIL, Slack_ID, Mail Productora (pueden no existir)

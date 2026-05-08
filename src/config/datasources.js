@@ -17,6 +17,11 @@ export const DATA_SOURCES = {
     url: './data/hold.csv', coverageLabel: 'Snapshot 31/03/2026',
     allowEmpty: true,
   },
+  tiempos_cdm: {
+    id: 'tiempos_cdm', label: 'Tiempos CDM', type: 'csv',
+    url: './data/tiempos_cdm.csv', coverageLabel: 'Abr 2026',
+    optional: true,
+  },
   equipo: {
     id: 'equipo', label: 'Equipo Colaboradores', type: 'csv',
     url: './data/equipo_colaboradores.csv', coverageLabel: 'Actual',

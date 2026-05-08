@@ -159,18 +159,22 @@ export function buildAvailability(rows) {
   return { weekSet, monthSet, yearSet }
 }
 
+function isIgnored(ignore, key) {
+  return Array.isArray(ignore) ? ignore.includes(key) : ignore === key
+}
+
 export function matchGlobalFilters(r, desde, hasta, s, opts = {}) {
   const ignore = opts.ignoreKey
   if (desde && r.fecha < desde) return false
   if (hasta && r.fecha > hasta) return false
-  if (ignore !== 'usuario' && !matchesValue(r.usuario, s.usuario)) return false
-  if (ignore !== 'flujo' && hasAny(s, 'flujo')) {
+  if (!isIgnored(ignore, 'usuario') && !matchesValue(r.usuario, s.usuario)) return false
+  if (!isIgnored(ignore, 'flujo') && hasAny(s, 'flujo')) {
     const flujos = toList(s.flujo)
     if (r.flujo != null && !flujos.includes(String(r.flujo))) return false
     if (r.byFlujo != null && !flujos.some(f => r.byFlujo[f] > 0)) return false
   }
-  if (ignore !== 'equipo' && !matchesValue(r.equipo, s.equipo)) return false
-  if (ignore !== 'iniciativa' && !matchesValue(r.iniciativa, s.iniciativa)) return false
+  if (!isIgnored(ignore, 'equipo') && !matchesValue(r.equipo, s.equipo)) return false
+  if (!isIgnored(ignore, 'iniciativa') && !matchesValue(r.iniciativa, s.iniciativa)) return false
   return true
 }
 
@@ -197,9 +201,9 @@ function toOpts(values, counts) {
     .map(v => ({ value: v, label: v, count: counts.get(v) || 0 }))
 }
 
-function optionRows(hist, dateRange, state, key) {
+function optionRows(hist, dateRange, state, key, extraIgnore = []) {
   const { desde, hasta } = dateRange
-  return (hist || []).filter(r => matchGlobalFilters(r, desde, hasta, state, { ignoreKey: key }))
+  return (hist || []).filter(r => matchGlobalFilters(r, desde, hasta, state, { ignoreKey: [key, ...extraIgnore] }))
 }
 
 function sameList(a, b) {
@@ -246,8 +250,11 @@ export function useGlobalFilters(joinedData, activeTab) {
   const availability = useMemo(() => {
     if (!joinedData) return { weekSet: new Set(), monthSet: new Set(), yearSet: new Set() }
     const isCalidad = activeTab === 'calidad'
+    const isTiemposCdm = activeTab === 'tiempos_cdm'
     const rows = isCalidad
       ? [...(joinedData.auditados || []), ...(joinedData.auditados_mao || [])]
+      : isTiemposCdm
+        ? (joinedData.tiempos_cdm || [])
       : (joinedData.historico || [])
     return buildAvailability(rows)
   }, [joinedData, activeTab])
@@ -259,6 +266,7 @@ export function useGlobalFilters(joinedData, activeTab) {
     if (!joinedData) return null
     const { desde, hasta } = dateRange
     const hist = (joinedData.historico || []).filter(r => matchGlobalFilters(r, desde, hasta, state))
+    const tiemposCdm = (joinedData.tiempos_cdm || []).filter(r => matchGlobalFilters(r, desde, hasta, state, { ignoreKey: 'iniciativa' }))
     const histOnlyFilterActive = hasAny(state, 'flujo') || hasAny(state, 'iniciativa')
     const allowedUsuarios = new Set(hist.map(r => r.usuario))
     const aud  = (joinedData.auditados || []).filter(r => {
@@ -272,16 +280,19 @@ export function useGlobalFilters(joinedData, activeTab) {
       auditados: aud,
       auditados_mao: joinedData.auditados_mao || [],
       hold: joinedData.hold || [],
+      tiempos_cdm: tiemposCdm,
     }
   }, [joinedData, dateRange, state])
 
   const options = useMemo(() => {
     if (!joinedData) return {}
-    const hist = joinedData.historico || []
-    const rowsUsuario = optionRows(hist, dateRange, state, 'usuario')
-    const rowsFlujo = optionRows(hist, dateRange, state, 'flujo')
-    const rowsEquipo = optionRows(hist, dateRange, state, 'equipo')
-    const rowsIniciativa = optionRows(hist, dateRange, state, 'iniciativa')
+    const isTiemposCdm = activeTab === 'tiempos_cdm'
+    const hist = isTiemposCdm ? (joinedData.tiempos_cdm || []) : (joinedData.historico || [])
+    const extraIgnore = isTiemposCdm ? ['iniciativa'] : []
+    const rowsUsuario = optionRows(hist, dateRange, state, 'usuario', extraIgnore)
+    const rowsFlujo = optionRows(hist, dateRange, state, 'flujo', extraIgnore)
+    const rowsEquipo = optionRows(hist, dateRange, state, 'equipo', extraIgnore)
+    const rowsIniciativa = isTiemposCdm ? [] : optionRows(hist, dateRange, state, 'iniciativa')
 
     const aud = (joinedData.auditados || []).filter(r => matchAuditBase(r, dateRange.desde, dateRange.hasta, state))
     const auCounts = countBy(aud, r => r.auditor)
@@ -303,7 +314,7 @@ export function useGlobalFilters(joinedData, activeTab) {
       suggestionReasons: toOpts(aud.map(r => r.suggestionReason), srCounts),
       calidadOpts,
     }
-  }, [joinedData, dateRange, state])
+  }, [joinedData, dateRange, state, activeTab])
 
   // Limpia selecciones que se volvieron imposibles por otros filtros o por fecha.
   useEffect(() => {
