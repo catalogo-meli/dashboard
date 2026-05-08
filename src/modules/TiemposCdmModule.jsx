@@ -9,6 +9,10 @@ import { useTableSort, SortTh } from '../hooks/useTableSort.jsx'
 
 const COLORS = ['#6366f1', '#38bdf8', '#a78bfa', '#fb923c', '#22c55e', '#f59e0b', '#ef4444', '#14b8a6']
 
+function isVisibleFlujo(flujo) {
+  return Boolean(flujo) && flujo !== 'Sin flujo'
+}
+
 function formatDuration(seconds) {
   if (seconds == null || Number.isNaN(seconds)) return '-'
   const sign = seconds < 0 ? '-' : ''
@@ -83,9 +87,10 @@ function aggregateTrend(rows, mode) {
       key = r.weekKey
       label = `Sem ${String(r.week).padStart(2, '0')} ${r.weekYear}`
     }
-    if (!map.has(key)) map.set(key, { key, label, total: 0, duraciones: [], dias: new Set() })
+    if (!map.has(key)) map.set(key, { key, label, total: 0, duraciones: [], dias: new Set(), byFlujo: {} })
     const e = map.get(key)
     e.total += 1
+    if (isVisibleFlujo(r.flujo)) e.byFlujo[r.flujo] = (e.byFlujo[r.flujo] || 0) + 1
     if (r.duracionSegundos != null) e.duraciones.push(r.duracionSegundos)
     e.dias.add(r.fechaKey)
   }
@@ -93,10 +98,22 @@ function aggregateTrend(rows, mode) {
     key: e.key,
     label: e.label,
     total: e.total,
+    byFlujo: e.byFlujo,
     tareasDia: e.dias.size > 0 ? Math.round(e.total / e.dias.size) : 0,
     medianaMin: (percentile(e.duraciones, 50) || 0) / 60,
     p90Min: (percentile(e.duraciones, 90) || 0) / 60,
   })).sort((a, b) => a.key.localeCompare(b.key))
+}
+
+function flujosEnTendencia(data) {
+  const totals = new Map()
+  for (const row of data) {
+    for (const [flujo, value] of Object.entries(row.byFlujo || {})) {
+      if (!isVisibleFlujo(flujo) || value <= 0) continue
+      totals.set(flujo, (totals.get(flujo) || 0) + value)
+    }
+  }
+  return [...totals.entries()].sort((a, b) => b[1] - a[1]).map(([flujo]) => flujo)
 }
 
 function buildRanking(rows) {
@@ -164,7 +181,7 @@ export function TiemposCdmModule({ rows }) {
     const dias = new Set(data.map(r => r.fechaKey).filter(Boolean))
     const colaboradores = new Set(data.map(r => r.usuario).filter(Boolean))
     const macro = groupRows(data, r => r.macroCaja, 'macroCaja')
-    const flujo = groupRows(data, r => r.flujo, 'flujo')
+    const flujo = groupRows(data.filter(r => isVisibleFlujo(r.flujo)), r => r.flujo, 'flujo')
     const equipo = groupRows(data, r => r.equipo || 'Fuera de padrón actual', 'equipo')
     const ranking = buildRanking(data)
     const anomalies = {
@@ -192,6 +209,7 @@ export function TiemposCdmModule({ rows }) {
   }, [filteredRows])
 
   const trend = useMemo(() => aggregateTrend(filteredRows, granularity), [filteredRows, granularity])
+  const trendFlujos = useMemo(() => flujosEnTendencia(trend), [trend])
   const { sorted: rankingSorted, sortKey, sortDir, onSort } = useTableSort(model.ranking, model.ranking)
 
   function toggleMacro(macro) {
@@ -199,27 +217,23 @@ export function TiemposCdmModule({ rows }) {
   }
 
   if (!rows?.length) {
-    return <EmptyState message="No hay datos de tiempos CDM para el período seleccionado." />
+    return <EmptyState message="No hay datos de accionamiento CDM para el período seleccionado." />
   }
 
   const anomalyCards = [
-    { label: 'Resueltas en 5 seg. o menos', value: model.anomalies.corta5.length, sub: `${pct(model.anomalies.corta5.length, model.total)} del total` },
-    { label: 'Resueltas en 10 seg. o menos', value: model.anomalies.corta10.length, sub: `${pct(model.anomalies.corta10.length, model.total)} del total` },
-    { label: 'Resueltas en más de 1 hora', value: model.anomalies.mayor1h.length, sub: `${pct(model.anomalies.mayor1h.length, model.total)} del total` },
+    { label: 'Resueltas en 5 segundos o menos', value: model.anomalies.corta5.length, sub: `${pct(model.anomalies.corta5.length, model.total)} del total` },
+    { label: 'Resueltas en 10 segundos o menos', value: model.anomalies.corta10.length, sub: `${pct(model.anomalies.corta10.length, model.total)} del total` },
+    { label: 'Más de 1 hora', value: model.anomalies.mayor1h.length, sub: `${pct(model.anomalies.mayor1h.length, model.total)} del total` },
     { label: 'Finalizadas otro día', value: model.anomalies.distintoDia.length, sub: `${pct(model.anomalies.distintoDia.length, model.total)} del total` },
   ]
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>
-      <div className="metric-note metric-note-important">
-        Fuente: tiempos_cdm.csv. La fecha operativa de esta vista es fecha_finalizacion.
-      </div>
-
       <div className="card" style={{ padding:'0.9rem 1rem' }}>
         <div className="card-header" style={{ marginBottom:'0.65rem' }}>
           <div>
             <div className="card-title">Accionamiento CDM</div>
-            <div className="card-subtitle">Filtro propio por macro caja, combinado con período, flujo, colaborador y equipo globales.</div>
+            <div className="card-subtitle">Analizá el volumen, los tiempos y los casos que conviene revisar.</div>
           </div>
           <ExportCSVButton data={exportRows(filteredRows)} filename="tiempos_cdm_filtrado.csv" />
         </div>
@@ -238,10 +252,10 @@ export function TiemposCdmModule({ rows }) {
       </div>
 
       <div className="grid grid-4">
-        <KPICard label="Tareas CDM" value={formatNumber(model.total)} sub={`${model.colaboradores} colaboradores`} icon="📦" />
-        <KPICard label="Tareas/Día" value={formatNumber(model.tareasDia)} sub={`${model.dias} días con actividad`} icon="⚡" color="var(--green)" />
-        <KPICard label="Tiempo típico" value={formatDuration(model.medianaSeg)} sub={`Tiempo promedio: ${formatDuration(model.promedioSeg)}`} icon="⏱️" color="#38bdf8" />
-        <KPICard label="90% se resolvió en menos de" value={formatDuration(model.p90Seg)} sub="Cola alta de accionamiento" icon="📈" color="#fb923c" />
+        <KPICard label="Tareas accionadas" value={formatNumber(model.total)} sub={`${model.colaboradores} colaboradores`} icon="📦" />
+        <KPICard label="Tareas/día" value={formatNumber(model.tareasDia)} sub={`${model.dias} días con actividad`} icon="⚡" color="var(--green)" />
+        <KPICard label="Tiempo habitual por tarea" value={formatDuration(model.medianaSeg)} sub={`Promedio: ${formatDuration(model.promedioSeg)}`} icon="⏱️" color="#38bdf8" />
+        <KPICard label="Tiempo alto, pero esperable" value={formatDuration(model.p90Seg)} sub="El 90% de las tareas termina antes de este tiempo" icon="📈" color="#fb923c" />
       </div>
 
       <div className="grid grid-4">
@@ -254,7 +268,7 @@ export function TiemposCdmModule({ rows }) {
         <div className="card-header">
           <div>
             <div className="card-title">Evolución temporal</div>
-            <div className="card-subtitle">Barras = tareas. Líneas = tiempo típico y cola alta de duración.</div>
+            <div className="card-subtitle">Barras apiladas por flujo. Las líneas muestran tiempo habitual y tiempo alto.</div>
           </div>
           <GranularityToggle value={granularity} onChange={setGranularity} />
         </div>
@@ -264,11 +278,20 @@ export function TiemposCdmModule({ rows }) {
             <XAxis dataKey="label" tick={{ fill:'var(--text3)', fontSize:11 }} interval="preserveStartEnd" />
             <YAxis yAxisId="left" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
             <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={v => `${Math.round(v)}m`} />
-            <Tooltip content={<CustomTooltip valueFormatter={v => typeof v === 'number' ? formatNumber(Math.round(v)) : v} />} />
+            <Tooltip content={<CustomTooltip
+              valueFormatter={v => typeof v === 'number' ? formatNumber(Math.round(v)) : v}
+              hideZero
+              hideNames={['Sin flujo']} />} />
             <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
-            <Bar yAxisId="left" dataKey="total" name="Tareas" fill="var(--accent)" radius={[3,3,0,0]} />
-            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Tiempo típico (min)" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
-            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="Cola alta (min)" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
+            {trendFlujos.map((flujo, idx) => (
+              <Bar key={flujo} yAxisId="left" stackId="tareas"
+                dataKey={row => row.byFlujo?.[flujo] || 0}
+                name={flujo}
+                fill={COLORS[idx % COLORS.length]}
+                radius={idx === trendFlujos.length - 1 ? [3,3,0,0] : [0,0,0,0]} />
+            ))}
+            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Tiempo habitual (min)" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
+            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="Tiempo alto (min)" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
@@ -279,7 +302,7 @@ export function TiemposCdmModule({ rows }) {
       </div>
 
       <div className="grid grid-2">
-        <BreakdownChart title="Performance por equipo" data={model.equipo.slice(0, 10)} dataKey="equipo" />
+        <BreakdownChart title="Resultado por equipo" data={model.equipo.slice(0, 10)} dataKey="equipo" />
         <AnomalyList rows={[...model.anomalies.negativas, ...model.anomalies.mayor1h, ...model.anomalies.distintoDia].slice(0, 8)} />
       </div>
 
@@ -297,11 +320,11 @@ export function TiemposCdmModule({ rows }) {
                 <SortTh colKey="usuario" label="Colaborador" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="equipo" label="Equipo" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="total" label="Tareas" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="tareasDia" label="Tareas/Día" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="medianaSeg" label="Tiempo típico" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="p90Seg" label="Cola alta (90%)" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="pctCorta10" label="≤10 seg." sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="pctMayor1h" label=">1 hora" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="tareasDia" label="Tareas/día" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="medianaSeg" label="Tiempo habitual" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="p90Seg" label="Tiempo alto" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="pctCorta10" label="Hasta 10 seg." sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="pctMayor1h" label="Más de 1 hora" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
               </tr>
             </thead>
             <tbody>
@@ -332,7 +355,7 @@ function BreakdownChart({ title, data, dataKey }) {
       <div className="card-header">
         <div>
           <div className="card-title">{title}</div>
-          <div className="card-subtitle">Volumen y tiempo típico de accionamiento.</div>
+          <div className="card-subtitle">Volumen y tiempo habitual de accionamiento.</div>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={260}>
@@ -340,7 +363,7 @@ function BreakdownChart({ title, data, dataKey }) {
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
           <XAxis type="number" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
           <YAxis type="category" dataKey={dataKey} tick={{ fill:'var(--text3)', fontSize:10 }} width={120} />
-          <Tooltip content={<CustomTooltip valueFormatter={formatNumber} />} />
+          <Tooltip content={<CustomTooltip valueFormatter={formatNumber} hideZero hideNames={['Sin flujo']} />} />
           <Bar dataKey="total" name="Tareas" radius={[0,3,3,0]}>
             {data.map((_, idx) => <Cell key={idx} fill={COLORS[idx % COLORS.length]} />)}
           </Bar>
@@ -356,11 +379,11 @@ function AnomalyList({ rows }) {
       <div className="card-header">
         <div>
           <div className="card-title">Casos para revisar</div>
-          <div className="card-subtitle">Tiempos inconsistentes, tareas de más de 1 hora o finalizadas otro día.</div>
+          <div className="card-subtitle">Registros con tiempo inconsistente, tareas de más de 1 hora o finalizadas otro día.</div>
         </div>
       </div>
       {!rows.length ? (
-        <div className="empty-state" style={{ padding:'1rem' }}>Sin anomalías críticas en el filtro actual.</div>
+        <div className="empty-state" style={{ padding:'1rem' }}>Sin registros críticos en el filtro actual.</div>
       ) : (
         <div className="table-wrap">
           <table>
@@ -370,7 +393,7 @@ function AnomalyList({ rows }) {
                 <th>Fecha</th>
                 <th>Colaborador</th>
                 <th>Flujo</th>
-                <th>Duración</th>
+                <th>Tiempo</th>
               </tr>
             </thead>
             <tbody>

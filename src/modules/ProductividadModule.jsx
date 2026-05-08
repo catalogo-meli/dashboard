@@ -17,13 +17,18 @@ const FLUJO_COLORS = {
 
 const FLOW_PALETTE = ['#6366f1','#38bdf8','#a78bfa','#fb923c','#ef4444','#22c55e','#14b8a6','#f59e0b']
 
+function isVisibleFlujo(flujo) {
+  return Boolean(flujo) && flujo !== 'Sin flujo'
+}
+
 function addTrendRow(map, key, label, r) {
   if (!map.has(key)) map.set(key, { key, label, totalTareas: 0, totalIds: 0, byFlujo: {} })
   const e = map.get(key)
   e.totalTareas += 1
   e.totalIds += r.idsTC ?? 1
-  const flujo = r.flujo || 'Sin flujo'
-  e.byFlujo[flujo] = (e.byFlujo[flujo] || 0) + 1
+  if (isVisibleFlujo(r.flujo)) {
+    e.byFlujo[r.flujo] = (e.byFlujo[r.flujo] || 0) + 1
+  }
 }
 
 function agruparPorDia(historico) {
@@ -72,6 +77,7 @@ function flujosEnTendencia(data) {
   const totals = new Map()
   for (const row of data) {
     for (const [flujo, value] of Object.entries(row.byFlujo || {})) {
+      if (!isVisibleFlujo(flujo) || value <= 0) continue
       totals.set(flujo, (totals.get(flujo) || 0) + value)
     }
   }
@@ -128,6 +134,14 @@ export function ProductividadModule({ model }) {
     return agruparTendencia(histData, granularidad)
   }, [granularidad, histData])
   const tendenciaFlujos = useMemo(() => flujosEnTendencia(tendenciaData), [tendenciaData])
+  const flujoEntries = useMemo(() => (
+    Object.entries(kpis.byFlujo || {})
+      .filter(([flujo, v]) => isVisibleFlujo(flujo) && v > 0)
+      .sort((a, b) => b[1] - a[1])
+  ), [kpis.byFlujo])
+  const complejidadVisible = useMemo(() => (
+    (complejidadFlujo || []).filter(f => isVisibleFlujo(f.flujo) && f.totalTareas > 0)
+  ), [complejidadFlujo])
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>
@@ -180,7 +194,9 @@ export function ProductividadModule({ model }) {
               <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
               <Tooltip content={<CustomTooltip
                 labelFormatter={v => v}
-                valueFormatter={formatNumber} />} />
+                valueFormatter={formatNumber}
+                hideZero
+                hideNames={['Sin flujo']} />} />
               <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
               {tendenciaFlujos.map((flujo, idx) => (
                 <Bar key={flujo} yAxisId="left" stackId="tareas"
@@ -198,15 +214,15 @@ export function ProductividadModule({ model }) {
 
       {/* ── DISTRIBUCIÓN POR FLUJO + COMPLEJIDAD en misma fila ─ */}
       <div className="grid grid-2">
-        {kpis.byFlujo && (
+        {flujoEntries.length > 0 && (
           <div className="card">
             <div className="card-header">
               <div className="card-title">Distribución de tareas por flujo</div>
               <div className="card-subtitle">Alta concentración en un solo flujo = riesgo operativo si ese flujo se traba.</div>
             </div>
             <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
-              {Object.entries(kpis.byFlujo).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([flujo,val]) => {
-                const max = Math.max(...Object.values(kpis.byFlujo))
+              {flujoEntries.map(([flujo,val]) => {
+                const max = Math.max(...flujoEntries.map(([,v]) => v))
                 return (
                   <div key={flujo}>
                     <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', marginBottom:3 }}>
@@ -217,6 +233,9 @@ export function ProductividadModule({ model }) {
                           ({kpis.totalTareas>0?Math.round(val/kpis.totalTareas*100):0}%)
                         </span>
                       </span>
+                    </div>
+                    <div style={{ fontSize:'0.7rem', color:'var(--text3)', marginBottom:4 }}>
+                      Total filtrado: {formatNumber(kpis.totalTareas)} tareas
                     </div>
                     <div className="progress-bar">
                       <div className="progress-fill"
@@ -230,7 +249,7 @@ export function ProductividadModule({ model }) {
           </div>
         )}
 
-        {complejidadFlujo?.length > 0 && (
+        {complejidadVisible.length > 0 && (
           <div className="card">
             <div className="card-header">
               <div>
@@ -239,8 +258,8 @@ export function ProductividadModule({ model }) {
               </div>
             </div>
             <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
-              {complejidadFlujo.map(f => {
-                const max = complejidadFlujo[0].relIdsPorTarea || 1
+              {complejidadVisible.map(f => {
+                const max = complejidadVisible[0].relIdsPorTarea || 1
                 return (
                   <div key={f.flujo}>
                     <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', marginBottom:3 }}>
@@ -251,6 +270,9 @@ export function ProductividadModule({ model }) {
                           ({formatNumber(f.totalTareas)} tareas)
                         </span>
                       </span>
+                    </div>
+                    <div style={{ fontSize:'0.7rem', color:'var(--text3)', marginBottom:4 }}>
+                      Total filtrado: {formatNumber(kpis.totalTareas)} tareas
                     </div>
                     <div className="progress-bar">
                       <div className="progress-fill"

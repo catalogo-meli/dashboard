@@ -7,6 +7,10 @@ export const PERIODO_MODOS = ['year', 'month', 'week', 'custom']
 const MONTH_LABELS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
 const SEGMENT_FILTERS = ['usuario', 'flujo', 'equipo', 'iniciativa']
 
+function isVisibleFlujo(flujo) {
+  return Boolean(flujo) && flujo !== 'Sin flujo'
+}
+
 export function weekRangeLabel(year, week) {
   const { desde, hasta } = weekRangeDates(year, week)
   const fmt = d => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`
@@ -306,7 +310,7 @@ export function useGlobalFilters(joinedData, activeTab) {
 
     return {
       usuarios: toOpts(rowsUsuario.map(r => r.usuario), countBy(rowsUsuario, r => r.usuario)),
-      flujos: toOpts(rowsFlujo.map(r => r.flujo), countBy(rowsFlujo, r => r.flujo)),
+      flujos: toOpts(rowsFlujo.map(r => r.flujo).filter(isVisibleFlujo), countBy(rowsFlujo.filter(r => isVisibleFlujo(r.flujo)), r => r.flujo)),
       equipos: toOpts(rowsEquipo.map(r => r.equipo).filter(Boolean), countBy(rowsEquipo, r => r.equipo)),
       iniciativas: toOpts(rowsIniciativa.map(r => r.iniciativa), countBy(rowsIniciativa, r => r.iniciativa)),
       auditores: toOpts(aud.map(r => r.auditor), auCounts),

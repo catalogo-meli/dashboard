@@ -49,12 +49,19 @@ export function Spinner({ label = 'Cargando datos…' }) {
 }
 
 // ─── Custom Tooltip ────────────────────────────────────────────────────────────
-export function CustomTooltip({ active, payload, label, labelFormatter, valueFormatter }) {
+export function CustomTooltip({ active, payload, label, labelFormatter, valueFormatter, hideZero = false, hideNames = [] }) {
   if (!active || !payload || payload.length === 0) return null
+  const hidden = new Set(hideNames)
+  const visiblePayload = payload.filter(p => {
+    if (hidden.has(p.name)) return false
+    if (hideZero && (p.value == null || Number(p.value) === 0)) return false
+    return true
+  })
+  if (visiblePayload.length === 0) return null
   return (
     <div className="custom-tooltip">
       <div className="label">{labelFormatter ? labelFormatter(label) : label}</div>
-      {payload.map((p, i) => (
+      {visiblePayload.map((p, i) => (
         <div key={i} style={{ color: p.color || 'var(--text)', fontWeight: 600, fontSize: '0.82rem' }}>
           {p.name}: {valueFormatter ? valueFormatter(p.value) : formatNumber(p.value)}
         </div>
