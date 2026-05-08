@@ -4,6 +4,7 @@ import { formatDateDisplay, formatNumber } from '../utils/parsers.js'
 import { COPY } from '../config/copy.js'
 import { labelSegmento } from '../config/segments.js'
 import { KPICard, EmptyState, CalidadBar, CustomTooltip, TrendTasksTooltip } from '../components/ui/index.jsx'
+import { colorMapForFlows } from '../utils/flowColors.js'
 
 function isVisibleFlujo(flujo) {
   return Boolean(flujo) && flujo !== 'Sin flujo'
@@ -425,7 +426,6 @@ function agruparMensualInd(historico, usuario) {
   return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
 }
 
-const IND_FLOW_COLORS = ['#6366f1','#38bdf8','#a78bfa','#fb923c','#ef4444','#22c55e','#14b8a6','#f59e0b']
 function flujosInd(data) {
   const totals = new Map()
   for (const row of data) {
@@ -446,6 +446,7 @@ function GraficoProdSemanal({ usuario, filteredHistorico }) {
   const data = gran === 'diario' ? dataDiario : gran === 'mensual' ? dataMensual
     : dataSemanal
   const flowNames = useMemo(() => flujosInd(data), [data])
+  const flowColors = useMemo(() => colorMapForFlows(flowNames), [flowNames])
 
   if (data.length === 0) {
     return (
@@ -492,7 +493,7 @@ function GraficoProdSemanal({ usuario, filteredHistorico }) {
             <Bar key={flujo} yAxisId="left" stackId="tareas"
               dataKey={row => row.byFlujo?.[flujo] || 0}
               name={flujo}
-              fill={IND_FLOW_COLORS[idx % IND_FLOW_COLORS.length]}
+              fill={flowColors.get(flujo)}
               radius={idx === flowNames.length - 1 ? [3,3,0,0] : [0,0,0,0]} />
           ))}
           <Line yAxisId="right" type="monotone" dataKey="totalIds" name="IDs trabajados" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />

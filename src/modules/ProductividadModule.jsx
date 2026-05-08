@@ -9,13 +9,7 @@ import { delta, deltaLabel, deltaColor } from '../utils/metrics/comparisonMetric
 import { EmptyState, TrendTasksTooltip, ExportCSVButton } from '../components/ui/index.jsx'
 import { useTableSort, SortTh } from '../hooks/useTableSort.jsx'
 import { formatProductividadColab } from '../utils/exportUtils.js'
-
-const FLUJO_COLORS = {
-  'Demanda':'#6366f1','Enhancement':'#38bdf8','Enhanced Content':'#a78bfa',
-  'Soporte':'#fb923c','Fallos':'#ef4444','Validación':'#22c55e',
-}
-
-const FLOW_PALETTE = ['#6366f1','#38bdf8','#a78bfa','#fb923c','#ef4444','#22c55e','#14b8a6','#f59e0b']
+import { colorMapForFlows } from '../utils/flowColors.js'
 
 function isVisibleFlujo(flujo) {
   return Boolean(flujo) && flujo !== 'Sin flujo'
@@ -134,6 +128,7 @@ export function ProductividadModule({ model }) {
     return agruparTendencia(histData, granularidad)
   }, [granularidad, histData])
   const tendenciaFlujos = useMemo(() => flujosEnTendencia(tendenciaData), [tendenciaData])
+  const tendenciaFlowColors = useMemo(() => colorMapForFlows(tendenciaFlujos), [tendenciaFlujos])
   const flujoEntries = useMemo(() => (
     Object.entries(kpis.byFlujo || {})
       .filter(([flujo, v]) => isVisibleFlujo(flujo) && v > 0)
@@ -142,6 +137,8 @@ export function ProductividadModule({ model }) {
   const complejidadVisible = useMemo(() => (
     (complejidadFlujo || []).filter(f => isVisibleFlujo(f.flujo) && f.totalTareas > 0)
   ), [complejidadFlujo])
+  const flujoEntryColors = useMemo(() => colorMapForFlows(flujoEntries.map(([flujo]) => flujo)), [flujoEntries])
+  const complejidadColors = useMemo(() => colorMapForFlows(complejidadVisible.map(f => f.flujo)), [complejidadVisible])
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>
@@ -201,7 +198,7 @@ export function ProductividadModule({ model }) {
                 <Bar key={flujo} yAxisId="left" stackId="tareas"
                   dataKey={row => row.byFlujo?.[flujo] || 0}
                   name={flujo}
-                  fill={FLUJO_COLORS[flujo] || FLOW_PALETTE[idx % FLOW_PALETTE.length]}
+                  fill={tendenciaFlowColors.get(flujo)}
                   radius={idx === tendenciaFlujos.length - 1 ? [3,3,0,0] : [0,0,0,0]} />
               ))}
               <Line yAxisId="right" type="monotone" dataKey="totalIds" name="IDs trabajados"
@@ -236,7 +233,7 @@ export function ProductividadModule({ model }) {
                     <div className="progress-bar">
                       <div className="progress-fill"
                         style={{ width:`${max>0?val/max*100:0}%`,
-                                 background: FLUJO_COLORS[flujo]||'var(--accent)' }} />
+                                 background: flujoEntryColors.get(flujo) || 'var(--accent)' }} />
                     </div>
                   </div>
                 )
@@ -270,7 +267,7 @@ export function ProductividadModule({ model }) {
                     <div className="progress-bar">
                       <div className="progress-fill"
                         style={{ width:`${(f.relIdsPorTarea/max)*100}%`,
-                                 background: FLUJO_COLORS[f.flujo] || 'var(--accent)' }} />
+                                 background: complejidadColors.get(f.flujo) || 'var(--accent)' }} />
                     </div>
                   </div>
                 )
