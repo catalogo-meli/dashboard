@@ -164,18 +164,17 @@ select.filter-select:focus { border-color: var(--accent); }
   font-size: 0.65rem;
 }
 .multi-filter-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
   width: 260px;
-  max-height: 290px;
+  max-height: 260px;
   overflow-y: auto;
-  background: var(--bg2);
+  background: #1a1d27;
   border: 1px solid var(--border2);
   border-radius: var(--radius-sm);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.55);
   padding: 0.35rem;
-  z-index: 300;
+  z-index: 9999;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
 }
 .multi-filter-option {
   display: grid;
@@ -190,6 +189,10 @@ select.filter-select:focus { border-color: var(--accent); }
 }
 .multi-filter-option:hover {
   background: var(--bg3);
+}
+.multi-filter-option.selected {
+  background: var(--accent-dim);
+  color: var(--text);
 }
 .multi-filter-option.disabled {
   opacity: 0.45;

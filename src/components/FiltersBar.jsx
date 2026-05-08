@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { COPY } from '../config/copy.js'
 
 function toInputDate(d) {
@@ -69,6 +70,87 @@ function MultiSel({ values = [], onToggle, placeholder, opts }) {
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+function MultiSelPortal({ values = [], onToggle, placeholder, opts }) {
+  const [open, setOpen] = useState(false)
+  const [menuStyle, setMenuStyle] = useState(null)
+  const triggerRef = useRef(null)
+  const menuRef = useRef(null)
+  const selected = Array.isArray(values) ? values : (values ? [values] : [])
+  const selectedSet = new Set(selected.map(String))
+  const label = selected.length === 0
+    ? placeholder
+    : selected.length === 1
+      ? selected[0]
+      : `${selected.length} seleccionados`
+
+  function updateMenuPosition() {
+    const trigger = triggerRef.current
+    if (!trigger) return
+    const rect = trigger.getBoundingClientRect()
+    const width = Math.max(260, Math.min(360, rect.width + 90))
+    const viewportPadding = 12
+    const left = Math.min(Math.max(viewportPadding, rect.left), window.innerWidth - width - viewportPadding)
+    setMenuStyle({ position: 'fixed', top: rect.bottom + 6, left, width, zIndex: 9999 })
+  }
+
+  useLayoutEffect(() => {
+    if (open) updateMenuPosition()
+  }, [open, opts.length, selected.length])
+
+  useEffect(() => {
+    if (!open) return
+    const handlePointerDown = event => {
+      if (triggerRef.current?.contains(event.target)) return
+      if (menuRef.current?.contains(event.target)) return
+      setOpen(false)
+    }
+    const handleKeyDown = event => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    const handleReposition = () => updateMenuPosition()
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('resize', handleReposition)
+    window.addEventListener('scroll', handleReposition, true)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('resize', handleReposition)
+      window.removeEventListener('scroll', handleReposition, true)
+    }
+  }, [open])
+
+  const menu = open && menuStyle ? createPortal(
+    <div ref={menuRef} className="multi-filter-menu" style={menuStyle}>
+      {opts.length === 0 ? (
+        <div className="multi-filter-empty">Sin opciones</div>
+      ) : opts.map(o => (
+        <label key={o.value} className={`multi-filter-option${selectedSet.has(String(o.value)) ? ' selected' : ''}${o.disabled ? ' disabled' : ''}`}>
+          <input
+            type="checkbox"
+            checked={selectedSet.has(String(o.value))}
+            disabled={o.disabled}
+            onChange={() => onToggle(String(o.value))}
+          />
+          <span className="multi-filter-label">{o.label}</span>
+          {o.count != null && <span className="multi-filter-count">{o.count.toLocaleString('es-AR')}</span>}
+        </label>
+      ))}
+    </div>,
+    document.body
+  ) : null
+
+  return (
+    <div className="multi-filter">
+      <button ref={triggerRef} type="button" className={`multi-filter-trigger${selected.length ? ' active' : ''}`} onClick={() => setOpen(o => !o)}>
+        <span>{label}</span>
+        <span className="multi-filter-caret">{open ? '▴' : '▾'}</span>
+      </button>
+      {menu}
     </div>
   )
 }
@@ -175,16 +257,16 @@ export function FiltersBar({
         {/* SEGMENTO */}
         <GroupLabel>Segmento</GroupLabel>
 
-        <MultiSel values={filters.flujo} onToggle={v=>setSegFilter('flujo',v)}
+        <MultiSelPortal values={filters.flujo} onToggle={v=>setSegFilter('flujo',v)}
           placeholder="Todos los flujos" opts={options.flujos||[]} />
 
-        <MultiSel values={filters.equipo} onToggle={v=>setSegFilter('equipo',v)}
+        <MultiSelPortal values={filters.equipo} onToggle={v=>setSegFilter('equipo',v)}
           placeholder="Todos los equipos" opts={options.equipos||[]} />
 
-        <MultiSel values={filters.usuario} onToggle={v=>setSegFilter('usuario',v)}
+        <MultiSelPortal values={filters.usuario} onToggle={v=>setSegFilter('usuario',v)}
           placeholder="Todos los colaboradores" opts={options.usuarios||[]} />
 
-        <MultiSel values={filters.iniciativa} onToggle={v=>setSegFilter('iniciativa',v)}
+        <MultiSelPortal values={filters.iniciativa} onToggle={v=>setSegFilter('iniciativa',v)}
           placeholder="Todas las iniciativas" opts={options.iniciativas||[]} />
 
         {/* CALIDAD — solo en tab calidad */}
@@ -214,16 +296,16 @@ export function FiltersBar({
         <div className="filters-advanced-panel" style={{ flexWrap:'wrap', gap:'0.5rem 0.75rem', alignItems:'center' }}>
           <GroupLabel>Calidad</GroupLabel>
 
-          <MultiSel values={calFilters.auditor} onToggle={v=>setCalFilter('auditor',v)}
+          <MultiSelPortal values={calFilters.auditor} onToggle={v=>setCalFilter('auditor',v)}
             placeholder="Todos los auditores" opts={options.auditores||[]} />
 
-          <MultiSel values={calFilters.dominio} onToggle={v=>setCalFilter('dominio',v)}
+          <MultiSelPortal values={calFilters.dominio} onToggle={v=>setCalFilter('dominio',v)}
             placeholder="Todos los dominios" opts={options.dominios||[]} />
 
-          <MultiSel values={calFilters.suggestionReason} onToggle={v=>setCalFilter('suggestionReason',v)}
+          <MultiSelPortal values={calFilters.suggestionReason} onToggle={v=>setCalFilter('suggestionReason',v)}
             placeholder="Todos los códigos" opts={options.suggestionReasons||[]} />
 
-          <MultiSel values={calFilters.calidad} onToggle={v=>setCalFilter('calidad',v)}
+          <MultiSelPortal values={calFilters.calidad} onToggle={v=>setCalFilter('calidad',v)}
             placeholder="Todos los desvíos"
             opts={options.calidadOpts||[]} />
 
