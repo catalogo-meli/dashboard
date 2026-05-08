@@ -148,6 +148,7 @@ export default function App() {
   const allChips      = [...activeChips, ...calChips]
   const datetimeLabel = formatDatetimeBsAs(loadedAt)
   const errorEntries  = Object.entries(errors)
+  const blockingErrorEntries = errorEntries.filter(([k]) => k !== 'equipo' && k !== 'tiempos_cdm')
 
   return (
     <div className="app">
@@ -205,7 +206,7 @@ export default function App() {
       />
 
       <main className="main">
-        {!loading && errorEntries.filter(([k]) => k !== 'equipo').length > 0 && (
+        {!loading && blockingErrorEntries.length > 0 && (
           <div className="state-banner state-banner-error">
             {COPY.errorCarga}
             <button className="btn" style={{ marginLeft: '0.75rem' }} onClick={reload}>Recargar</button>
@@ -220,7 +221,7 @@ export default function App() {
             {activeTab === 'friccion'      && <FriccionModule model={model} holdSnapshot={hold||[]} holdLoadedAt={loadedAt} historicoCompleto={historico||[]} filters={filters}/>}
             {activeTab === 'equipo'        && <EquipoModule model={model} equipo={equipo||[]} equipoError={errors?.equipo} navigateTo={navigateTo} setFilter={setSegFilter}/>}
             {activeTab === 'individual'    && <IndividualModule model={model} equipo={equipo||[]} options={options} filteredHistorico={model.filteredHistorico||[]} auditados={filteredWithCal.auditados||[]}/>}
-            {activeTab === 'tiempos_cdm'   && <TiemposCdmModule rows={filtered?.tiempos_cdm || []} />}
+            {activeTab === 'tiempos_cdm'   && <TiemposCdmModule rows={filtered?.tiempos_cdm || []} error={errors?.tiempos_cdm} />}
           </>
         )}
       </main>

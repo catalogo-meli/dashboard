@@ -177,7 +177,7 @@ function MetricHelp({ label, title }) {
   )
 }
 
-export function TiemposCdmModule({ rows }) {
+export function TiemposCdmModule({ rows, error }) {
   const [granularity, setGranularity] = useState('diario')
   const [macroFilter, setMacroFilter] = useState([])
 
@@ -226,6 +226,17 @@ export function TiemposCdmModule({ rows }) {
 
   function toggleMacro(macro) {
     setMacroFilter(prev => prev.includes(macro) ? prev.filter(v => v !== macro) : [...prev, macro])
+  }
+
+  if (error) {
+    return (
+      <div className="card" style={{ maxWidth: 760, margin: '0 auto', padding: '1.25rem' }}>
+        <div className="card-title" style={{ marginBottom: '0.5rem' }}>No pudimos leer el archivo de Accionamiento CDM</div>
+        <div className="card-subtitle" style={{ lineHeight: 1.6 }}>
+          El resto del dashboard está cargado. Para esta sección, revisá que <strong>public/data/tiempos_cdm.csv</strong> sea un CSV de texto exportado como CSV, no un Excel, PDF u otro archivo renombrado.
+        </div>
+      </div>
+    )
   }
 
   if (!rows?.length) {
