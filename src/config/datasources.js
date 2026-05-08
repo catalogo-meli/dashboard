@@ -18,7 +18,7 @@ export const DATA_SOURCES = {
     allowEmpty: true,
   },
   tiempos_cdm: {
-    id: 'tiempos_cdm', label: 'Tiempos CDM', type: 'csv',
+    id: 'tiempos_cdm', label: 'Accionamiento CDM', type: 'csv',
     url: './data/tiempos_cdm.csv', coverageLabel: 'Abr 2026',
     optional: true,
   },

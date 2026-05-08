@@ -203,10 +203,10 @@ export function TiemposCdmModule({ rows }) {
   }
 
   const anomalyCards = [
-    { label: '<= 5s', value: model.anomalies.corta5.length, sub: `${pct(model.anomalies.corta5.length, model.total)} del total` },
-    { label: '<= 10s', value: model.anomalies.corta10.length, sub: `${pct(model.anomalies.corta10.length, model.total)} del total` },
-    { label: '> 1h', value: model.anomalies.mayor1h.length, sub: `${pct(model.anomalies.mayor1h.length, model.total)} del total` },
-    { label: 'Distinto día', value: model.anomalies.distintoDia.length, sub: `${pct(model.anomalies.distintoDia.length, model.total)} del total` },
+    { label: 'Resueltas en 5 seg. o menos', value: model.anomalies.corta5.length, sub: `${pct(model.anomalies.corta5.length, model.total)} del total` },
+    { label: 'Resueltas en 10 seg. o menos', value: model.anomalies.corta10.length, sub: `${pct(model.anomalies.corta10.length, model.total)} del total` },
+    { label: 'Resueltas en más de 1 hora', value: model.anomalies.mayor1h.length, sub: `${pct(model.anomalies.mayor1h.length, model.total)} del total` },
+    { label: 'Finalizadas otro día', value: model.anomalies.distintoDia.length, sub: `${pct(model.anomalies.distintoDia.length, model.total)} del total` },
   ]
 
   return (
@@ -240,8 +240,8 @@ export function TiemposCdmModule({ rows }) {
       <div className="grid grid-4">
         <KPICard label="Tareas CDM" value={formatNumber(model.total)} sub={`${model.colaboradores} colaboradores`} icon="📦" />
         <KPICard label="Tareas/Día" value={formatNumber(model.tareasDia)} sub={`${model.dias} días con actividad`} icon="⚡" color="var(--green)" />
-        <KPICard label="Mediana duración" value={formatDuration(model.medianaSeg)} sub={`Promedio ${formatDuration(model.promedioSeg)}`} icon="⏱️" color="#38bdf8" />
-        <KPICard label="P90 duración" value={formatDuration(model.p90Seg)} sub="Cola alta de accionamiento" icon="📈" color="#fb923c" />
+        <KPICard label="Tiempo típico" value={formatDuration(model.medianaSeg)} sub={`Tiempo promedio: ${formatDuration(model.promedioSeg)}`} icon="⏱️" color="#38bdf8" />
+        <KPICard label="90% se resolvió en menos de" value={formatDuration(model.p90Seg)} sub="Cola alta de accionamiento" icon="📈" color="#fb923c" />
       </div>
 
       <div className="grid grid-4">
@@ -254,7 +254,7 @@ export function TiemposCdmModule({ rows }) {
         <div className="card-header">
           <div>
             <div className="card-title">Evolución temporal</div>
-            <div className="card-subtitle">Barras = tareas CDM. Líneas = mediana y P90 de duración.</div>
+            <div className="card-subtitle">Barras = tareas. Líneas = tiempo típico y cola alta de duración.</div>
           </div>
           <GranularityToggle value={granularity} onChange={setGranularity} />
         </div>
@@ -267,8 +267,8 @@ export function TiemposCdmModule({ rows }) {
             <Tooltip content={<CustomTooltip valueFormatter={v => typeof v === 'number' ? formatNumber(Math.round(v)) : v} />} />
             <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
             <Bar yAxisId="left" dataKey="total" name="Tareas" fill="var(--accent)" radius={[3,3,0,0]} />
-            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Mediana (min)" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
-            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="P90 (min)" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
+            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Tiempo típico (min)" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
+            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="Cola alta (min)" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
@@ -298,10 +298,10 @@ export function TiemposCdmModule({ rows }) {
                 <SortTh colKey="equipo" label="Equipo" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="total" label="Tareas" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="tareasDia" label="Tareas/Día" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="medianaSeg" label="Mediana" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="p90Seg" label="P90" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="pctCorta10" label="<=10s" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="pctMayor1h" label=">1h" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="medianaSeg" label="Tiempo típico" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="p90Seg" label="Cola alta (90%)" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="pctCorta10" label="≤10 seg." sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="pctMayor1h" label=">1 hora" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
               </tr>
             </thead>
             <tbody>
@@ -332,7 +332,7 @@ function BreakdownChart({ title, data, dataKey }) {
       <div className="card-header">
         <div>
           <div className="card-title">{title}</div>
-          <div className="card-subtitle">Volumen y mediana de duración.</div>
+          <div className="card-subtitle">Volumen y tiempo típico de accionamiento.</div>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={260}>
@@ -356,7 +356,7 @@ function AnomalyList({ rows }) {
       <div className="card-header">
         <div>
           <div className="card-title">Casos para revisar</div>
-          <div className="card-subtitle">Duraciones negativas, mayores a 1h o finalización en distinto día.</div>
+          <div className="card-subtitle">Tiempos inconsistentes, tareas de más de 1 hora o finalizadas otro día.</div>
         </div>
       </div>
       {!rows.length ? (

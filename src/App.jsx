@@ -30,7 +30,7 @@ const TABS = [
   { id: 'friccion',      label: 'Fricción' },
   { id: 'equipo',        label: 'Equipo' },
   { id: 'individual',    label: 'Personas' },
-  { id: 'tiempos_cdm',   label: 'Tiempos CDM' },
+  { id: 'tiempos_cdm',   label: 'Accionamiento CDM' },
 ]
 
 function matchesMulti(value, selected) {
