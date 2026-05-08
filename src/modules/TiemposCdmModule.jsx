@@ -359,11 +359,6 @@ export function TiemposCdmModule({ rows, error }) {
         <BreakdownChart title="Tareas por macro caja" data={model.macro} dataKey="macroCaja" />
       </div>
 
-      <div className="grid grid-2">
-        <BreakdownChart title="Resultado por equipo" data={model.equipo.slice(0, 10)} dataKey="equipo" />
-        <AnomalyList rows={reviewRows} />
-      </div>
-
       <div className="card">
         <div className="card-header">
           <div>
@@ -402,6 +397,8 @@ export function TiemposCdmModule({ rows, error }) {
           </table>
         </div>
       </div>
+
+      <AnomalyList rows={reviewRows} />
     </div>
   )
 }
