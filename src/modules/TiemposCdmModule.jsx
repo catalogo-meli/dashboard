@@ -143,6 +143,20 @@ function exportRows(rows) {
   }))
 }
 
+function buildReviewRows(anomalies) {
+  const seen = new Set()
+  return [
+    ...(anomalies?.negativas || []),
+    ...(anomalies?.mayor1h || []),
+    ...(anomalies?.distintoDia || []),
+  ].filter(row => {
+    const key = `${row.idCdm}-${row.usuario}-${row.fechaKey}`
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 function GranularityToggle({ value, onChange }) {
   return (
     <div style={{ display:'flex', gap:0, border:'1px solid var(--border)', borderRadius:'var(--radius-sm)', overflow:'hidden' }}>
@@ -233,6 +247,7 @@ export function TiemposCdmModule({ rows, error }) {
 
   const trend = useMemo(() => aggregateTrend(filteredRows, granularity), [filteredRows, granularity])
   const trendFlujos = useMemo(() => flujosEnTendencia(trend), [trend])
+  const reviewRows = useMemo(() => buildReviewRows(model.anomalies), [model.anomalies])
   const { sorted: rankingSorted, sortKey, sortDir, onSort } = useTableSort(model.ranking, model.ranking)
 
   function toggleMacro(macro) {
@@ -346,7 +361,7 @@ export function TiemposCdmModule({ rows, error }) {
 
       <div className="grid grid-2">
         <BreakdownChart title="Resultado por equipo" data={model.equipo.slice(0, 10)} dataKey="equipo" />
-        <AnomalyList rows={[...model.anomalies.negativas, ...model.anomalies.mayor1h, ...model.anomalies.distintoDia].slice(0, 8)} />
+        <AnomalyList rows={reviewRows} />
       </div>
 
       <div className="card">
@@ -417,6 +432,15 @@ function BreakdownChart({ title, data, dataKey }) {
 }
 
 function AnomalyList({ rows }) {
+  const [page, setPage] = useState(1)
+  const pageSize = 25
+  const totalPages = Math.max(1, Math.ceil((rows?.length || 0) / pageSize))
+  const currentPage = Math.min(page, totalPages)
+  const start = (currentPage - 1) * pageSize
+  const visibleRows = (rows || []).slice(start, start + pageSize)
+  const from = rows?.length ? start + 1 : 0
+  const to = Math.min(start + pageSize, rows?.length || 0)
+
   return (
     <div className="card">
       <div className="card-header">
@@ -424,36 +448,56 @@ function AnomalyList({ rows }) {
           <div className="card-title">Casos para revisar</div>
           <div className="card-subtitle" title="Incluye registros con duración negativa, tareas que superan 1 hora o casos que finalizaron en otro día.">Registros con tiempos atípicos o inconsistentes.</div>
         </div>
+        {!!rows.length && (
+          <div style={{ color:'var(--text3)', fontSize:'0.75rem', whiteSpace:'nowrap' }}>
+            {formatNumber(from)}-{formatNumber(to)} de {formatNumber(rows.length)}
+          </div>
+        )}
       </div>
       {!rows.length ? (
         <div className="empty-state" style={{ padding:'1rem' }}>Sin registros críticos en el filtro actual.</div>
       ) : (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID CDM</th>
-                <th>Fecha</th>
-                <th>Colaborador</th>
-                <th>Flujo</th>
-                <th>Tiempo</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(r => (
-                <tr key={`${r.idCdm}-${r.usuario}`}>
-                  <td className="bold">{r.idCdm}</td>
-                  <td>{formatDateDisplay(r.fechaFinalizacion)}</td>
-                  <td>{r.usuario}</td>
-                  <td>{r.flujo}</td>
-                  <td style={{ color: r.esDuracionMayor1h || r.esDuracionNegativa ? 'var(--yellow)' : 'var(--text2)' }}>
-                    {formatDuration(r.duracionSegundos)}
-                  </td>
+        <>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID CDM</th>
+                  <th>Fecha</th>
+                  <th>Colaborador</th>
+                  <th>Flujo</th>
+                  <th>Tiempo</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {visibleRows.map(r => (
+                  <tr key={`${r.idCdm}-${r.usuario}-${r.fechaKey}`}>
+                    <td className="bold">{r.idCdm}</td>
+                    <td>{formatDateDisplay(r.fechaFinalizacion)}</td>
+                    <td>{r.usuario}</td>
+                    <td>{r.flujo}</td>
+                    <td style={{ color: r.esDuracionMayor1h || r.esDuracionNegativa ? 'var(--yellow)' : 'var(--text2)' }}>
+                      {formatDuration(r.duracionSegundos)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {totalPages > 1 && (
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'0.75rem', marginTop:'0.75rem', flexWrap:'wrap' }}>
+              <button className="btn" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>
+                Anterior
+              </button>
+              <span style={{ color:'var(--text3)', fontSize:'0.75rem' }}>
+                Página {formatNumber(currentPage)} de {formatNumber(totalPages)}
+              </span>
+              <button className="btn" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>
+                Siguiente
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
