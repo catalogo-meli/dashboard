@@ -6,7 +6,7 @@ import {
 import { formatDateDisplay, formatNumber } from '../utils/parsers.js'
 import { COPY } from '../config/copy.js'
 import { delta, deltaLabel, deltaColor } from '../utils/metrics/comparisonMetrics.js'
-import { EmptyState, CustomTooltip, ExportCSVButton } from '../components/ui/index.jsx'
+import { EmptyState, TrendTasksTooltip, ExportCSVButton } from '../components/ui/index.jsx'
 import { useTableSort, SortTh } from '../hooks/useTableSort.jsx'
 import { formatProductividadColab } from '../utils/exportUtils.js'
 
@@ -192,11 +192,10 @@ export function ProductividadModule({ model }) {
                 interval="preserveStartEnd" />
               <YAxis yAxisId="left" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
               <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
-              <Tooltip content={<CustomTooltip
+              <Tooltip content={<TrendTasksTooltip
                 labelFormatter={v => v}
                 valueFormatter={formatNumber}
-                hideZero
-                hideNames={['Sin flujo']} />} />
+                lineFormatters={{ 'IDs trabajados': formatNumber }} />} />
               <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
               {tendenciaFlujos.map((flujo, idx) => (
                 <Bar key={flujo} yAxisId="left" stackId="tareas"
@@ -234,9 +233,6 @@ export function ProductividadModule({ model }) {
                         </span>
                       </span>
                     </div>
-                    <div style={{ fontSize:'0.7rem', color:'var(--text3)', marginBottom:4 }}>
-                      Total filtrado: {formatNumber(kpis.totalTareas)} tareas
-                    </div>
                     <div className="progress-bar">
                       <div className="progress-fill"
                         style={{ width:`${max>0?val/max*100:0}%`,
@@ -270,9 +266,6 @@ export function ProductividadModule({ model }) {
                           ({formatNumber(f.totalTareas)} tareas)
                         </span>
                       </span>
-                    </div>
-                    <div style={{ fontSize:'0.7rem', color:'var(--text3)', marginBottom:4 }}>
-                      Total filtrado: {formatNumber(kpis.totalTareas)} tareas
                     </div>
                     <div className="progress-bar">
                       <div className="progress-fill"

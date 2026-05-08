@@ -71,6 +71,52 @@ export function CustomTooltip({ active, payload, label, labelFormatter, valueFor
 }
 
 // ─── Calidad Chip ──────────────────────────────────────────────────────────────
+export function TrendTasksTooltip({
+  active,
+  payload,
+  label,
+  labelFormatter,
+  valueFormatter = formatNumber,
+  totalKey = 'totalTareas',
+  totalLabel = 'Tareas totales',
+  hiddenNames = ['Sin flujo'],
+  lineFormatters = {},
+}) {
+  if (!active || !payload || payload.length === 0) return null
+  const row = payload[0]?.payload || {}
+  const hidden = new Set(hiddenNames)
+  const lineNames = new Set(Object.keys(lineFormatters))
+  const total = row[totalKey] ?? row.total
+  const flows = payload.filter(p => (
+    !hidden.has(p.name) &&
+    !lineNames.has(p.name) &&
+    p.value != null &&
+    Number(p.value) > 0
+  ))
+  const lines = payload.filter(p => lineNames.has(p.name) && p.value != null)
+
+  return (
+    <div className="custom-tooltip">
+      <div className="label">{labelFormatter ? labelFormatter(label) : label}</div>
+      {total != null && (
+        <div style={{ color:'var(--text)', fontWeight:700, fontSize:'0.82rem', marginBottom:4 }}>
+          {totalLabel}: {valueFormatter(total)}
+        </div>
+      )}
+      {flows.map((p, i) => (
+        <div key={`flow-${i}`} style={{ color: p.color || 'var(--text)', fontWeight:600, fontSize:'0.82rem' }}>
+          {p.name}: {valueFormatter(p.value)}
+        </div>
+      ))}
+      {lines.map((p, i) => (
+        <div key={`line-${i}`} style={{ color: p.color || 'var(--text)', fontWeight:600, fontSize:'0.82rem', marginTop: i === 0 ? 6 : 0 }}>
+          {p.name}: {lineFormatters[p.name] ? lineFormatters[p.name](p.value) : valueFormatter(p.value)}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function CalidadChip({ calidad }) {
   const label = CALIDAD_LABELS[calidad] || calidad
   return <span className={`q-chip ${calidad}`}>{label}</span>

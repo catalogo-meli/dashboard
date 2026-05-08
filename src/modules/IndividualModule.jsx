@@ -3,7 +3,11 @@ import { ComposedChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Toolt
 import { formatDateDisplay, formatNumber } from '../utils/parsers.js'
 import { COPY } from '../config/copy.js'
 import { labelSegmento } from '../config/segments.js'
-import { KPICard, EmptyState, CalidadBar, CustomTooltip } from '../components/ui/index.jsx'
+import { KPICard, EmptyState, CalidadBar, CustomTooltip, TrendTasksTooltip } from '../components/ui/index.jsx'
+
+function isVisibleFlujo(flujo) {
+  return Boolean(flujo) && flujo !== 'Sin flujo'
+}
 
 function semanalProductividad(historico, usuario) {
   const map = new Map()
@@ -14,7 +18,7 @@ function semanalProductividad(historico, usuario) {
     const e = map.get(key)
     e.totalTareas += 1
     e.totalIds    += r.idsTC ?? 1
-    e.byFlujo[r.flujo || 'Sin flujo'] = (e.byFlujo[r.flujo || 'Sin flujo'] || 0) + 1
+    if (isVisibleFlujo(r.flujo)) e.byFlujo[r.flujo] = (e.byFlujo[r.flujo] || 0) + 1
     if (r.fechaKey) e.dias.add(r.fechaKey)
   }
   return [...map.values()]
@@ -402,7 +406,7 @@ function agruparDiarioInd(historico, usuario) {
     const e = map.get(r.fechaKey)
     e.totalTareas += 1
     e.totalIds    += r.idsTC ?? 1
-    e.byFlujo[r.flujo || 'Sin flujo'] = (e.byFlujo[r.flujo || 'Sin flujo'] || 0) + 1
+    if (isVisibleFlujo(r.flujo)) e.byFlujo[r.flujo] = (e.byFlujo[r.flujo] || 0) + 1
   }
   return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
 }
@@ -416,7 +420,7 @@ function agruparMensualInd(historico, usuario) {
     const e = map.get(mes)
     e.totalTareas += 1
     e.totalIds    += r.idsTC ?? 1
-    e.byFlujo[r.flujo || 'Sin flujo'] = (e.byFlujo[r.flujo || 'Sin flujo'] || 0) + 1
+    if (isVisibleFlujo(r.flujo)) e.byFlujo[r.flujo] = (e.byFlujo[r.flujo] || 0) + 1
   }
   return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
 }
@@ -424,7 +428,12 @@ function agruparMensualInd(historico, usuario) {
 const IND_FLOW_COLORS = ['#6366f1','#38bdf8','#a78bfa','#fb923c','#ef4444','#22c55e','#14b8a6','#f59e0b']
 function flujosInd(data) {
   const totals = new Map()
-  for (const row of data) for (const [f, v] of Object.entries(row.byFlujo || {})) totals.set(f, (totals.get(f) || 0) + v)
+  for (const row of data) {
+    for (const [f, v] of Object.entries(row.byFlujo || {})) {
+      if (!isVisibleFlujo(f) || v <= 0) continue
+      totals.set(f, (totals.get(f) || 0) + v)
+    }
+  }
   return [...totals.entries()].sort((a, b) => b[1] - a[1]).map(([f]) => f)
 }
 
@@ -474,9 +483,10 @@ function GraficoProdSemanal({ usuario, filteredHistorico }) {
           <XAxis dataKey="label" tick={{ fill:'var(--text3)', fontSize:11 }} interval="preserveStartEnd" />
           <YAxis yAxisId="left" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
           <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
-          <Tooltip content={<CustomTooltip
+          <Tooltip content={<TrendTasksTooltip
             labelFormatter={v => v}
-            valueFormatter={formatNumber} />} />
+            valueFormatter={formatNumber}
+            lineFormatters={{ 'IDs trabajados': formatNumber }} />} />
           <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
           {flowNames.map((flujo, idx) => (
             <Bar key={flujo} yAxisId="left" stackId="tareas"
@@ -676,13 +686,13 @@ export function IndividualModule({ model, equipo, options, filteredHistorico, au
               )}
 
               {/* ── 2. Tareas por flujo ─────────────────────────────── */}
-              {perfilIndividual.finUser && Object.entries(perfilIndividual.finUser.byFlujo||{}).some(([,v])=>v>0) && (
+              {perfilIndividual.finUser && Object.entries(perfilIndividual.finUser.byFlujo||{}).some(([flujo,v])=>isVisibleFlujo(flujo) && v>0) && (
                 <div className="card">
                   <div className="card-header">
                     <div className="card-title">Tareas por flujo</div>
                   </div>
                   <div style={{ display:'flex', gap:'0.75rem', flexWrap:'wrap' }}>
-                    {Object.entries(perfilIndividual.finUser.byFlujo).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([flujo,val])=>(
+                    {Object.entries(perfilIndividual.finUser.byFlujo).filter(([flujo,v])=>isVisibleFlujo(flujo) && v>0).sort((a,b)=>b[1]-a[1]).map(([flujo,val])=>(
                       <div key={flujo} style={{ background:'var(--bg3)', border:'1px solid var(--border)',
                         borderRadius:'var(--radius-sm)', padding:'0.5rem 0.85rem', minWidth:110 }}>
                         <div style={{ fontSize:'0.7rem', color:'var(--text3)' }}>{flujo}</div>

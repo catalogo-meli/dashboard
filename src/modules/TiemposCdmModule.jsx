@@ -3,7 +3,7 @@ import {
   BarChart, Bar, ComposedChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, Cell,
 } from 'recharts'
-import { CustomTooltip, EmptyState, ExportCSVButton, KPICard } from '../components/ui/index.jsx'
+import { CustomTooltip, TrendTasksTooltip, EmptyState, ExportCSVButton, KPICard } from '../components/ui/index.jsx'
 import { formatDateDisplay, formatNumber } from '../utils/parsers.js'
 import { useTableSort, SortTh } from '../hooks/useTableSort.jsx'
 
@@ -23,6 +23,10 @@ function formatDuration(seconds) {
   if (h > 0) return `${sign}${h}h ${String(m).padStart(2, '0')}m`
   if (m > 0) return `${sign}${m}m ${String(s).padStart(2, '0')}s`
   return `${sign}${s}s`
+}
+
+function formatDurationFromMinutes(minutes) {
+  return formatDuration((Number(minutes) || 0) * 60)
 }
 
 function pct(part, total) {
@@ -165,6 +169,14 @@ function GranularityToggle({ value, onChange }) {
   )
 }
 
+function MetricHelp({ label, title }) {
+  return (
+    <span title={title} style={{ color:'var(--text2)', cursor:'help', marginRight:'0.75rem', whiteSpace:'nowrap' }}>
+      {label} <span style={{ color:'var(--text3)' }}>ⓘ</span>
+    </span>
+  )
+}
+
 export function TiemposCdmModule({ rows }) {
   const [granularity, setGranularity] = useState('diario')
   const [macroFilter, setMacroFilter] = useState([])
@@ -255,7 +267,7 @@ export function TiemposCdmModule({ rows }) {
         <KPICard label="Tareas accionadas" value={formatNumber(model.total)} sub={`${model.colaboradores} colaboradores`} icon="📦" />
         <KPICard label="Tareas/día" value={formatNumber(model.tareasDia)} sub={`${model.dias} días con actividad`} icon="⚡" color="var(--green)" />
         <KPICard label="Tiempo habitual por tarea" value={formatDuration(model.medianaSeg)} sub={`Promedio: ${formatDuration(model.promedioSeg)}`} icon="⏱️" color="#38bdf8" />
-        <KPICard label="Tiempo alto, pero esperable" value={formatDuration(model.p90Seg)} sub="El 90% de las tareas termina antes de este tiempo" icon="📈" color="#fb923c" />
+        <KPICard label="Tiempo de referencia" value={formatDuration(model.p90Seg)} sub="El 90% de las tareas termina antes de este tiempo" icon="📈" color="#fb923c" />
       </div>
 
       <div className="grid grid-4">
@@ -268,7 +280,13 @@ export function TiemposCdmModule({ rows }) {
         <div className="card-header">
           <div>
             <div className="card-title">Evolución temporal</div>
-            <div className="card-subtitle">Barras apiladas por flujo. Las líneas muestran tiempo habitual y tiempo alto.</div>
+            <div className="card-subtitle">
+              Barras = tareas por flujo. Líneas = tiempo habitual y tiempo de referencia.
+              <div style={{ marginTop:4 }}>
+                <MetricHelp label="Tiempo habitual" title="Tiempo típico de resolución. Representa el comportamiento central del período y evita que casos extremos distorsionen la lectura." />
+                <MetricHelp label="Tiempo de referencia" title="Marca de referencia superior: el 90% de las tareas se resolvió en este tiempo o menos. Ayuda a ver cuándo los tiempos se alejan del comportamiento habitual." />
+              </div>
+            </div>
           </div>
           <GranularityToggle value={granularity} onChange={setGranularity} />
         </div>
@@ -278,10 +296,13 @@ export function TiemposCdmModule({ rows }) {
             <XAxis dataKey="label" tick={{ fill:'var(--text3)', fontSize:11 }} interval="preserveStartEnd" />
             <YAxis yAxisId="left" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
             <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={v => `${Math.round(v)}m`} />
-            <Tooltip content={<CustomTooltip
+            <Tooltip content={<TrendTasksTooltip
+              totalKey="total"
               valueFormatter={v => typeof v === 'number' ? formatNumber(Math.round(v)) : v}
-              hideZero
-              hideNames={['Sin flujo']} />} />
+              lineFormatters={{
+                'Tiempo habitual': formatDurationFromMinutes,
+                'Tiempo de referencia': formatDurationFromMinutes,
+              }} />} />
             <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
             {trendFlujos.map((flujo, idx) => (
               <Bar key={flujo} yAxisId="left" stackId="tareas"
@@ -290,8 +311,8 @@ export function TiemposCdmModule({ rows }) {
                 fill={COLORS[idx % COLORS.length]}
                 radius={idx === trendFlujos.length - 1 ? [3,3,0,0] : [0,0,0,0]} />
             ))}
-            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Tiempo habitual (min)" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
-            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="Tiempo alto (min)" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
+            <Line yAxisId="right" type="monotone" dataKey="medianaMin" name="Tiempo habitual" stroke="#38bdf8" strokeWidth={2} dot={{ r:3 }} />
+            <Line yAxisId="right" type="monotone" dataKey="p90Min" name="Tiempo de referencia" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
@@ -322,7 +343,7 @@ export function TiemposCdmModule({ rows }) {
                 <SortTh colKey="total" label="Tareas" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="tareasDia" label="Tareas/día" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="medianaSeg" label="Tiempo habitual" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
-                <SortTh colKey="p90Seg" label="Tiempo alto" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
+                <SortTh colKey="p90Seg" label="Tiempo de referencia" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="pctCorta10" label="Hasta 10 seg." sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
                 <SortTh colKey="pctMayor1h" label="Más de 1 hora" sortKey={sortKey} sortDir={sortDir} onSort={onSort} />
               </tr>
