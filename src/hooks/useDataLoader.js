@@ -79,24 +79,43 @@ function clearOldCaches() {
   } catch {}
 }
 
+function looksBinaryCsv(text) {
+  const sample = text.slice(0, 4096)
+  if (!sample) return false
+  if (sample.includes('\u0000')) return true
+  let printable = 0
+  for (const ch of sample) {
+    const code = ch.charCodeAt(0)
+    if (code === 9 || code === 10 || code === 13 || (code >= 32 && code !== 65533)) printable += 1
+  }
+  return printable / sample.length < 0.75
+}
+
 async function fetchCsv(url) {
   // Primero verificar que el archivo existe (fetch HEAD para detectar 404 rápido)
-  let httpOk = true
+  let response
   try {
-    const probe = await fetch(url, { method: 'HEAD' })
-    if (!probe.ok) httpOk = false
+    response = await fetch(url)
   } catch {
-    httpOk = false
+    response = null
   }
-  if (!httpOk) {
+  if (!response?.ok) {
     const err = new Error('NOT_FOUND')
     err.type = 'not_found'
     throw err
   }
 
+  const text = await response.text()
+  if (looksBinaryCsv(text)) {
+    const err = new Error('INVALID_CSV_BINARY')
+    err.type = 'parse_error'
+    err.details = [{ message: 'El archivo no parece ser un CSV de texto. Revisar que no sea XLSX/PDF/binario renombrado.' }]
+    throw err
+  }
+
   return new Promise((resolve, reject) => {
-    Papa.parse(url, {
-      download: true, header: true, skipEmptyLines: true, dynamicTyping: false,
+    Papa.parse(text, {
+      header: true, skipEmptyLines: true, dynamicTyping: false,
       complete: r => {
         if (r.errors?.length && r.data?.length === 0) {
           const err = new Error('PARSE_ERROR')
@@ -134,6 +153,12 @@ async function loadDataset(source) {
 
   const normalize = NORMALIZERS[source.id]
   const data = normalize ? normalize(rawRows) : rawRows
+  if (source.id === 'tiempos_cdm' && rawRows.length > 0 && data.length === 0) {
+    const err = new Error('INVALID_TIEMPOS_CDM')
+    err.type = 'parse_error'
+    err.details = [{ message: 'tiempos_cdm.csv no contiene filas válidas con ID_CDM, COLABORADOR y fecha_finalizacion.' }]
+    throw err
+  }
 
   writeCache(source.id, data)
   return data

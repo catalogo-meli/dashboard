@@ -226,13 +226,43 @@ export function normalizeHold(rows) {
 }
 
 function parseDurationSeconds(raw) {
+  if (raw == null) return null
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    // Excel/Sheets pueden exportar duraciones como fracción de día.
+    return raw > 0 && raw < 1 ? Math.round(raw * 86400) : Math.round(raw)
+  }
   const s = String(raw || '').trim()
   if (!s) return null
   const sign = s.startsWith('-') ? -1 : 1
-  const parts = s.replace(/^-/, '').split(':').map(Number)
-  if (parts.length !== 3 || parts.some(n => Number.isNaN(n))) return null
-  const [h, m, sec] = parts
-  return sign * (h * 3600 + m * 60 + sec)
+  const clean = s
+    .replace(/^-/, '')
+    .replace(',', '.')
+    .replace(/\s+/g, ' ')
+
+  const colonParts = clean.split(':')
+  if (colonParts.length >= 2 && colonParts.length <= 3) {
+    const parts = colonParts.map(Number)
+    if (!parts.some(n => Number.isNaN(n))) {
+      const [a, b, c = 0] = parts
+      const seconds = colonParts.length === 2 ? (a * 60 + b) : (a * 3600 + b * 60 + c)
+      return sign * Math.round(seconds)
+    }
+  }
+
+  const textMatch = clean.match(/(?:(\d+(?:\.\d+)?)\s*h)?\s*(?:(\d+(?:\.\d+)?)\s*m(?:in)?)?\s*(?:(\d+(?:\.\d+)?)\s*s(?:eg)?)?/i)
+  if (textMatch && (textMatch[1] || textMatch[2] || textMatch[3])) {
+    const h = Number(textMatch[1] || 0)
+    const m = Number(textMatch[2] || 0)
+    const sec = Number(textMatch[3] || 0)
+    return sign * Math.round(h * 3600 + m * 60 + sec)
+  }
+
+  const numeric = Number(clean)
+  if (Number.isFinite(numeric)) {
+    return sign * (numeric > 0 && numeric < 1 ? Math.round(numeric * 86400) : Math.round(numeric))
+  }
+
+  return null
 }
 
 export function normalizeTiemposCdmRow(raw) {
