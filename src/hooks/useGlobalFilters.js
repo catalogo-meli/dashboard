@@ -1,20 +1,16 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { readFromURL, writeToURL } from '../utils/selectors/queryState.js'
-import { getWeekNumber } from '../utils/parsers.js'
+import { getWeekNumber, getWeekYear } from '../utils/parsers.js'
 
 export const PERIODO_MODOS = ['year', 'month', 'week', 'custom']
 
 const MONTH_LABELS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']
+const SEGMENT_FILTERS = ['usuario', 'flujo', 'equipo', 'iniciativa']
 
 export function weekRangeLabel(year, week) {
-  const jan4 = new Date(year, 0, 4)
-  const dayOfWeek = jan4.getDay() || 7
-  const monday = new Date(jan4)
-  monday.setDate(jan4.getDate() - (dayOfWeek - 1) + (week - 1) * 7)
-  const sunday = new Date(monday)
-  sunday.setDate(monday.getDate() + 6)
+  const { desde, hasta } = weekRangeDates(year, week)
   const fmt = d => `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`
-  return `W${String(week).padStart(2,'0')} · ${fmt(monday)}–${fmt(sunday)}`
+  return `W${String(week).padStart(2,'0')} - ${fmt(desde)}-${fmt(hasta)}`
 }
 
 export function weekRangeDates(year, week) {
@@ -65,9 +61,30 @@ const EMPTY = {
   week: null,
   fechaDesde: null,
   fechaHasta: null,
-  usuario: null,
-  flujo: null,
-  equipo: null,
+  usuario: [],
+  flujo: [],
+  equipo: [],
+  iniciativa: [],
+}
+
+function toList(value) {
+  if (Array.isArray(value)) return value.filter(v => v != null && v !== '').map(String)
+  if (value == null || value === '') return []
+  return [String(value)]
+}
+
+function readList(value) {
+  if (!value) return []
+  try {
+    const parsed = JSON.parse(value)
+    if (Array.isArray(parsed)) return toList(parsed)
+  } catch {}
+  return String(value).split('|').filter(Boolean)
+}
+
+function writeList(values) {
+  const list = toList(values)
+  return list.length ? JSON.stringify(list) : null
 }
 
 function stateToDateRange(s) {
@@ -85,6 +102,7 @@ function stateToDateRange(s) {
 function urlToState(url) {
   const modo = PERIODO_MODOS.includes(url.pmodo) ? url.pmodo : 'week'
   return {
+    ...EMPTY,
     modo,
     year:     url.pyear  ? parseInt(url.pyear)  : CURRENT_YEAR,
     subYear:  url.psuby  || 'all',
@@ -92,9 +110,10 @@ function urlToState(url) {
     week:     url.pweek  !== undefined ? parseInt(url.pweek)  : null,
     fechaDesde: url.desde ? new Date(url.desde + 'T00:00:00') : null,
     fechaHasta: url.hasta ? new Date(url.hasta + 'T23:59:59') : null,
-    usuario:  url.usuario || null,
-    flujo:    url.flujo   || null,
-    equipo:   url.equipo  || null,
+    usuario:    readList(url.usuario),
+    flujo:      readList(url.flujo),
+    equipo:     readList(url.equipo),
+    iniciativa: readList(url.iniciativa),
   }
 }
 
@@ -107,19 +126,20 @@ function stateToURL(s) {
     pweek:  s.week  !== null ? String(s.week)  : null,
     desde:  s.fechaDesde ? s.fechaDesde.toISOString().slice(0,10) : null,
     hasta:  s.fechaHasta ? s.fechaHasta.toISOString().slice(0,10) : null,
-    usuario: s.usuario,
-    flujo:   s.flujo,
-    equipo:  s.equipo,
+    usuario: writeList(s.usuario),
+    flujo: writeList(s.flujo),
+    equipo: writeList(s.equipo),
+    iniciativa: writeList(s.iniciativa),
   }
 }
 
-function collectYears(rows, dateField) {
-  const years = new Set()
-  for (const r of rows) {
-    const d = r.fecha || r[dateField]
-    if (d) years.add(d instanceof Date ? d.getFullYear() : new Date(d).getFullYear())
-  }
-  return [...years].sort()
+function hasAny(s, key) {
+  return toList(s[key]).length > 0
+}
+
+function matchesValue(rowValue, selected) {
+  const list = toList(selected)
+  return list.length === 0 || list.includes(String(rowValue ?? ''))
 }
 
 export function buildAvailability(rows) {
@@ -131,22 +151,34 @@ export function buildAvailability(rows) {
     const y = r.fecha.getFullYear()
     const m = r.fecha.getMonth()
     const w = r.week || getWeekNumber(r.fecha)
+    const wy = r.weekYear || getWeekYear(r.fecha) || y
     yearSet.add(y)
     monthSet.add(`${y}-${m}`)
-    if (w) weekSet.add(`${y}-${w}`)
+    if (w) weekSet.add(`${wy}-${w}`)
   }
   return { weekSet, monthSet, yearSet }
 }
 
-export function matchGlobalFilters(r, desde, hasta, s) {
+export function matchGlobalFilters(r, desde, hasta, s, opts = {}) {
+  const ignore = opts.ignoreKey
   if (desde && r.fecha < desde) return false
   if (hasta && r.fecha > hasta) return false
-  if (s.usuario && r.usuario !== s.usuario) return false
-  if (s.flujo) {
-    if (r.flujo != null && r.flujo !== s.flujo) return false
-    if (r.byFlujo != null && !(r.byFlujo[s.flujo] > 0)) return false
+  if (ignore !== 'usuario' && !matchesValue(r.usuario, s.usuario)) return false
+  if (ignore !== 'flujo' && hasAny(s, 'flujo')) {
+    const flujos = toList(s.flujo)
+    if (r.flujo != null && !flujos.includes(String(r.flujo))) return false
+    if (r.byFlujo != null && !flujos.some(f => r.byFlujo[f] > 0)) return false
   }
-  if (s.equipo && r.equipo !== s.equipo) return false
+  if (ignore !== 'equipo' && !matchesValue(r.equipo, s.equipo)) return false
+  if (ignore !== 'iniciativa' && !matchesValue(r.iniciativa, s.iniciativa)) return false
+  return true
+}
+
+function matchAuditBase(r, desde, hasta, s) {
+  if (desde && r.fecha < desde) return false
+  if (hasta && r.fecha > hasta) return false
+  if (!matchesValue(r.usuario, s.usuario)) return false
+  if (!matchesValue(r.equipo, s.equipo)) return false
   return true
 }
 
@@ -154,15 +186,26 @@ function countBy(arr, keyFn) {
   const m = new Map()
   for (const r of arr) {
     const k = keyFn(r)
-    if (k != null && k !== '') m.set(k, (m.get(k) || 0) + 1)
+    if (k != null && k !== '') m.set(String(k), (m.get(String(k)) || 0) + 1)
   }
   return m
 }
 
-function toOpts(allValues, counts) {
-  return [...new Set(allValues)].filter(Boolean).sort().map(v => ({
-    value: String(v), label: String(v), count: counts.get(String(v)) || 0,
-  }))
+function toOpts(values, counts) {
+  return [...new Set(values.map(v => String(v)).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, 'es'))
+    .map(v => ({ value: v, label: v, count: counts.get(v) || 0 }))
+}
+
+function optionRows(hist, dateRange, state, key) {
+  const { desde, hasta } = dateRange
+  return (hist || []).filter(r => matchGlobalFilters(r, desde, hasta, state, { ignoreKey: key }))
+}
+
+function sameList(a, b) {
+  const aa = toList(a)
+  const bb = toList(b)
+  return aa.length === bb.length && aa.every((v, i) => v === bb[i])
 }
 
 export function useGlobalFilters(joinedData, activeTab) {
@@ -178,33 +221,28 @@ export function useGlobalFilters(joinedData, activeTab) {
     setState(prev => ({ ...prev, year, month: null, week: null, subYear: 'all' }))
   }, [])
 
-  const setSubYear = useCallback(sub => {
-    setState(prev => ({ ...prev, subYear: sub }))
-  }, [])
-
-  const setMonth = useCallback(m => {
-    setState(prev => ({ ...prev, month: m }))
-  }, [])
-
-  const setWeek = useCallback(w => {
-    setState(prev => ({ ...prev, week: w }))
-  }, [])
-
-  const setFechaDesde = useCallback(d => {
-    setState(prev => ({ ...prev, fechaDesde: d, modo: 'custom' }))
-  }, [])
-
-  const setFechaHasta = useCallback(d => {
-    setState(prev => ({ ...prev, fechaHasta: d, modo: 'custom' }))
-  }, [])
+  const setSubYear = useCallback(sub => setState(prev => ({ ...prev, subYear: sub })), [])
+  const setMonth = useCallback(m => setState(prev => ({ ...prev, month: m })), [])
+  const setWeek = useCallback(w => setState(prev => ({ ...prev, week: w })), [])
+  const setFechaDesde = useCallback(d => setState(prev => ({ ...prev, fechaDesde: d, modo: 'custom' })), [])
+  const setFechaHasta = useCallback(d => setState(prev => ({ ...prev, fechaHasta: d, modo: 'custom' })), [])
 
   const setSegFilter = useCallback((key, value) => {
-    setState(prev => ({ ...prev, [key]: value ?? null }))
+    setState(prev => {
+      const current = toList(prev[key])
+      const next = Array.isArray(value)
+        ? toList(value)
+        : value == null
+          ? []
+          : current.includes(String(value))
+            ? current.filter(v => v !== String(value))
+            : [...current, String(value)]
+      return { ...prev, [key]: next }
+    })
   }, [])
 
-  const resetFilters = useCallback(() => setState(EMPTY), [])
+  const resetFilters = useCallback(() => setState({ ...EMPTY }), [])
 
-  // Availability: computed from the relevant dataset for the active tab
   const availability = useMemo(() => {
     if (!joinedData) return { weekSet: new Set(), monthSet: new Set(), yearSet: new Set() }
     const isCalidad = activeTab === 'calidad'
@@ -214,21 +252,18 @@ export function useGlobalFilters(joinedData, activeTab) {
     return buildAvailability(rows)
   }, [joinedData, activeTab])
 
-  const availableYears = useMemo(() => [...availability.yearSet].sort(), [availability])
-
-  // Date range derived from current state
+  const availableYears = useMemo(() => [...availability.yearSet].sort((a, b) => a - b), [availability])
   const dateRange = useMemo(() => stateToDateRange(state), [state])
 
-  // Filtered datasets
   const filtered = useMemo(() => {
     if (!joinedData) return null
     const { desde, hasta } = dateRange
     const hist = (joinedData.historico || []).filter(r => matchGlobalFilters(r, desde, hasta, state))
+    const histOnlyFilterActive = hasAny(state, 'flujo') || hasAny(state, 'iniciativa')
+    const allowedUsuarios = new Set(hist.map(r => r.usuario))
     const aud  = (joinedData.auditados || []).filter(r => {
-      if (desde && r.fecha < desde) return false
-      if (hasta && r.fecha > hasta) return false
-      if (state.usuario && r.usuario !== state.usuario) return false
-      if (state.equipo  && r.equipo  !== state.equipo)  return false
+      if (!matchAuditBase(r, desde, hasta, state)) return false
+      if (histOnlyFilterActive && !allowedUsuarios.has(r.usuario)) return false
       return true
     })
     return {
@@ -240,44 +275,57 @@ export function useGlobalFilters(joinedData, activeTab) {
     }
   }, [joinedData, dateRange, state])
 
-  // Options with counts — sourced from full dataset, filtered only by dates
   const options = useMemo(() => {
     if (!joinedData) return {}
-    const { desde, hasta } = dateRange
-    const hist = (joinedData.historico || []).filter(r => {
-      if (desde && r.fecha < desde) return false
-      if (hasta && r.fecha > hasta) return false
-      return true
-    })
-    const aud = (joinedData.auditados || []).filter(r => {
-      if (desde && r.fecha < desde) return false
-      if (hasta && r.fecha > hasta) return false
-      return true
-    })
-    const uCounts  = countBy(hist, r => r.usuario)
-    const flCounts = countBy(hist, r => r.flujo)
-    const eqCounts = countBy(hist.filter(r => r.equipo), r => r.equipo)
+    const hist = joinedData.historico || []
+    const rowsUsuario = optionRows(hist, dateRange, state, 'usuario')
+    const rowsFlujo = optionRows(hist, dateRange, state, 'flujo')
+    const rowsEquipo = optionRows(hist, dateRange, state, 'equipo')
+    const rowsIniciativa = optionRows(hist, dateRange, state, 'iniciativa')
+
+    const aud = (joinedData.auditados || []).filter(r => matchAuditBase(r, dateRange.desde, dateRange.hasta, state))
     const auCounts = countBy(aud, r => r.auditor)
     const doCounts = countBy(aud, r => r.dominio)
     const srCounts = countBy(aud, r => r.suggestionReason)
     const calCounts = countBy(aud, r => r.calidad)
-    const CAL_LABELS = { correcto:'Correcto', desvio_leve:'Desvío leve', desvio_grave:'Desvío grave', sin_clasificar:'Sin clasificar' }
+    const CAL_LABELS = { correcto:'Correcto', desvio_leve:'Desvio leve', desvio_grave:'Desvio grave', sin_clasificar:'Sin clasificar' }
     const calidadOpts = ['correcto','desvio_leve','desvio_grave','sin_clasificar']
       .filter(c => (calCounts.get(c) || 0) > 0)
       .map(c => ({ value: c, label: CAL_LABELS[c] }))
-    const allUsers = [...new Set(hist.map(r => r.usuario))]
+
     return {
-      usuarios:          toOpts(allUsers, uCounts),
-      flujos:            toOpts([...new Set(hist.map(r => r.flujo))], flCounts),
-      equipos:           toOpts([...new Set(hist.map(r => r.equipo))].filter(Boolean), eqCounts),
-      auditores:         toOpts([...new Set(aud.map(r => r.auditor))], auCounts),
-      dominios:          toOpts([...new Set(aud.map(r => r.dominio))], doCounts),
-      suggestionReasons: toOpts([...new Set(aud.map(r => r.suggestionReason))], srCounts),
+      usuarios: toOpts(rowsUsuario.map(r => r.usuario), countBy(rowsUsuario, r => r.usuario)),
+      flujos: toOpts(rowsFlujo.map(r => r.flujo), countBy(rowsFlujo, r => r.flujo)),
+      equipos: toOpts(rowsEquipo.map(r => r.equipo).filter(Boolean), countBy(rowsEquipo, r => r.equipo)),
+      iniciativas: toOpts(rowsIniciativa.map(r => r.iniciativa), countBy(rowsIniciativa, r => r.iniciativa)),
+      auditores: toOpts(aud.map(r => r.auditor), auCounts),
+      dominios: toOpts(aud.map(r => r.dominio), doCounts),
+      suggestionReasons: toOpts(aud.map(r => r.suggestionReason), srCounts),
       calidadOpts,
     }
-  }, [joinedData, dateRange])
+  }, [joinedData, dateRange, state])
 
-  // Weeks for selector — from availability, for current year
+  // Limpia selecciones que se volvieron imposibles por otros filtros o por fecha.
+  useEffect(() => {
+    if (!joinedData) return
+    setState(prev => {
+      let next = prev
+      const optionMap = {
+        usuario: options.usuarios || [],
+        flujo: options.flujos || [],
+        equipo: options.equipos || [],
+        iniciativa: options.iniciativas || [],
+      }
+      for (const key of SEGMENT_FILTERS) {
+        const allowed = new Set(optionMap[key].map(o => String(o.value)))
+        const current = toList(prev[key])
+        const valid = current.filter(v => allowed.has(v))
+        if (!sameList(current, valid)) next = { ...next, [key]: valid }
+      }
+      return next
+    })
+  }, [joinedData, options.usuarios, options.flujos, options.equipos, options.iniciativas])
+
   const weeksForYear = useMemo(() => {
     const out = []
     for (let w = 1; w <= 53; w++) {
@@ -286,13 +334,11 @@ export function useGlobalFilters(joinedData, activeTab) {
       out.push({ week: w, label: weekRangeLabel(state.year, w), hasData })
     }
     return out.filter((_, i, arr) => {
-      // trim trailing weeks with no data at end; keep all up to last week with data
       const lastWithData = arr.reduce((acc, x, idx) => x.hasData ? idx : acc, -1)
       return i <= lastWithData
     })
   }, [state.year, availability])
 
-  // Months for selector — 12 months, disabled if no data
   const monthsForYear = useMemo(() => {
     return MONTH_LABELS.map((label, idx) => ({
       month: idx,
@@ -301,12 +347,19 @@ export function useGlobalFilters(joinedData, activeTab) {
     }))
   }, [state.year, availability])
 
-  // Active chips
   const activeChips = useMemo(() => {
     const chips = []
-    if (state.usuario) chips.push({ key: 'usuario', label: 'Colaborador', value: state.usuario, contextual: false })
-    if (state.flujo)   chips.push({ key: 'flujo',   label: 'Flujo',       value: state.flujo,   contextual: false })
-    if (state.equipo)  chips.push({ key: 'equipo',  label: 'Equipo',      value: state.equipo,  contextual: false })
+    const meta = {
+      usuario: 'Colaborador',
+      flujo: 'Flujo',
+      equipo: 'Equipo',
+      iniciativa: 'Iniciativa',
+    }
+    for (const [key, label] of Object.entries(meta)) {
+      for (const value of toList(state[key])) {
+        chips.push({ key: `${key}:${value}`, filterKey: key, label, value, contextual: false })
+      }
+    }
     return chips
   }, [state])
 

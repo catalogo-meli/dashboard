@@ -23,7 +23,7 @@ const NORMALIZERS = {
   auditados_mao: normalizeMao,
 }
 
-const CACHE_VERSION = 'v6'
+const CACHE_VERSION = 'v7'
 
 function cacheKey(id) { return `catalogo_${CACHE_VERSION}_${id}` }
 
@@ -68,7 +68,7 @@ function clearCache(id) {
 // Limpiar cachés de versiones anteriores
 function clearOldCaches() {
   try {
-    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_dash_']
+    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_v6_', 'catalogo_dash_']
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i)
       if (key && oldPrefixes.some(p => key.startsWith(p))) {

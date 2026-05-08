@@ -31,6 +31,11 @@ const TABS = [
   { id: 'individual',    label: 'Personas' },
 ]
 
+function matchesMulti(value, selected) {
+  const list = Array.isArray(selected) ? selected : (selected ? [selected] : [])
+  return list.length === 0 || list.includes(String(value ?? ''))
+}
+
 function formatDatetimeBsAs(date) {
   if (!date) return null
   const opts = { timeZone: 'America/Argentina/Buenos_Aires' }
@@ -78,8 +83,8 @@ export default function App() {
     return mao.filter(r => {
       if (filters.fechaDesde && r.fecha < filters.fechaDesde) return false
       if (filters.fechaHasta && r.fecha > filters.fechaHasta) return false
-      if (filters.usuario && r.usuario !== filters.usuario) return false
-      if (filters.equipo  && r.equipo  !== filters.equipo)  return false
+      if (!matchesMulti(r.usuario, filters.usuario)) return false
+      if (!matchesMulti(r.equipo, filters.equipo)) return false
       return true
     })
   }, [joinedData.auditados_mao, filters])
@@ -94,7 +99,7 @@ export default function App() {
   function handleTabChange(tabId) { setActiveTab(tabId); writeToURL({ tab: tabId }) }
 
   function navigateTo(tabId, extraFilters) {
-    if (extraFilters) for (const [k, v] of Object.entries(extraFilters)) setSegFilter(k, v)
+    if (extraFilters) for (const [k, v] of Object.entries(extraFilters)) setSegFilter(k, Array.isArray(v) ? v : [v])
     setActiveTab(tabId)
     writeToURL({ tab: tabId })
   }

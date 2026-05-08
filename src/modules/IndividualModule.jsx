@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ComposedChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
-import { formatNumber } from '../utils/parsers.js'
+import { formatDateDisplay, formatNumber } from '../utils/parsers.js'
 import { COPY } from '../config/copy.js'
 import { labelSegmento } from '../config/segments.js'
 import { KPICard, EmptyState, CalidadBar, CustomTooltip } from '../components/ui/index.jsx'
@@ -9,23 +9,25 @@ function semanalProductividad(historico, usuario) {
   const map = new Map()
   for (const r of (historico || [])) {
     if (r.usuario !== usuario || !r.week) continue
-    if (!map.has(r.week)) map.set(r.week, { week: r.week, totalTareas: 0, totalIds: 0, dias: new Set() })
-    const e = map.get(r.week)
+    const key = r.weekKey || `${r.weekYear || r.fecha?.getFullYear() || ''}-W${String(r.week).padStart(2, '0')}`
+    if (!map.has(key)) map.set(key, { key, label: `Sem ${String(r.week).padStart(2, '0')} ${r.weekYear || r.fecha?.getFullYear() || ''}`, week: r.week, totalTareas: 0, totalIds: 0, dias: new Set(), byFlujo: {} })
+    const e = map.get(key)
     e.totalTareas += 1
     e.totalIds    += r.idsTC ?? 1
+    e.byFlujo[r.flujo || 'Sin flujo'] = (e.byFlujo[r.flujo || 'Sin flujo'] || 0) + 1
     if (r.fechaKey) e.dias.add(r.fechaKey)
   }
   return [...map.values()]
     .map(e => ({ ...e, diasHabiles: e.dias.size, promTareasPorDia: e.dias.size > 0 ? Math.round(e.totalTareas / e.dias.size) : 0 }))
-    .sort((a, b) => a.week - b.week)
+    .sort((a, b) => a.key.localeCompare(b.key))
 }
 
 function semanalCalidad(auditados, usuario) {
   const base = (auditados || []).filter(r => r.usuario === usuario && r.week)
   const mapSug = new Map()
   for (const r of base) {
-    const k = r.week
-    if (!mapSug.has(k)) mapSug.set(k, { week: k, total: 0, correcto: 0 })
+    const k = r.weekKey || `${r.weekYear || r.fecha?.getFullYear() || ''}-W${String(r.week).padStart(2, '0')}`
+    if (!mapSug.has(k)) mapSug.set(k, { key: k, label: `Sem ${String(r.week).padStart(2, '0')} ${r.weekYear || r.fecha?.getFullYear() || ''}`, week: r.week, total: 0, correcto: 0 })
     const e = mapSug.get(k)
     e.total++
     if (r.calidad === 'correcto') e.correcto++
@@ -34,12 +36,12 @@ function semanalCalidad(auditados, usuario) {
   const casos = new Map()
   for (const r of base) {
     if (!r.idCaso) continue
-    if (!casos.has(r.idCaso)) casos.set(r.idCaso, { week: r.week, sugs: [] })
+    if (!casos.has(r.idCaso)) casos.set(r.idCaso, { key: r.weekKey || `${r.weekYear || r.fecha?.getFullYear() || ''}-W${String(r.week).padStart(2, '0')}`, sugs: [] })
     casos.get(r.idCaso).sugs.push(r.calidad)
   }
   const mapCaso = new Map()
   for (const [, c] of casos) {
-    const k = c.week
+    const k = c.key
     if (!mapCaso.has(k)) mapCaso.set(k, { totalCasos: 0, correctoCasos: 0 })
     const e = mapCaso.get(k)
     e.totalCasos++
@@ -52,7 +54,44 @@ function semanalCalidad(auditados, usuario) {
       efectividadSug:  e.total > 0 ? e.correcto / e.total : 0,
       efectividadCaso: cd.totalCasos > 0 ? cd.correctoCasos / cd.totalCasos : 0,
     }
-  }).sort((a, b) => a.week - b.week)
+  }).sort((a, b) => a.key.localeCompare(b.key))
+}
+
+function calidadPorGranularidad(auditados, usuario, granularidad) {
+  if (granularidad === 'semanal') return semanalCalidad(auditados, usuario)
+  const base = (auditados || []).filter(r => r.usuario === usuario && r.fecha)
+  const map = new Map()
+  for (const r of base) {
+    const key = granularidad === 'diario'
+      ? r.fechaKey
+      : `${r.fecha.getFullYear()}-${String(r.fecha.getMonth() + 1).padStart(2, '0')}`
+    const label = granularidad === 'diario'
+      ? formatDateDisplay(r.fecha)
+      : `${String(r.fecha.getMonth() + 1).padStart(2, '0')}/${r.fecha.getFullYear()}`
+    if (!map.has(key)) map.set(key, { key, label, total: 0, correcto: 0, casos: new Map() })
+    const e = map.get(key)
+    e.total += 1
+    if (r.calidad === 'correcto') e.correcto += 1
+    if (r.idCaso) {
+      if (!e.casos.has(r.idCaso)) e.casos.set(r.idCaso, [])
+      e.casos.get(r.idCaso).push(r.calidad)
+    }
+  }
+  return [...map.values()].map(e => {
+    let totalCasos = 0
+    let correctoCasos = 0
+    for (const vals of e.casos.values()) {
+      totalCasos += 1
+      if (vals.every(v => v === 'correcto')) correctoCasos += 1
+    }
+    return {
+      key: e.key,
+      label: e.label,
+      total: e.total,
+      efectividadSug: e.total > 0 ? e.correcto / e.total : 0,
+      efectividadCaso: totalCasos > 0 ? correctoCasos / totalCasos : 0,
+    }
+  }).sort((a, b) => a.key.localeCompare(b.key))
 }
 
 const MODOS = [
@@ -359,10 +398,11 @@ function agruparDiarioInd(historico, usuario) {
   const map = new Map()
   for (const r of (historico || [])) {
     if (r.usuario !== usuario || !r.fechaKey) continue
-    if (!map.has(r.fechaKey)) map.set(r.fechaKey, { key: r.fechaKey, totalTareas: 0, totalIds: 0 })
+    if (!map.has(r.fechaKey)) map.set(r.fechaKey, { key: r.fechaKey, label: formatDateDisplay(r.fecha), totalTareas: 0, totalIds: 0, byFlujo: {} })
     const e = map.get(r.fechaKey)
     e.totalTareas += 1
     e.totalIds    += r.idsTC ?? 1
+    e.byFlujo[r.flujo || 'Sin flujo'] = (e.byFlujo[r.flujo || 'Sin flujo'] || 0) + 1
   }
   return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
 }
@@ -372,12 +412,20 @@ function agruparMensualInd(historico, usuario) {
   for (const r of (historico || [])) {
     if (r.usuario !== usuario || !r.fecha) continue
     const mes = `${r.fecha.getFullYear()}-${String(r.fecha.getMonth()+1).padStart(2,'0')}`
-    if (!map.has(mes)) map.set(mes, { key: mes, totalTareas: 0, totalIds: 0 })
+    if (!map.has(mes)) map.set(mes, { key: mes, label: `${String(r.fecha.getMonth()+1).padStart(2,'0')}/${r.fecha.getFullYear()}`, totalTareas: 0, totalIds: 0, byFlujo: {} })
     const e = map.get(mes)
     e.totalTareas += 1
     e.totalIds    += r.idsTC ?? 1
+    e.byFlujo[r.flujo || 'Sin flujo'] = (e.byFlujo[r.flujo || 'Sin flujo'] || 0) + 1
   }
   return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
+}
+
+const IND_FLOW_COLORS = ['#6366f1','#38bdf8','#a78bfa','#fb923c','#ef4444','#22c55e','#14b8a6','#f59e0b']
+function flujosInd(data) {
+  const totals = new Map()
+  for (const row of data) for (const [f, v] of Object.entries(row.byFlujo || {})) totals.set(f, (totals.get(f) || 0) + v)
+  return [...totals.entries()].sort((a, b) => b[1] - a[1]).map(([f]) => f)
 }
 
 function GraficoProdSemanal({ usuario, filteredHistorico }) {
@@ -387,9 +435,17 @@ function GraficoProdSemanal({ usuario, filteredHistorico }) {
   const dataMensual = useMemo(() => agruparMensualInd(filteredHistorico, usuario), [filteredHistorico, usuario])
 
   const data = gran === 'diario' ? dataDiario : gran === 'mensual' ? dataMensual
-    : dataSemanal.map(s => ({ ...s, key: s.week }))
+    : dataSemanal
+  const flowNames = useMemo(() => flujosInd(data), [data])
 
-  if (dataSemanal.length < 2) return null
+  if (data.length === 0) {
+    return (
+      <div className="card">
+        <div className="card-title">Tendencia — Tareas e IDs</div>
+        <div className="empty-state" style={{ padding:'1rem' }}>Sin datos de productividad para esta granularidad.</div>
+      </div>
+    )
+  }
   return (
     <div className="card">
       <div className="card-header">
@@ -415,15 +471,20 @@ function GraficoProdSemanal({ usuario, filteredHistorico }) {
       <ResponsiveContainer width="100%" height={240}>
         <ComposedChart data={data} margin={{ top:5, right:40, left:0, bottom:5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="key" tick={{ fill:'var(--text3)', fontSize:11 }}
-            tickFormatter={v => gran === 'semanal' ? `Sem ${v}` : gran === 'diario' ? v?.slice(5)||v : v} />
+          <XAxis dataKey="label" tick={{ fill:'var(--text3)', fontSize:11 }} interval="preserveStartEnd" />
           <YAxis yAxisId="left" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
           <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
           <Tooltip content={<CustomTooltip
-            labelFormatter={v => gran === 'semanal' ? `Semana ${v}` : v}
+            labelFormatter={v => v}
             valueFormatter={formatNumber} />} />
           <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
-          <Bar yAxisId="left" dataKey="totalTareas" name="Tareas" fill="var(--accent)" radius={[3,3,0,0]} />
+          {flowNames.map((flujo, idx) => (
+            <Bar key={flujo} yAxisId="left" stackId="tareas"
+              dataKey={row => row.byFlujo?.[flujo] || 0}
+              name={flujo}
+              fill={IND_FLOW_COLORS[idx % IND_FLOW_COLORS.length]}
+              radius={idx === flowNames.length - 1 ? [3,3,0,0] : [0,0,0,0]} />
+          ))}
           <Line yAxisId="right" type="monotone" dataKey="totalIds" name="IDs trabajados" stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
         </ComposedChart>
       </ResponsiveContainer>
@@ -432,20 +493,42 @@ function GraficoProdSemanal({ usuario, filteredHistorico }) {
 }
 
 function GraficoCalSemanal({ usuario, auditados }) {
-  const data = useMemo(() => semanalCalidad(auditados, usuario), [auditados, usuario])
-  if (data.length < 2) return null
+  const [gran, setGran] = useState('semanal')
+  const data = useMemo(() => calidadPorGranularidad(auditados, usuario, gran), [auditados, usuario, gran])
+  if (data.length === 0) {
+    return (
+      <div className="card">
+        <div className="card-title">Â¿El sistema mejora o empeora?</div>
+        <div className="empty-state" style={{ padding:'1rem' }}>Sin auditorÃ­as para el perÃ­odo seleccionado.</div>
+      </div>
+    )
+  }
   return (
     <div className="card">
       <div className="card-header">
         <div className="card-title">¿El sistema mejora o empeora?</div>
         <div className="card-subtitle">Línea roja = target 90%. Si un patrón crece sostenidamente, ya es riesgo aunque no sea lo más grande.</div>
       </div>
+      <div style={{ display:'flex', gap:0, border:'1px solid var(--border)', borderRadius:'var(--radius-sm)', overflow:'hidden', width:'fit-content', marginBottom:'0.75rem' }}>
+        {['Diario','Semanal','Mensual'].map(g => {
+          const id = g.toLowerCase()
+          return (
+            <button key={id} onClick={() => setGran(id)}
+              style={{
+                padding:'0.25rem 0.7rem', fontSize:'0.72rem', fontWeight: gran===id ? 700 : 400,
+                background: gran===id ? 'var(--accent)' : 'transparent',
+                color: gran===id ? '#fff' : 'var(--text2)',
+                border:'none', cursor:'pointer', borderRight:'1px solid var(--border)',
+              }}>{g}</button>
+          )
+        })}
+      </div>
       <ResponsiveContainer width="100%" height={210}>
         <LineChart data={data} margin={{ top:5, right:10, left:0, bottom:5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="week" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={v=>`S${v}`} />
+          <XAxis dataKey="label" tick={{ fill:'var(--text3)', fontSize:11 }} interval="preserveStartEnd" />
           <YAxis tick={{ fill:'var(--text3)', fontSize:11 }} domain={[0.5,1]} tickFormatter={v=>`${Math.round(v*100)}%`} />
-          <Tooltip content={<CustomTooltip valueFormatter={v=>`${Math.round(v*100)}%`} labelFormatter={v=>`Semana ${v}`} />} />
+          <Tooltip content={<CustomTooltip valueFormatter={v=>`${Math.round(v*100)}%`} labelFormatter={v=>v} />} />
           <Legend wrapperStyle={{ fontSize:'0.75rem', color:'var(--text3)' }} />
           <Line type="monotone" dataKey={()=>0.9} name="Target 90%" stroke="var(--red)" strokeWidth={1} strokeDasharray="4 2" dot={false} legendType="none" />
           <Line type="monotone" dataKey="efectividadSug" name="Por sugerencia_id (principal)" stroke="var(--green)" strokeWidth={2} dot={{ r:3 }} />

@@ -3,7 +3,7 @@ import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend,
 } from 'recharts'
-import { formatNumber } from '../utils/parsers.js'
+import { formatDateDisplay, formatNumber } from '../utils/parsers.js'
 import { COPY } from '../config/copy.js'
 import { delta, deltaLabel, deltaColor } from '../utils/metrics/comparisonMetrics.js'
 import { EmptyState, CustomTooltip, ExportCSVButton } from '../components/ui/index.jsx'
@@ -13,6 +13,17 @@ import { formatProductividadColab } from '../utils/exportUtils.js'
 const FLUJO_COLORS = {
   'Demanda':'#6366f1','Enhancement':'#38bdf8','Enhanced Content':'#a78bfa',
   'Soporte':'#fb923c','Fallos':'#ef4444','Validación':'#22c55e',
+}
+
+const FLOW_PALETTE = ['#6366f1','#38bdf8','#a78bfa','#fb923c','#ef4444','#22c55e','#14b8a6','#f59e0b']
+
+function addTrendRow(map, key, label, r) {
+  if (!map.has(key)) map.set(key, { key, label, totalTareas: 0, totalIds: 0, byFlujo: {} })
+  const e = map.get(key)
+  e.totalTareas += 1
+  e.totalIds += r.idsTC ?? 1
+  const flujo = r.flujo || 'Sin flujo'
+  e.byFlujo[flujo] = (e.byFlujo[flujo] || 0) + 1
 }
 
 function agruparPorDia(historico) {
@@ -38,6 +49,33 @@ function agruparPorMes(historico) {
     e.totalIds    += r.idsTC ?? 1
   }
   return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
+}
+
+function agruparTendencia(historico, granularidad) {
+  const map = new Map()
+  for (const r of (historico || [])) {
+    if (!r.fecha) continue
+    if (granularidad === 'diario') {
+      addTrendRow(map, r.fechaKey, formatDateDisplay(r.fecha), r)
+    } else if (granularidad === 'mensual') {
+      const mes = `${r.fecha.getFullYear()}-${String(r.fecha.getMonth() + 1).padStart(2, '0')}`
+      addTrendRow(map, mes, `${String(r.fecha.getMonth() + 1).padStart(2, '0')}/${r.fecha.getFullYear()}`, r)
+    } else {
+      const wk = r.weekKey || `${r.weekYear || r.fecha.getFullYear()}-W${String(r.week).padStart(2, '0')}`
+      addTrendRow(map, wk, `Sem ${String(r.week).padStart(2, '0')} ${r.weekYear || r.fecha.getFullYear()}`, r)
+    }
+  }
+  return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
+}
+
+function flujosEnTendencia(data) {
+  const totals = new Map()
+  for (const row of data) {
+    for (const [flujo, value] of Object.entries(row.byFlujo || {})) {
+      totals.set(flujo, (totals.get(flujo) || 0) + value)
+    }
+  }
+  return [...totals.entries()].sort((a, b) => b[1] - a[1]).map(([flujo]) => flujo)
 }
 
 function GranularidadToggle({ value, onChange, disabled }) {
@@ -87,10 +125,9 @@ export function ProductividadModule({ model }) {
   const [granularidad, setGranularidad] = useState('semanal')
 
   const tendenciaData = useMemo(() => {
-    if (granularidad === 'diario')  return agruparPorDia(histData)
-    if (granularidad === 'mensual') return agruparPorMes(histData)
-    return semanas.map(s => ({ ...s, key: s.week }))
-  }, [granularidad, histData, semanas])
+    return agruparTendencia(histData, granularidad)
+  }, [granularidad, histData])
+  const tendenciaFlujos = useMemo(() => flujosEnTendencia(tendenciaData), [tendenciaData])
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>
@@ -136,21 +173,22 @@ export function ProductividadModule({ model }) {
           <ResponsiveContainer width="100%" height={240}>
             <ComposedChart data={tendenciaData} margin={{ top:5, right:40, left:0, bottom:5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-              <XAxis dataKey="key"
+              <XAxis dataKey="label"
                 tick={{ fill:'var(--text3)', fontSize:11 }}
-                tickFormatter={v => {
-                  if (granularidad === 'semanal') return `Sem ${v}`
-                  if (granularidad === 'diario')  return v?.slice(5) || v
-                  return v
-                }} />
+                interval="preserveStartEnd" />
               <YAxis yAxisId="left" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
               <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
               <Tooltip content={<CustomTooltip
-                labelFormatter={v => granularidad === 'semanal' ? `Semana ${v}` : v}
+                labelFormatter={v => v}
                 valueFormatter={formatNumber} />} />
               <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
-              <Bar yAxisId="left" dataKey="totalTareas" name="Tareas"
-                fill="var(--accent)" radius={[3,3,0,0]} />
+              {tendenciaFlujos.map((flujo, idx) => (
+                <Bar key={flujo} yAxisId="left" stackId="tareas"
+                  dataKey={row => row.byFlujo?.[flujo] || 0}
+                  name={flujo}
+                  fill={FLUJO_COLORS[flujo] || FLOW_PALETTE[idx % FLOW_PALETTE.length]}
+                  radius={idx === tendenciaFlujos.length - 1 ? [3,3,0,0] : [0,0,0,0]} />
+              ))}
               <Line yAxisId="right" type="monotone" dataKey="totalIds" name="IDs trabajados"
                 stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
             </ComposedChart>

@@ -1,4 +1,4 @@
-import { parseDate, parseNumber, toDateKey, getWeekNumber } from './parsers.js'
+import { parseDate, parseNumber, toDateKey, getWeekNumber, getWeekYear } from './parsers.js'
 import { segmentoAntiguedad } from '../config/segments.js'
 
 // Helper: acceso tolerante a claves con variantes de nombre
@@ -16,17 +16,61 @@ function get(raw, ...keys) {
   return ''
 }
 
-export function normalizeHistoricoRow(raw) {
-  const fecha = parseDate(raw['Fecha'])
+const DIMENSION_CANON = new Map()
+const FLOW_CANON = new Map([
+  ['demanda', 'Demanda'],
+  ['enhanced content', 'Enhanced Content'],
+  ['enhancement', 'Enhancement'],
+  ['fallos', 'Fallos'],
+  ['soporte', 'Soporte'],
+  ['validacion', 'Validacion'],
+  ['validación', 'Validacion'],
+])
+
+function dimensionKey(value) {
+  return String(value || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
+function normalizeDimension(value, fallback) {
+  const clean = String(value || '').trim().replace(/\s+/g, ' ')
+  if (!clean) return fallback
+  const key = dimensionKey(clean)
+  if (!DIMENSION_CANON.has(key)) DIMENSION_CANON.set(key, clean)
+  return DIMENSION_CANON.get(key)
+}
+
+function normalizeFlujo(value) {
+  const clean = String(value || '').trim().replace(/\s+/g, ' ')
+  if (!clean) return 'Sin flujo'
+  return FLOW_CANON.get(dimensionKey(clean)) || normalizeDimension(clean, 'Sin flujo')
+}
+
+function buildDateFields(fecha) {
+  const week = fecha ? getWeekNumber(fecha) : null
+  const weekYear = fecha ? getWeekYear(fecha) : null
   return {
     fecha,
     fechaKey: toDateKey(fecha),
-    week: fecha ? getWeekNumber(fecha) : null,
-    usuario: (raw['Usuario'] || '').trim(),
-    flujo: (raw['Flujo de Tarea'] || '').trim(),
+    week,
+    weekYear,
+    weekKey: week && weekYear ? `${weekYear}-W${String(week).padStart(2, '0')}` : null,
+  }
+}
+
+export function normalizeHistoricoRow(raw) {
+  const fecha = parseDate(raw['Fecha'])
+  return {
+    ...buildDateFields(fecha),
+    usuario: normalizeDimension(raw['Usuario'], ''),
+    flujo: normalizeFlujo(raw['Flujo de Tarea']),
     idLink: (raw['ID - LINK'] || '').trim(),
     status: (raw['Status'] || '').trim().toUpperCase(),
-    iniciativa: (raw['Iniciativa'] || '').trim() || null,
+    iniciativa: normalizeDimension(raw['Iniciativa'], 'Sin iniciativa'),
     incidencia: (raw['Incidencias'] || '').trim() || null,
     idsTC: Math.max(1, parseNumber(raw['IDs trabajados'])),
     comentarios: (raw['Comentarios'] || '').trim() || null,
@@ -49,10 +93,9 @@ export function normalizeFinalizadasRow(raw) {
     totalFlujos += v
   }
   return {
-    fecha,
-    fechaKey: toDateKey(fecha),
+    ...buildDateFields(fecha),
     week: parseNumber(raw['Week']) || (fecha ? getWeekNumber(fecha) : null),
-    usuario: (raw['Usuario'] || '').trim(),
+    usuario: normalizeDimension(raw['Usuario'], ''),
     byFlujo,
     idsTC: Math.max(1, parseNumber(raw['IDs trabajados'])),
     total: parseNumber(raw['Total']),
@@ -87,13 +130,11 @@ export function normalizeAuditadoRow(raw) {
   const estadoFinal = (raw['EstadoFinal_esCorrecto'] || '').trim()
   const motivoRechazo = (raw['Motivo_de_Rechazo_esCorrecto'] || '').trim()
   return {
-    fecha,
-    fechaKey: toDateKey(fecha),
-    week: fecha ? getWeekNumber(fecha) : null,
+    ...buildDateFields(fecha),
     idCaso: (raw['id_caso'] || raw['casoId'] || '').trim(),
     sugerenciaId: String(raw['sugerencia_id'] || '').trim(),
     dominio: (raw['Dominio'] || '').trim() || null,
-    usuario: (raw['usuario'] || '').trim(),
+    usuario: normalizeDimension(raw['usuario'], ''),
     estadoCaso: (raw['estado_caso'] || '').trim(),
     suggestionReason: (raw['suggestion_reason'] || '').trim() || null,
     accionCorrecta: (raw['Accion_Correcta'] || '').trim() || null,
@@ -125,13 +166,11 @@ export function normalizeMaoRow(raw) {
   const motivoRechazo = (raw['Motivo_de_Rechazo_esCorrecto'] || '').trim()
 
   return {
-    fecha,
-    fechaKey: toDateKey(fecha),
-    week: fecha ? getWeekNumber(fecha) : null,
+    ...buildDateFields(fecha),
     idCaso:      (raw['ID_CDM'] || '').trim(),
     sugerenciaId: (raw['ID_CDM'] || '').trim(),
     dominio:     (raw['DOMINIO'] || '').trim() || null,
-    usuario:     (raw['COLABORADOR'] || '').trim(),
+    usuario:     normalizeDimension(raw['COLABORADOR'], ''),
     pdpId:       (raw['PDP_ID'] || '').trim() || null,
     pdpLink:     (raw['PDP_LINK'] || '').trim() || null,
     itemId:      (raw['ITEM_ID'] || '').trim() || null,
@@ -171,11 +210,11 @@ export function normalizeMao(rows) {
 
 export function normalizeHoldRow(raw) {
   return {
-    usuario: (raw['Usuario'] || '').trim(),
-    flujo: (raw['Flujo de Tarea'] || '').trim(),
+    usuario: normalizeDimension(raw['Usuario'], ''),
+    flujo: normalizeFlujo(raw['Flujo de Tarea']),
     idLink: String(raw['ID - LINK'] || '').trim(),
     status: (raw['Status'] || '').trim().toUpperCase(),
-    iniciativa: (raw['Iniciativa'] || '').trim() || null,
+    iniciativa: normalizeDimension(raw['Iniciativa'], 'Sin iniciativa'),
     incidencia: (raw['Incidencias'] || '').trim() || null,
     idsTC: Math.max(1, parseNumber(raw['IDs trabajados'])),
     comentarios: (raw['Comentarios'] || '').trim() || null,

@@ -8,6 +8,11 @@ import { formatHoldHistorico, formatHoldSnapshot } from '../utils/exportUtils.js
 import { useTableSort, SortTh } from '../hooks/useTableSort.jsx'
 import { useGitHubFileDate } from '../hooks/useGitHubFileDate.js'
 
+function matchesMulti(value, selected) {
+  const list = Array.isArray(selected) ? selected : (selected ? [selected] : [])
+  return list.length === 0 || list.includes(String(value ?? ''))
+}
+
 const INC_COLORS = ['#ef4444','#f97316','#f59e0b','#eab308','#84cc16','#22c55e','#14b8a6','#06b6d4']
 
 function diasATexto(dias) {
@@ -164,11 +169,12 @@ export function FriccionModule({ model, holdSnapshot, holdLoadedAt, historicoCom
 
   // Snapshot filtrado usando los filtros globales del dashboard
   const snapshotFiltrado = useMemo(() => snapshotEnriquecido.filter(r => {
-    if (filters?.equipo  && r.equipoNombre !== filters.equipo)  return false
-    if (filters?.flujo   && r.flujo        !== filters.flujo)   return false
-    if (filters?.usuario && r.usuario      !== filters.usuario) return false
+    if (!matchesMulti(r.equipoNombre, filters?.equipo)) return false
+    if (!matchesMulti(r.flujo, filters?.flujo)) return false
+    if (!matchesMulti(r.usuario, filters?.usuario)) return false
+    if (!matchesMulti(r.iniciativa || 'Sin iniciativa', filters?.iniciativa)) return false
     return true
-  }), [snapshotEnriquecido, filters?.equipo, filters?.flujo, filters?.usuario])
+  }), [snapshotEnriquecido, filters?.equipo, filters?.flujo, filters?.usuario, filters?.iniciativa])
 
   // KPIs de días en HOLD sobre snapshot filtrado
   const diasKpis = useMemo(() => {
@@ -182,7 +188,8 @@ export function FriccionModule({ model, holdSnapshot, holdLoadedAt, historicoCom
     return { promedio, maximo, mas7, mas14, total: snapshotFiltrado.length }
   }, [snapshotFiltrado])
 
-  const hayFiltrosSnap = filters?.equipo || filters?.flujo || filters?.usuario
+  const hayFiltrosSnap = [filters?.equipo, filters?.flujo, filters?.usuario, filters?.iniciativa]
+    .some(v => Array.isArray(v) ? v.length > 0 : !!v)
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>

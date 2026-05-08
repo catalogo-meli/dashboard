@@ -36,6 +36,43 @@ function Sel({ value, onChange, placeholder, opts }) {
   )
 }
 
+function MultiSel({ values = [], onToggle, placeholder, opts }) {
+  const [open, setOpen] = useState(false)
+  const selected = Array.isArray(values) ? values : (values ? [values] : [])
+  const selectedSet = new Set(selected.map(String))
+  const label = selected.length === 0
+    ? placeholder
+    : selected.length === 1
+      ? selected[0]
+      : `${selected.length} seleccionados`
+  return (
+    <div className="multi-filter" tabIndex={0}>
+      <button type="button" className={`multi-filter-trigger${selected.length ? ' active' : ''}`} onClick={() => setOpen(o => !o)}>
+        <span>{label}</span>
+        <span className="multi-filter-caret">{open ? '▴' : '▾'}</span>
+      </button>
+      {open && (
+        <div className="multi-filter-menu">
+          {opts.length === 0 ? (
+            <div className="multi-filter-empty">Sin opciones</div>
+          ) : opts.map(o => (
+            <label key={o.value} className={`multi-filter-option${o.disabled ? ' disabled' : ''}`}>
+              <input
+                type="checkbox"
+                checked={selectedSet.has(String(o.value))}
+                disabled={o.disabled}
+                onChange={() => onToggle(String(o.value))}
+              />
+              <span className="multi-filter-label">{o.label}</span>
+              {o.count != null && <span className="multi-filter-count">{o.count.toLocaleString('es-AR')}</span>}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function YearSel({ year, years, onChange }) {
   if (!years.length) return null
   return (
@@ -138,14 +175,17 @@ export function FiltersBar({
         {/* SEGMENTO */}
         <GroupLabel>Segmento</GroupLabel>
 
-        <Sel value={filters.flujo||''} onChange={v=>setSegFilter('flujo',v)}
+        <MultiSel values={filters.flujo} onToggle={v=>setSegFilter('flujo',v)}
           placeholder="Todos los flujos" opts={options.flujos||[]} />
 
-        <Sel value={filters.equipo||''} onChange={v=>setSegFilter('equipo',v)}
+        <MultiSel values={filters.equipo} onToggle={v=>setSegFilter('equipo',v)}
           placeholder="Todos los equipos" opts={options.equipos||[]} />
 
-        <Sel value={filters.usuario||''} onChange={v=>setSegFilter('usuario',v)}
+        <MultiSel values={filters.usuario} onToggle={v=>setSegFilter('usuario',v)}
           placeholder="Todos los colaboradores" opts={options.usuarios||[]} />
+
+        <MultiSel values={filters.iniciativa} onToggle={v=>setSegFilter('iniciativa',v)}
+          placeholder="Todas las iniciativas" opts={options.iniciativas||[]} />
 
         {/* CALIDAD — solo en tab calidad */}
         {isCalidad && (
@@ -174,16 +214,16 @@ export function FiltersBar({
         <div className="filters-advanced-panel" style={{ flexWrap:'wrap', gap:'0.5rem 0.75rem', alignItems:'center' }}>
           <GroupLabel>Calidad</GroupLabel>
 
-          <Sel value={calFilters.auditor||''} onChange={v=>setCalFilter('auditor',v||null)}
+          <MultiSel values={calFilters.auditor} onToggle={v=>setCalFilter('auditor',v)}
             placeholder="Todos los auditores" opts={options.auditores||[]} />
 
-          <Sel value={calFilters.dominio||''} onChange={v=>setCalFilter('dominio',v||null)}
+          <MultiSel values={calFilters.dominio} onToggle={v=>setCalFilter('dominio',v)}
             placeholder="Todos los dominios" opts={options.dominios||[]} />
 
-          <Sel value={calFilters.suggestionReason||''} onChange={v=>setCalFilter('suggestionReason',v||null)}
+          <MultiSel values={calFilters.suggestionReason} onToggle={v=>setCalFilter('suggestionReason',v)}
             placeholder="Todos los códigos" opts={options.suggestionReasons||[]} />
 
-          <Sel value={calFilters.calidad||''} onChange={v=>setCalFilter('calidad',v||null)}
+          <MultiSel values={calFilters.calidad} onToggle={v=>setCalFilter('calidad',v)}
             placeholder="Todos los desvíos"
             opts={options.calidadOpts||[]} />
 
@@ -202,7 +242,7 @@ export function FiltersBar({
             <button
               key={chip.key}
               className={`filter-chip${chip.contextual ? ' contextual' : ''}`}
-              onClick={() => chip.contextual ? setCalFilter(chip.key, null) : setSegFilter(chip.key, null)}
+              onClick={() => chip.contextual ? setCalFilter(chip.filterKey || chip.key, chip.rawValue ?? null) : setSegFilter(chip.filterKey || chip.key, chip.value)}
               title={`Quitar filtro: ${chip.label}`}
             >
               <span className="filter-chip-label">{chip.label}:</span>

@@ -51,7 +51,10 @@ export function calcProductividadKPIs(historico) {
     promIdsPorDia,
     diasHabiles,
     byFlujo,
-    byFlujoIds: byFlujo, // IDs por flujo — misma agrupación (1 fila = 1 tarea con sus IDs)
+    byFlujoIds: Object.fromEntries(Object.keys(byFlujo).map(f => [
+      f,
+      historico.filter(r => r.flujo === f).reduce((s, r) => s + (r.idsTC ?? 1), 0),
+    ])),
   }
 }
 
@@ -60,9 +63,9 @@ export function calcProductividadKPIs(historico) {
 export function agruparPorSemana(historico) {
   const map = new Map()
   for (const r of (historico || [])) {
-    const key = r.week
+    const key = r.weekKey || `${r.weekYear || r.fecha?.getFullYear() || ''}-W${String(r.week).padStart(2, '0')}`
     if (!key) continue
-    if (!map.has(key)) map.set(key, { week: key, totalTareas: 0, totalIds: 0, dias: new Set() })
+    if (!map.has(key)) map.set(key, { key, week: r.week, weekYear: r.weekYear || r.fecha?.getFullYear(), totalTareas: 0, totalIds: 0, dias: new Set() })
     const e = map.get(key)
     e.totalTareas += 1
     e.totalIds    += r.idsTC ?? 1
@@ -82,7 +85,7 @@ export function agruparPorSemana(historico) {
         promIdsPorDia:    e.dias.size > 0 ? Math.round(e.totalIds    / e.dias.size) : 0,
       }
     })
-    .sort((a, b) => a.week - b.week)
+    .sort((a, b) => a.key.localeCompare(b.key))
 }
 
 // agruparPorSemanaConHistorico: alias para compatibilidad — ahora solo usa historico
