@@ -84,6 +84,7 @@ export function TrendTasksTooltip({
   totalLabel = 'Tareas totales',
   hiddenNames = ['Sin flujo'],
   lineFormatters = {},
+  extraRows = [],
 }) {
   if (!active || !payload || payload.length === 0) return null
   const row = payload[0]?.payload || {}
@@ -116,6 +117,16 @@ export function TrendTasksTooltip({
           {p.name}: {lineFormatters[p.name] ? lineFormatters[p.name](p.value) : valueFormatter(p.value)}
         </div>
       ))}
+      {extraRows.map((extra, i) => {
+        const value = row[extra.key]
+        if (value == null) return null
+        const formatter = extra.formatter || valueFormatter
+        return (
+          <div key={`extra-${extra.key}`} style={{ color: extra.color || 'var(--text2)', fontWeight:600, fontSize:'0.82rem', marginTop: i === 0 ? 6 : 0 }}>
+            {extra.label}: {formatter(value)}
+          </div>
+        )
+      })}
     </div>
   )
 }

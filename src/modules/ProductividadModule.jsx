@@ -16,12 +16,52 @@ function isVisibleFlujo(flujo) {
 }
 
 function addTrendRow(map, key, label, r) {
-  if (!map.has(key)) map.set(key, { key, label, totalTareas: 0, totalIds: 0, byFlujo: {} })
+  if (!map.has(key)) {
+    map.set(key, {
+      key,
+      label,
+      totalTareas: 0,
+      totalIds: 0,
+      byFlujo: {},
+      usuarios: new Set(),
+      usuariosPorDia: new Map(),
+    })
+  }
   const e = map.get(key)
   e.totalTareas += 1
   e.totalIds += r.idsTC ?? 1
+  if (r.usuario) {
+    e.usuarios.add(r.usuario)
+    if (r.fechaKey) {
+      if (!e.usuariosPorDia.has(r.fechaKey)) e.usuariosPorDia.set(r.fechaKey, new Set())
+      e.usuariosPorDia.get(r.fechaKey).add(r.usuario)
+    }
+  }
   if (isVisibleFlujo(r.flujo)) {
     e.byFlujo[r.flujo] = (e.byFlujo[r.flujo] || 0) + 1
+  }
+}
+
+function finalizeTrendRow(e) {
+  const diasConActividad = e.usuariosPorDia.size
+  const colaboradoresDiaTotal = [...e.usuariosPorDia.values()]
+    .reduce((sum, usuarios) => sum + usuarios.size, 0)
+  const colaboradoresActivosProm = diasConActividad > 0
+    ? Math.round((colaboradoresDiaTotal / diasConActividad) * 10) / 10
+    : e.usuarios.size
+  const tareasPorColaboradorActivo = colaboradoresActivosProm > 0
+    ? Math.round((e.totalTareas / colaboradoresActivosProm) * 10) / 10
+    : 0
+  const idsPorColaboradorActivo = colaboradoresActivosProm > 0
+    ? Math.round((e.totalIds / colaboradoresActivosProm) * 10) / 10
+    : 0
+
+  return {
+    ...e,
+    colaboradoresActivos: e.usuarios.size,
+    colaboradoresActivosProm,
+    tareasPorColaboradorActivo,
+    idsPorColaboradorActivo,
   }
 }
 
@@ -64,7 +104,7 @@ function agruparTendencia(historico, granularidad) {
       addTrendRow(map, wk, `Sem ${String(r.week).padStart(2, '0')} ${r.weekYear || r.fecha.getFullYear()}`, r)
     }
   }
-  return [...map.values()].sort((a, b) => a.key.localeCompare(b.key))
+  return [...map.values()].map(finalizeTrendRow).sort((a, b) => a.key.localeCompare(b.key))
 }
 
 function flujosEnTendencia(data) {
@@ -107,6 +147,11 @@ function tareasDiaColor(v) {
   if (v >= 90) return 'var(--green)'
   if (v >= 80) return 'var(--yellow)'
   return 'var(--red)'
+}
+
+function formatOneDecimal(n) {
+  if (n === null || n === undefined || isNaN(n)) return '-'
+  return new Intl.NumberFormat('es-AR', { maximumFractionDigits: 1 }).format(n)
 }
 
 export function ProductividadModule({ model }) {
@@ -176,7 +221,7 @@ export function ProductividadModule({ model }) {
             <div>
               <div className="card-title">Tendencia — Tareas e IDs</div>
               <div className="card-subtitle">
-                Barras = tareas · Línea = IDs trabajados. Si divergen, la complejidad promedio cambió.
+                Barras = tareas · Líneas = IDs trabajados y colaboradores activos promedio.
               </div>
             </div>
             <GranularidadToggle value={granularidad} onChange={setGranularidad} />
@@ -189,10 +234,19 @@ export function ProductividadModule({ model }) {
                 interval="preserveStartEnd" />
               <YAxis yAxisId="left" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
               <YAxis yAxisId="right" orientation="right" tick={{ fill:'var(--text3)', fontSize:11 }} tickFormatter={formatNumber} />
+              <YAxis yAxisId="capacity" hide domain={[0, 'dataMax + 1']} />
               <Tooltip content={<TrendTasksTooltip
                 labelFormatter={v => v}
                 valueFormatter={formatNumber}
-                lineFormatters={{ 'IDs trabajados': formatNumber }} />} />
+                lineFormatters={{
+                  'IDs trabajados': formatNumber,
+                  'Colabs activos prom.': v => formatOneDecimal(v),
+                }}
+                extraRows={[
+                  { key: 'colaboradoresActivos', label: 'Colabs únicos del período', formatter: formatNumber, color: 'var(--text2)' },
+                  { key: 'tareasPorColaboradorActivo', label: 'Tareas por colab activo', formatter: formatOneDecimal, color: 'var(--text2)' },
+                  { key: 'idsPorColaboradorActivo', label: 'IDs por colab activo', formatter: formatOneDecimal, color: 'var(--text2)' },
+                ]} />} />
               <Legend wrapperStyle={{ fontSize:'0.72rem', color:'var(--text3)' }} />
               {tendenciaFlujos.map((flujo, idx) => (
                 <Bar key={flujo} yAxisId="left" stackId="tareas"
@@ -203,6 +257,8 @@ export function ProductividadModule({ model }) {
               ))}
               <Line yAxisId="right" type="monotone" dataKey="totalIds" name="IDs trabajados"
                 stroke="#fb923c" strokeWidth={2} dot={{ r:3 }} />
+              <Line yAxisId="capacity" type="monotone" dataKey="colaboradoresActivosProm" name="Colabs activos prom."
+                stroke="#14b8a6" strokeWidth={2} dot={{ r:3 }} />
             </ComposedChart>
           </ResponsiveContainer>
         </div>
