@@ -1,24 +1,4 @@
-/**
- * MÓDULO: Actualización de datos v4
- *
- * EVALUACIÓN TÉCNICA DE LA FUNCIONALIDAD:
- *
- * ❌ Escritura directa al repo GitHub desde el front puro:
- *    NO es viable sin GitHub Token autenticado del usuario.
- *    Hacerlo requeriría exponer un token con write access en el front,
- *    lo que es un riesgo de seguridad crítico. No se implementa.
- *
- * ✅ Alternativa implementada: VALIDADOR + GUÍA DE ACTUALIZACIÓN
- *    El usuario sube el CSV, el front lo valida (estructura, columnas, nombre)
- *    y luego descarga el archivo validado con instrucciones para reemplazarlo
- *    manualmente en el repo. Es el flujo más seguro y realista para CSV+GitHub.
- *
- * ✅ Alternativa futura recomendada:
- *    GitHub Actions + workflow dispatch con token secreto almacenado en Actions.
- *    El usuario sube el archivo a un endpoint (Netlify Function / Vercel Function)
- *    que lo valida y dispara el workflow. Requiere backend mínimo pero es el
- *    flujo más robusto sin exponer tokens.
- */
+// Validador local de archivos antes de publicarlos en public/data.
 
 import { useState, useCallback } from 'react'
 import Papa from 'papaparse'
@@ -76,7 +56,7 @@ function FileUploadCard({ filename, config, status, onFile }) {
     if (file) onFile(file)
   }, [onFile])
 
-  const statusIcon = status === 'ok' ? '✅' : status === 'error' ? '❌' : status === 'loading' ? '⏳' : '📄'
+  const statusLabel = status === 'ok' ? 'Validado' : status === 'error' ? 'Error' : status === 'loading' ? 'Validando' : 'Pendiente'
   const statusColor = status === 'ok' ? 'var(--green)' : status === 'error' ? 'var(--red)' : status === 'loading' ? 'var(--yellow)' : 'var(--text3)'
 
   return (
@@ -86,7 +66,7 @@ function FileUploadCard({ filename, config, status, onFile }) {
           <div style={{ fontWeight:600, fontSize:'0.85rem', color:'var(--text)' }}>{config.label}</div>
           <code style={{ fontSize:'0.72rem', color:'var(--text3)', background:'var(--bg3)', padding:'1px 6px', borderRadius:4 }}>{filename}</code>
         </div>
-        <span style={{ fontSize:'1.2rem' }}>{statusIcon}</span>
+        <span style={{ fontSize:'0.68rem', color:statusColor, fontWeight:600, textTransform:'uppercase', letterSpacing:0 }}>{statusLabel}</span>
       </div>
       <div style={{ fontSize:'0.75rem', color:'var(--text3)', marginBottom:'0.75rem' }}>{config.description}</div>
       <div style={{ fontSize:'0.68rem', color:'var(--text3)', marginBottom:'0.5rem' }}>
@@ -143,30 +123,24 @@ export function DataUpdateModule() {
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>
-
-      {/* Explicación técnica */}
       <div className="card" style={{ background:'var(--bg3)', border:'1px solid var(--border2)' }}>
-        <div className="card-title" style={{ marginBottom:'0.75rem' }}>¿Cómo funciona la actualización?</div>
+        <div className="card-title" style={{ marginBottom:'0.75rem' }}>Actualización de datos</div>
         <div style={{ display:'flex', flexDirection:'column', gap:'0.75rem', fontSize:'0.82rem', color:'var(--text2)' }}>
           <div>
-            <strong style={{ color:'var(--text)' }}>Por qué no hay subida directa al repositorio:</strong> Para escribir archivos en GitHub desde el front se requiere un token de autenticación con permisos de escritura. Exponer ese token en el navegador es un riesgo de seguridad. Por eso, este módulo valida los archivos localmente y te guía para actualizarlos de forma segura.
+            <strong style={{ color:'var(--text)' }}>Validación local:</strong> los archivos se revisan en el navegador antes de reemplazarlos en el repositorio.
           </div>
           <div>
-            <strong style={{ color:'var(--text)' }}>El flujo es simple:</strong>
+            <strong style={{ color:'var(--text)' }}>Flujo de trabajo:</strong>
             <ol style={{ marginLeft:'1.25rem', marginTop:'0.25rem', display:'flex', flexDirection:'column', gap:'0.3rem' }}>
-              <li>Subí el CSV acá — se valida que el nombre y las columnas sean correctos.</li>
+              <li>Subí el CSV y verificá estructura, nombre y columnas.</li>
               <li>Descargá el archivo validado.</li>
-              <li>Reemplazalo en <code style={{ background:'var(--bg)',padding:'1px 6px',borderRadius:3 }}>/public/data/</code> en el repositorio.</li>
+              <li>Reemplazalo en <code style={{ background:'var(--bg)',padding:'1px 6px',borderRadius:3 }}>public/data/</code>.</li>
               <li>Recargá el dashboard.</li>
             </ol>
-          </div>
-          <div>
-            <strong style={{ color:'var(--text)' }}>Alternativa recomendada a futuro:</strong> Implementar un GitHub Actions workflow con <code style={{ background:'var(--bg)',padding:'1px 6px',borderRadius:3 }}>workflow_dispatch</code> que reciba el archivo via Netlify Function. El token vive como secret en GitHub, nunca expuesto en el front.
           </div>
         </div>
       </div>
 
-      {/* Progress */}
       <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
         <div style={{ flex:1, background:'var(--bg3)', borderRadius:99, height:6 }}>
           <div style={{ width:`${allOk/Object.keys(EXPECTED_FILES).length*100}%`, background:'var(--green)', borderRadius:99, height:6, transition:'width 0.3s' }} />
@@ -174,7 +148,6 @@ export function DataUpdateModule() {
         <span style={{ fontSize:'0.78rem', color:'var(--text3)', whiteSpace:'nowrap' }}>{allOk} de {Object.keys(EXPECTED_FILES).length} archivos validados</span>
       </div>
 
-      {/* Cards de archivos */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(320px, 1fr))', gap:'1rem' }}>
         {Object.entries(EXPECTED_FILES).map(([filename, config]) => (
           <div key={filename}>
@@ -186,20 +159,18 @@ export function DataUpdateModule() {
                 border: `1px solid ${results[filename].ok ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`,
               }}>
                 {results[filename].ok
-                  ? `✅ Validado — ${formatNumber(results[filename].rows)} filas. Listo para reemplazar en el repo.`
-                  : `❌ ${results[filename].error}`}
+                  ? `Validado - ${formatNumber(results[filename].rows)} filas. Listo para reemplazar en el repo.`
+                  : results[filename].error}
               </div>
             )}
             {results[filename]?.ok && (
               <button className="btn" style={{ marginTop:'0.4rem', width:'100%' }} onClick={() => downloadValidated(filename)}>
-                ⬇ Descargar {filename} validado
+                Descargar {filename} validado
               </button>
             )}
           </div>
         ))}
       </div>
-
-      {/* Instrucciones finales */}
       {allOk > 0 && (
         <div className="card" style={{ borderColor:'var(--green)', borderWidth:1 }}>
           <div className="card-title" style={{ marginBottom:'0.5rem', color:'var(--green)' }}>Próximos pasos para aplicar los cambios</div>

@@ -194,23 +194,23 @@ export function ProductividadModule({ model }) {
 
       {/* ── CAPACIDAD + TAREAS en la misma fila ───────────────── */}
       <div className="grid grid-4">
-        <KPIv6 label={COPY.kpis.colaborActivos.label} value={colabActivos}
+        <ProductividadKPI label={COPY.kpis.colaborActivos.label} value={colabActivos}
           help={COPY.kpis.colaborActivos.help} icon="👥" color="var(--accent)" />
-        <KPIv6 label={COPY.kpis.diasActivos.label} value={`${promDiasActivos}d`}
+        <ProductividadKPI label={COPY.kpis.diasActivos.label} value={`${promDiasActivos}d`}
           help={COPY.kpis.diasActivos.help} icon="📅" color="var(--accent2)" />
-        <KPIv6 label={COPY.kpis.tareasFinalizadas.label} value={formatNumber(kpis.totalTareas)}
+        <ProductividadKPI label={COPY.kpis.tareasFinalizadas.label} value={formatNumber(kpis.totalTareas)}
           help={COPY.kpis.tareasFinalizadas.help} icon="📦" color="var(--accent)" d={dTareas} />
-        <KPIv6 label={COPY.kpis.prodPorDia.label} value={`${formatNumber(kpis.promTareasPorDia)} / día`}
+        <ProductividadKPI label={COPY.kpis.prodPorDia.label} value={`${formatNumber(kpis.promTareasPorDia)} / día`}
           help={COPY.kpis.prodPorDia.help} icon="⚡" color="var(--green)" d={dDia} />
       </div>
 
       {/* ── IDs TRABAJADOS ───────────────────────────────────── */}
       <div className="grid grid-4">
-        <KPIv6 label={COPY.kpis.idsTC.label} value={formatNumber(kpis.totalIds)}
+        <ProductividadKPI label={COPY.kpis.idsTC.label} value={formatNumber(kpis.totalIds)}
           help={COPY.kpis.idsTC.help} icon="🔗" color="#38bdf8" d={dIds} />
-        <KPIv6 label={COPY.kpis.idsPorDia.label} value={`${formatNumber(kpis.promIdsPorDia)} / día`}
+        <ProductividadKPI label={COPY.kpis.idsPorDia.label} value={`${formatNumber(kpis.promIdsPorDia)} / día`}
           help={COPY.kpis.idsPorDia.help} icon="🔢" color="#a78bfa" />
-        <KPIv6 label={COPY.kpis.relTareasIds.label} value={`${kpis.relIdsPorTarea}x`}
+        <ProductividadKPI label={COPY.kpis.relTareasIds.label} value={`${kpis.relIdsPorTarea}x`}
           help={COPY.kpis.relTareasIds.help} icon="🔄" color="var(--slate)" />
       </div>
 
@@ -390,7 +390,7 @@ export function ProductividadModule({ model }) {
   )
 }
 
-function KPIv6({ label, value, help, icon, color, d }) {
+function ProductividadKPI({ label, value, help, icon, color, d }) {
   const dl = d != null ? deltaLabel(d) : null
   const dc = d != null ? deltaColor(d) : null
   return (

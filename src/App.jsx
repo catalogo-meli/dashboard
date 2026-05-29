@@ -177,7 +177,7 @@ export default function App() {
               {activeCount + activeCalCount} {activeCount + activeCalCount === 1 ? 'filtro' : 'filtros'}
             </span>
           )}
-          <button className="btn" onClick={handleExportAll} title="Descargar todos los datos del período filtrado como ZIP">⬇ Exportar todo</button>
+          <button className="btn" onClick={handleExportAll} title="Descargar todos los datos del período filtrado como ZIP">Exportar todo</button>
           <button className="btn" onClick={reload}>↻ Actualizar</button>
         </div>
       </header>

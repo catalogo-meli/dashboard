@@ -1,8 +1,3 @@
-/**
- * HOOK: useFilters
- * Filtros globales y lógica de filtrado reactiva
- */
-
 import { useState, useMemo } from 'react'
 
 const EMPTY_FILTERS = {
@@ -29,7 +24,6 @@ export function useFilters(data) {
     setFilters(EMPTY_FILTERS)
   }
 
-  // Opciones disponibles para dropdowns (computed desde datos)
   const options = useMemo(() => {
     if (!data) return {}
 

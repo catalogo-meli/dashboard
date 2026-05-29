@@ -1,9 +1,6 @@
-/**
- * COPY v4 — UX writing centralizado
- * Regla: cada texto responde qué es, qué pasa, qué hago.
- */
+// Textos visibles del dashboard.
 export const COPY = {
-  // ─── Estados del sistema ──────────────────────────────────────
+  // Estados del sistema
   loading:       'Cargando datos. Esto puede tardar unos segundos.',
   loadingFilter: 'Actualizando con los filtros elegidos.',
   empty:         'No hay datos para esta combinación de filtros. Probá ampliar el período o quitar algún filtro.',
@@ -13,7 +10,7 @@ export const COPY = {
   parcial:       'Parte de esta vista usa datos con cobertura distinta. Revisá la cobertura antes de comparar.',
   snapshotViejo: 'El snapshot de HOLD activo puede estar desactualizado. Los datos reflejan el estado al momento de la última carga del archivo.',
 
-  // ─── Filtros ──────────────────────────────────────────────────
+  // Filtros
   filtros: {
     preset:           'Período',
     fechaDesde:       'Desde',

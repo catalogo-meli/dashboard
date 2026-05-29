@@ -1,13 +1,4 @@
-/**
- * FRICCION METRICS v4
- *
- * DISTINCIÓN CRÍTICA:
- * - historico.csv → datos históricos acumulados de HOLD (tendencia)
- * - hold.csv      → SNAPSHOT del estado actual (foto en vivo)
- *
- * Nunca mezclar ambas fuentes como si fueran lo mismo.
- * El snapshot debe mostrarse siempre con su fecha de actualización.
- */
+// Metricas de HOLD historico y snapshot activo.
 
 export function calcHoldKPIs(historico) {
   const holds = historico.filter(r => r.status === 'HOLD')
@@ -73,10 +64,6 @@ export function holdPorSemana(historico) {
   return Array.from(map.values()).map(e => ({ ...e, idsUnicos: e.idsUnicos.size })).sort((a, b) => Number(a.week) - Number(b.week))
 }
 
-/**
- * Snapshot de HOLD activo — hold.csv
- * Siempre mostrar con metadata de timestamp y tratar como "foto del momento"
- */
 export function calcSnapshotHold(holdData, loadedAt) {
   if (!holdData?.length) return null
   const byFlujo = {}, byIncidencia = {}, byUsuario = {}
@@ -86,7 +73,6 @@ export function calcSnapshotHold(holdData, loadedAt) {
     byIncidencia[inc]   = (byIncidencia[inc] || 0) + 1
     byUsuario[r.usuario] = (byUsuario[r.usuario] || 0) + 1
   }
-  // Detectar si el snapshot es viejo (sin fecha de carga, no podemos calcular con certeza)
   const esViejo = false // sin timestamp en CSV, se marca como no determinado
   return { total: holdData.length, byFlujo, byIncidencia, byUsuario, loadedAt, esViejo, datos: holdData }
 }

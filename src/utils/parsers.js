@@ -1,8 +1,4 @@
-/**
- * PARSERS v5
- * Manejo robusto de fechas y numeros.
- * Soporta: DD/MM/YYYY, YYYY-MM-DD, DD-MM-YYYY y seriales Excel/Sheets.
- */
+// Parseo de fechas y numeros exportados desde CSV/Sheets.
 
 export function parseDate(raw) {
   if (!raw) return null

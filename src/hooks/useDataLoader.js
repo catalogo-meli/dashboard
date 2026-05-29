@@ -1,11 +1,4 @@
-/**
- * HOOK: useDataLoader v4
- * Carga los 5 datasets en paralelo con caché en sessionStorage.
- *
- * IMPORTANTE: La caché usa una version key. Si un dataset falla (retorna [])
- * NO se cachea el resultado vacío, para que el próximo reload intente de nuevo.
- * Esto evita que archivos recién subidos queden ocultos por caché stale.
- */
+// Carga y normalizacion de datasets publicados en public/data.
 import { useState, useEffect, useRef } from 'react'
 import Papa from 'papaparse'
 import { DATA_SOURCES, APP_CONFIG } from '../config/datasources.js'
@@ -55,7 +48,6 @@ function readCache(id) {
 }
 
 function writeCache(id, data) {
-  // No cachear arrays vacíos — puede ser un archivo recién subido que falló
   if (!data || data.length === 0) return
   try {
     sessionStorage.setItem(cacheKey(id), JSON.stringify({ ts: Date.now(), data }))
@@ -66,7 +58,6 @@ function clearCache(id) {
   try { sessionStorage.removeItem(cacheKey(id)) } catch {}
 }
 
-// Limpiar cachés de versiones anteriores
 function clearOldCaches() {
   try {
     const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_v6_', 'catalogo_v7_', 'catalogo_v8_', 'catalogo_dash_']
@@ -92,7 +83,6 @@ function looksBinaryCsv(text) {
 }
 
 async function fetchCsv(url) {
-  // Primero verificar que el archivo existe (fetch HEAD para detectar 404 rápido)
   let response
   try {
     response = await fetch(url)
@@ -214,13 +204,12 @@ export function useDataLoader() {
         console.log(`[${source.label}] Iniciando carga desde ${source.manifestUrl || source.url}`)
         try {
           results[source.id] = await loadDataset(source)
-          console.log(`[${source.label}] ✅ CSV cargado correctamente: ${results[source.id].length} registros`)
+          console.log(`[${source.label}] CSV cargado: ${results[source.id].length} registros`)
         } catch (err) {
           const errorType = err.type || 'unknown'
 
-          // Datasets opcionales: si no se encuentran, resultado vacío silencioso (sin error)
           if ((source.optional || source.allowEmpty) && (errorType === 'not_found' || errorType === 'empty')) {
-            console.log(`[${source.label}] ℹ️ Archivo opcional no presente — se continúa sin él`)
+            console.log(`[${source.label}] Archivo opcional no presente`)
             results[source.id] = []
             return
           }
@@ -229,16 +218,16 @@ export function useDataLoader() {
 
           if (errorType === 'not_found') {
             userMsg = `No se pudo cargar ${source.id}.csv (archivo no encontrado)`
-            console.error(`[${source.label}] ❌ Archivo no encontrado: ${source.manifestUrl || source.url}`)
+            console.error(`[${source.label}] Archivo no encontrado: ${source.manifestUrl || source.url}`)
           } else if (errorType === 'parse_error') {
             userMsg = `Error al procesar ${source.id}.csv`
-            console.error(`[${source.label}] ❌ Error de parseo:`, err.details || err.cause || err)
+            console.error(`[${source.label}] Error de parseo:`, err.details || err.cause || err)
           } else if (errorType === 'empty') {
             userMsg = `El archivo ${source.id}.csv no contiene datos`
-            console.warn(`[${source.label}] ⚠️ Archivo vacío: ${source.manifestUrl || source.url}`)
+            console.warn(`[${source.label}] Archivo vacío: ${source.manifestUrl || source.url}`)
           } else {
             userMsg = err.message || 'Error desconocido'
-            console.error(`[${source.label}] ❌ Error inesperado:`, err)
+            console.error(`[${source.label}] Error inesperado:`, err)
           }
 
           errors[source.id] = { type: errorType, message: userMsg }

@@ -29,7 +29,7 @@ function diasTexto(dias) {
 const fmt = v => (v ?? 0).toLocaleString('es-AR')
 const pct = v => `${Math.round((v ?? 0) * 100)}%`
 
-// Acciones sugeridas — generadas desde los datos, no genéricas
+// Acciones sugeridas basadas en los datos disponibles.
 function buildAcciones({ kpisCalidad, kpisHold, prodModel, calidadModel, equipoModel }) {
   const acc = []
   if (kpisCalidad) {

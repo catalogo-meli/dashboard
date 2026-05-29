@@ -311,7 +311,7 @@ export function normalizeTiemposCdm(rows) {
 }
 
 // CSV real: ID_MELI,Nombre,Rol,Equipo,Ubicación,Fecha Ingreso,Mail Externo
-// Fechas en formato DD-MM-YYYY (soportado por parsers.js v4)
+// Fechas en formato DD-MM-YYYY.
 // Columnas opcionales: CUIL, Slack_ID, Mail Productora (pueden no existir)
 
 export function normalizeEquipoRow(raw) {
@@ -352,7 +352,6 @@ export function normalizeEquipoRow(raw) {
     antiguedadDias,
     antiguedadMeses,
     segmentoAntiguedad: segmentoAntiguedad(antiguedadDias),
-    // Alias para join con histórico/finalizadas
     usuario: idMeli,
   }
 }
@@ -360,7 +359,6 @@ export function normalizeEquipoRow(raw) {
 export function normalizeEquipo(rows) {
   if (!rows?.length) return []
 
-  // Log diagnóstico: mostrar las claves reales que llegan del CSV
   const sampleKeys = Object.keys(rows[0] || {})
   console.log('[Equipo] Columnas detectadas en CSV:', sampleKeys)
   console.log('[Equipo] Primera fila raw:', rows[0])
@@ -368,7 +366,7 @@ export function normalizeEquipo(rows) {
   const result = rows.map(normalizeEquipoRow).filter(r => r.idMeli)
   console.log(`[Equipo] Filas normalizadas: ${result.length} de ${rows.length} totales`)
   if (result.length === 0 && rows.length > 0) {
-    console.error('[Equipo] ❌ Todas las filas fueron descartadas. Verificar columna ID_MELI.')
+    console.error('[Equipo] Todas las filas fueron descartadas. Verificar columna ID_MELI.')
     console.error('[Equipo] Claves disponibles:', sampleKeys)
   }
   return result

@@ -194,7 +194,7 @@ export function ExportCSVButton({ data, filename = 'export.csv', label = 'Export
   }
   return (
     <button className="btn" onClick={handleClick} title="Descargar CSV filtrado">
-      ⬇ {label}
+      {label}
     </button>
   )
 }

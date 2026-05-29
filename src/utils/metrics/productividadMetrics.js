@@ -1,14 +1,4 @@
-/**
- * PRODUCTIVIDAD METRICS v7
- *
- * REGLAS DE NEGOCIO — FUENTE ÚNICA: historico.csv
- * 1. tareas       = cantidad de filas de historico filtrado
- * 2. IDs trabajados = suma de campo "IDs trabajados"; si vacío → fallback 1 por fila
- * 3. IDs >= tareas SIEMPRE (validación explícita con log)
- * 4. NO se usa finalizadas.csv para ninguna de estas métricas
- */
-
-// ─── KPIs globales ────────────────────────────────────────────────────────────
+// Metricas de productividad calculadas desde el historico operativo.
 
 export function calcProductividadKPIs(historico) {
   if (!historico?.length) return null
@@ -19,9 +9,7 @@ export function calcProductividadKPIs(historico) {
   const byFlujo   = {}
 
   for (const r of historico) {
-    // 1 fila = 1 tarea
     totalTareas += 1
-    // IDs: campo del CSV; fallback 1 si vacío (ya aplicado en normalizer con Math.max(1,...))
     const ids = r.idsTC ?? 1
     totalIds += ids
 
@@ -32,9 +20,8 @@ export function calcProductividadKPIs(historico) {
     }
   }
 
-  // VALIDACIÓN: IDs >= tareas
   if (totalIds < totalTareas) {
-    console.error(`[Productividad] ❌ Validación fallida: IDs (${totalIds}) < tareas (${totalTareas}). Aplicando fallback.`)
+    console.error(`[Productividad] IDs (${totalIds}) menor que tareas (${totalTareas}). Aplicando fallback.`)
     totalIds = totalTareas
   }
 
@@ -58,8 +45,6 @@ export function calcProductividadKPIs(historico) {
   }
 }
 
-// ─── Agrupación semanal — TODO desde historico ────────────────────────────────
-
 export function agruparPorSemana(historico) {
   const map = new Map()
   for (const r of (historico || [])) {
@@ -73,9 +58,8 @@ export function agruparPorSemana(historico) {
   }
   return Array.from(map.values())
     .map(e => {
-      // VALIDACIÓN por semana
       if (e.totalIds < e.totalTareas) {
-        console.error(`[Productividad] ❌ Semana ${e.week}: IDs (${e.totalIds}) < tareas (${e.totalTareas}). Corrigiendo.`)
+        console.error(`[Productividad] Semana ${e.week}: IDs (${e.totalIds}) menor que tareas (${e.totalTareas}). Corrigiendo.`)
         e.totalIds = e.totalTareas
       }
       return {
@@ -88,13 +72,9 @@ export function agruparPorSemana(historico) {
     .sort((a, b) => a.key.localeCompare(b.key))
 }
 
-// agruparPorSemanaConHistorico: alias para compatibilidad — ahora solo usa historico
 export function agruparPorSemanaConHistorico(finalizadas_ignorado, historico) {
-  // finalizadas_ignorado: parámetro mantenido por compatibilidad con llamadas existentes, NO SE USA
   return agruparPorSemana(historico)
 }
-
-// ─── Ranking de colaboradores — desde historico ───────────────────────────────
 
 export function rankingColaboradores(historico) {
   const map = new Map()
@@ -136,8 +116,6 @@ export function top5Bottom5(ranking) {
   const sorted = [...ranking].sort((a, b) => b.totalTareas - a.totalTareas)
   return { top5: sorted.slice(0, 5), bottom5: sorted.slice(-5).reverse() }
 }
-
-// ─── Complejidad por flujo — desde historico ──────────────────────────────────
 
 export function complejidadPorFlujo(historico) {
   const map = new Map()

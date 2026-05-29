@@ -1,13 +1,8 @@
-/**
- * AGGREGATORS — Backward compatibility wrapper v4
- * Las métricas canónicas ahora viven en src/utils/metrics/*.js
- * Este archivo reexporta para no romper imports existentes.
- */
+// Reexporta metricas para mantener compatibilidad con imports existentes.
 export { calcCalidadKPIs, calcPorCaso as calcCalidadPorCaso, calidadPorUsuario, calidadPorAuditor, calidadPorDominio, calidadPorError, calidadPorSemana } from './metrics/calidadMetrics.js'
 export { calcProductividadKPIs, agruparPorSemana, rankingColaboradores as rankingPorColaborador } from './metrics/productividadMetrics.js'
 export { calcHoldKPIs, calcHoldLeadTime, holdPorSemana, calcSnapshotHold as holdSnapshotStats } from './metrics/friccionMetrics.js'
 
-// groupBy / sumBy utilities — usados en algunos módulos
 export function groupBy(arr, keyFn, initFn, reduceFn) {
   const map = new Map()
   for (const item of arr) {

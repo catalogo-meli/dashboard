@@ -1,8 +1,4 @@
-/**
- * CALIDAD METRICS v4
- * Unidad principal: sugerencia_id
- * Unidad contextual: id_caso
- */
+// Metricas de calidad por sugerencia y por caso.
 
 export function calcCalidadKPIs(auditados) {
   if (!auditados?.length) return null
@@ -11,7 +7,6 @@ export function calcCalidadKPIs(auditados) {
   const bySug = { correcto: 0, desvio_leve: 0, desvio_grave: 0, sin_clasificar: 0 }
   for (const r of auditados) bySug[r.calidad] = (bySug[r.calidad] || 0) + 1
 
-  // Por caso
   const casos = calcPorCaso(auditados)
   const totalCasos = casos.length
   const byCaso = { correcto: 0, desvio_leve: 0, desvio_grave: 0, sin_clasificar: 0 }
@@ -21,11 +16,9 @@ export function calcCalidadKPIs(auditados) {
   const pctSingle = totalCasos > 0 ? casos.filter(c => c.nSugerencias === 1).length / totalCasos : 0
 
   return {
-    // Por sugerencia (PRINCIPAL)
     totalSugs,
     bySug,
     efectividadSug: totalSugs > 0 ? bySug.correcto / totalSugs : 0,
-    // Por caso (CONTEXTUAL)
     totalCasos,
     byCaso,
     efectividadCaso: totalCasos > 0 ? byCaso.correcto / totalCasos : 0,

@@ -122,7 +122,7 @@ function TablaCasosInline({ rows, titulo, onClose, fuente, calidad }) {
           <button onClick={() => exportCSV(csvRows, 'detalle_calidad.csv')}
             style={{ fontSize:'0.72rem', padding:'0.2rem 0.6rem', background:'var(--bg3)', border:'1px solid var(--border)',
               borderRadius:'var(--radius-sm)', color:'var(--text2)', cursor:'pointer' }}>
-            ⬇ Exportar CSV
+            Exportar CSV
           </button>
           <button onClick={onClose}
             style={{ fontSize:'0.72rem', padding:'0.2rem 0.6rem', background:'transparent', border:'1px solid var(--border)',
@@ -386,7 +386,7 @@ function FuenteToggle({ value, onChange, hasMao }) {
   )
 }
 
-// ── MÓDULO PRINCIPAL ──────────────────────────────────────────────────────────
+// Vista principal
 export function CalidadModule({ model, auditados, auditadosMao }) {
   const { calidadModel } = model
   const [fuente, setFuente] = useState('sdc')

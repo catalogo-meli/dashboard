@@ -1,7 +1,4 @@
-/**
- * INSIGHT ENGINE v4
- * Insights accionables con estructura completa: severity, title, message, whyItMatters, action, module
- */
+// Generacion de alertas e insights del resumen ejecutivo.
 import { THRESHOLDS } from '../../config/thresholds.js'
 
 const SEV = { CRITICO: 'critico', ATENCION: 'atencion', CONTEXTO: 'contexto' }
@@ -15,7 +12,7 @@ export function generarInsights({ kpisProd, kpisCalidad, kpisHold, snapshot, lea
   porDominio, porError, equipoPerf, coverage }) {
   const ins = []
 
-  // ─── CALIDAD ───────────────────────────────────────────────────
+  // Calidad
   if (kpisCalidad) {
     const ef = kpisCalidad.efectividadSug
     if (ef < THRESHOLDS.calidad.efectividadSug.warn) {
@@ -59,7 +56,7 @@ export function generarInsights({ kpisProd, kpisCalidad, kpisHold, snapshot, lea
     }
   }
 
-  // ─── CONCENTRACIÓN DE ERRORES ─────────────────────────────────
+  // Concentracion de errores
   if (porError?.length) {
     const totalDesv = porError.reduce((s, e) => s + (e.total - (e.correcto || 0)), 0)
     const top3 = porError.slice(0, 3).reduce((s, e) => s + (e.total - (e.correcto || 0)), 0)
@@ -74,7 +71,7 @@ export function generarInsights({ kpisProd, kpisCalidad, kpisHold, snapshot, lea
     }
   }
 
-  // ─── PRODUCTIVIDAD ────────────────────────────────────────────
+  // Productividad
   if (kpisProd && prevKpisProd) {
     const delta = d(kpisProd.totalTareas, prevKpisProd.totalTareas)
     if (delta != null && delta < -THRESHOLDS.productividad.caida.critico) {
@@ -130,7 +127,7 @@ export function generarInsights({ kpisProd, kpisCalidad, kpisHold, snapshot, lea
     }
   }
 
-  // ─── FRICCIÓN ─────────────────────────────────────────────────
+  // Friccion
   if (kpisHold && kpisProd) {
     const hr = kpisProd.totalTareas > 0 ? kpisHold.idsUnicos / kpisProd.totalTareas : 0
     if (hr >= THRESHOLDS.friccion.holdRelativo.warn) {
@@ -159,7 +156,7 @@ export function generarInsights({ kpisProd, kpisCalidad, kpisHold, snapshot, lea
       module: 'friccion' })
   }
 
-  // ─── SEGMENTACIÓN ORGANIZACIONAL ─────────────────────────────
+  // Segmentacion organizacional
   // Excluir "Fuera de padrón actual" de señales del equipo activo
   const equipoPerfActivo = (equipoPerf || []).filter(s => s.segmento !== 'Fuera de padrón actual')
   if (equipoPerfActivo.length >= 2) {

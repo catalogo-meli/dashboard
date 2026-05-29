@@ -1,8 +1,4 @@
-/**
- * THRESHOLDS v4
- * Valores de referencia para semáforos, alertas e insights.
- * Modificar acá afecta toda la experiencia.
- */
+// Umbrales compartidos para alertas e indicadores.
 export const THRESHOLDS = {
   calidad: {
     efectividadSug:  { ok: 0.90, warn: 0.80 },

@@ -523,7 +523,7 @@ tbody td.bold { color: var(--text); font-weight: 600; }
   .kpi-value { font-size: 1.6rem; }
 }
 
-/* ─── Filtros v3 ─────────────────────────────────────────────── */
+/* ─── Filtros ─────────────────────────────────────────────── */
 .filters-wrap { background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 56px; z-index: 90; }
 .filters-bar { padding: 0.55rem 1.5rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
 .filters-bar::-webkit-scrollbar { display: none; }
@@ -581,7 +581,7 @@ tbody td.bold { color: var(--text); font-weight: 600; }
 .section-group { display: flex; flex-direction: column; gap: 0.5rem; }
 .section-group-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
 
-/* ─── v4 additions ───────────────────────────────────────────── */
+/* ─── Ajustes complementarios ───────────────────────────────────────────── */
 
 /* Section divider */
 .section-divider { display: flex; align-items: center; gap: 0.75rem; margin: 0.5rem 0; }
@@ -646,7 +646,7 @@ tbody td.bold { color: var(--text); font-weight: 600; }
 .section-group-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
 
 /* ══════════════════════════════════════════════════
-   EXECUTIVE MODULE v5 — Centro de Comando
+   Resumen ejecutivo
    ══════════════════════════════════════════════════ */
 
 /* Layout principal */
@@ -885,7 +885,7 @@ tbody td.bold { color: var(--text); font-weight: 600; }
 /* Sticky filters on top of nav */
 .filters-wrap { position: sticky; top: 56px; z-index: 90; }
 
-/* ── v6 additions ─────────────────────────────────────────────── */
+/* ── Ajustes finales ─────────────────────────────────────────────── */
 
 /* Filter group labels */
 .filter-group-label {
