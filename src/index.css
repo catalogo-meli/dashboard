@@ -50,7 +50,7 @@ body {
 }
 
 .header-left { display: flex; align-items: center; gap: 0.75rem; }
-.header-logo { width: 28px; height: 28px; }
+.header-logo { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
 .header-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
 .header-sub { font-size: 0.75rem; color: var(--text3); }
 .header-right { display: flex; align-items: center; gap: 0.75rem; }

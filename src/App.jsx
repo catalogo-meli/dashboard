@@ -154,13 +154,7 @@ export default function App() {
     <div className="app">
       <header className="header">
         <div className="header-left">
-          <svg className="header-logo" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="6" fill="#6366f1"/>
-            <rect x="6" y="8" width="6" height="6" rx="1" fill="white" opacity="0.9"/>
-            <rect x="16" y="8" width="6" height="6" rx="1" fill="white" opacity="0.7"/>
-            <rect x="6" y="16" width="6" height="6" rx="1" fill="white" opacity="0.7"/>
-            <rect x="16" y="16" width="6" height="6" rx="1" fill="white" opacity="0.5"/>
-          </svg>
+          <img className="header-logo" src="./favicon.png" alt="" />
           <div>
             <div className="header-title">{APP_CONFIG.title}</div>
             <div className="header-sub">{APP_CONFIG.subtitle}</div>
