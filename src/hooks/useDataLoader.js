@@ -24,7 +24,7 @@ const NORMALIZERS = {
   tiempos_cdm: normalizeTiemposCdm,
 }
 
-const CACHE_VERSION = 'v8'
+const CACHE_VERSION = 'v9'
 
 function cacheKey(id) { return `catalogo_${CACHE_VERSION}_${id}` }
 
@@ -69,7 +69,7 @@ function clearCache(id) {
 // Limpiar cachés de versiones anteriores
 function clearOldCaches() {
   try {
-    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_v6_', 'catalogo_v7_', 'catalogo_dash_']
+    const oldPrefixes = ['catalogo_v1_', 'catalogo_v2_', 'catalogo_v3_', 'catalogo_v4_', 'catalogo_v5_', 'catalogo_v6_', 'catalogo_v7_', 'catalogo_v8_', 'catalogo_dash_']
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i)
       if (key && oldPrefixes.some(p => key.startsWith(p))) {
@@ -136,13 +136,39 @@ async function fetchCsv(url) {
   })
 }
 
+async function fetchJsonOptional(url) {
+  try {
+    const response = await fetch(url, { cache: 'no-store' })
+    if (!response?.ok) return null
+    return await response.json()
+  } catch {
+    return null
+  }
+}
+
+function normalizeCsvUrls(source, manifest) {
+  const files = Array.isArray(manifest?.files) ? manifest.files : null
+  if (files?.length) {
+    return files.map(file => new URL(file, new URL(source.manifestUrl, window.location.href)).toString())
+  }
+  if (Array.isArray(source.urls) && source.urls.length) return source.urls
+  return [source.url]
+}
+
+async function fetchCsvDataset(source) {
+  const manifest = source.manifestUrl ? await fetchJsonOptional(source.manifestUrl) : null
+  const urls = normalizeCsvUrls(source, manifest)
+  const chunks = await Promise.all(urls.map(fetchCsv))
+  return chunks.flat()
+}
+
 async function loadDataset(source) {
   const cached = readCache(source.id)
   if (cached) return cached
 
   const rawRows = source.type === 'appsscript'
     ? await fetch(source.url).then(r => r.json())
-    : await fetchCsv(source.url)
+    : await fetchCsvDataset(source)
 
   if (!rawRows || rawRows.length === 0) {
     if (source.optional || source.allowEmpty) return []
@@ -185,7 +211,7 @@ export function useDataLoader() {
     const errors = {}
     await Promise.allSettled(
       Object.values(DATA_SOURCES).map(async source => {
-        console.log(`[${source.label}] Iniciando carga desde ${source.url}`)
+        console.log(`[${source.label}] Iniciando carga desde ${source.manifestUrl || source.url}`)
         try {
           results[source.id] = await loadDataset(source)
           console.log(`[${source.label}] ✅ CSV cargado correctamente: ${results[source.id].length} registros`)
@@ -203,13 +229,13 @@ export function useDataLoader() {
 
           if (errorType === 'not_found') {
             userMsg = `No se pudo cargar ${source.id}.csv (archivo no encontrado)`
-            console.error(`[${source.label}] ❌ Archivo no encontrado: ${source.url}`)
+            console.error(`[${source.label}] ❌ Archivo no encontrado: ${source.manifestUrl || source.url}`)
           } else if (errorType === 'parse_error') {
             userMsg = `Error al procesar ${source.id}.csv`
             console.error(`[${source.label}] ❌ Error de parseo:`, err.details || err.cause || err)
           } else if (errorType === 'empty') {
             userMsg = `El archivo ${source.id}.csv no contiene datos`
-            console.warn(`[${source.label}] ⚠️ Archivo vacío: ${source.url}`)
+            console.warn(`[${source.label}] ⚠️ Archivo vacío: ${source.manifestUrl || source.url}`)
           } else {
             userMsg = err.message || 'Error desconocido'
             console.error(`[${source.label}] ❌ Error inesperado:`, err)

@@ -63,17 +63,20 @@ function buildDateFields(fecha) {
 }
 
 export function normalizeHistoricoRow(raw) {
-  const fecha = parseDate(raw['Fecha'])
+  const fecha = parseDate(get(raw, 'Fecha'))
+  const idLink = get(raw, 'ID - LINK', 'ID Sugerencia | ID Ticket', 'ID Sugerencia', 'ID Ticket')
   return {
     ...buildDateFields(fecha),
-    usuario: normalizeDimension(raw['Usuario'], ''),
-    flujo: normalizeFlujo(raw['Flujo de Tarea']),
-    idLink: (raw['ID - LINK'] || '').trim(),
-    status: (raw['Status'] || '').trim().toUpperCase(),
-    iniciativa: normalizeDimension(raw['Iniciativa'], 'Sin iniciativa'),
-    incidencia: (raw['Incidencias'] || '').trim() || null,
-    idsTC: Math.max(1, parseNumber(raw['IDs trabajados'])),
-    comentarios: (raw['Comentarios'] || '').trim() || null,
+    usuario: normalizeDimension(get(raw, 'Usuario'), ''),
+    flujo: normalizeFlujo(get(raw, 'Flujo de Tarea')),
+    idLink,
+    idCdm: get(raw, 'ID CDM', 'ID_CDM'),
+    groupId: get(raw, 'GROUP_ID', 'Group ID', 'group_id'),
+    status: get(raw, 'Status').toUpperCase(),
+    iniciativa: normalizeDimension(get(raw, 'Iniciativa'), 'Sin iniciativa'),
+    incidencia: get(raw, 'Incidencias') || null,
+    idsTC: Math.max(1, parseNumber(get(raw, 'IDs trabajados'))),
+    comentarios: get(raw, 'Comentarios') || null,
   }
 }
 
@@ -209,15 +212,18 @@ export function normalizeMao(rows) {
 }
 
 export function normalizeHoldRow(raw) {
+  const idLink = get(raw, 'ID - LINK', 'ID Sugerencia | ID Ticket', 'ID Sugerencia', 'ID Ticket')
   return {
-    usuario: normalizeDimension(raw['Usuario'], ''),
-    flujo: normalizeFlujo(raw['Flujo de Tarea']),
-    idLink: String(raw['ID - LINK'] || '').trim(),
-    status: (raw['Status'] || '').trim().toUpperCase(),
-    iniciativa: normalizeDimension(raw['Iniciativa'], 'Sin iniciativa'),
-    incidencia: (raw['Incidencias'] || '').trim() || null,
-    idsTC: Math.max(1, parseNumber(raw['IDs trabajados'])),
-    comentarios: (raw['Comentarios'] || '').trim() || null,
+    usuario: normalizeDimension(get(raw, 'Usuario'), ''),
+    flujo: normalizeFlujo(get(raw, 'Flujo de Tarea')),
+    idLink,
+    idCdm: get(raw, 'ID CDM', 'ID_CDM'),
+    groupId: get(raw, 'GROUP_ID', 'Group ID', 'group_id'),
+    status: get(raw, 'Status').toUpperCase(),
+    iniciativa: normalizeDimension(get(raw, 'Iniciativa'), 'Sin iniciativa'),
+    incidencia: get(raw, 'Incidencias') || null,
+    idsTC: Math.max(1, parseNumber(get(raw, 'IDs trabajados'))),
+    comentarios: get(raw, 'Comentarios') || null,
   }
 }
 

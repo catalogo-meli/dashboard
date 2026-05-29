@@ -27,6 +27,9 @@ const EXPECTED_FILES = {
   'historico.csv': {
     label: 'Histórico Operativo',
     requiredColumns: ['Fecha','Usuario','Flujo de Tarea','ID - LINK','Status','IDs trabajados'],
+    columnAliases: {
+      'ID - LINK': ['ID - LINK', 'ID Sugerencia | ID Ticket', 'ID Sugerencia', 'ID Ticket'],
+    },
     description: 'Registro histórico de tareas por colaborador con estados TO DO / WIP / HOLD / DONE.',
   },
   'finalizadas.csv': {
@@ -42,6 +45,9 @@ const EXPECTED_FILES = {
   'hold.csv': {
     label: 'HOLD Activo (Snapshot)',
     requiredColumns: ['Usuario','Flujo de Tarea','ID - LINK','Status','IDs trabajados'],
+    columnAliases: {
+      'ID - LINK': ['ID - LINK', 'ID Sugerencia | ID Ticket', 'ID Sugerencia', 'ID Ticket'],
+    },
     description: 'Foto del estado actual de tareas en HOLD. Se trata como snapshot, no como histórico.',
   },
   'equipo_colaboradores.csv': {
@@ -54,7 +60,10 @@ const EXPECTED_FILES = {
 function validateCsv(filename, rows, columns) {
   const config = EXPECTED_FILES[filename]
   if (!config) return { ok: false, error: `El archivo "${filename}" no corresponde a ningún dataset esperado. Los nombres válidos son: ${Object.keys(EXPECTED_FILES).join(', ')}.` }
-  const missing = config.requiredColumns.filter(c => !columns.includes(c))
+  const missing = config.requiredColumns.filter(c => {
+    const aliases = config.columnAliases?.[c] || [c]
+    return !aliases.some(alias => columns.includes(alias))
+  })
   if (missing.length > 0) return { ok: false, error: `Faltan columnas requeridas en "${filename}": ${missing.join(', ')}. Verificá que el archivo tenga el formato correcto.` }
   if (rows.length === 0) return { ok: false, error: `El archivo "${filename}" está vacío o no tiene filas de datos.` }
   return { ok: true, config, rows: rows.length }
@@ -81,7 +90,7 @@ function FileUploadCard({ filename, config, status, onFile }) {
       </div>
       <div style={{ fontSize:'0.75rem', color:'var(--text3)', marginBottom:'0.75rem' }}>{config.description}</div>
       <div style={{ fontSize:'0.68rem', color:'var(--text3)', marginBottom:'0.5rem' }}>
-        Columnas requeridas: <span style={{ color:'var(--text2)' }}>{config.requiredColumns.join(', ')}</span>
+        Columnas requeridas: <span style={{ color:'var(--text2)' }}>{formatRequiredColumns(config)}</span>
       </div>
       <label style={{ display:'block', cursor:'pointer' }}>
         <div
@@ -209,3 +218,10 @@ export function DataUpdateModule() {
 }
 
 function formatNumber(n) { return (n ?? 0).toLocaleString('es-AR') }
+
+function formatRequiredColumns(config) {
+  return config.requiredColumns.map(column => {
+    const aliases = config.columnAliases?.[column]
+    return aliases?.length ? `${column} (${aliases.join(' / ')})` : column
+  }).join(', ')
+}

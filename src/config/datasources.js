@@ -1,7 +1,9 @@
 export const DATA_SOURCES = {
   historico: {
     id: 'historico', label: 'Histórico Operativo', type: 'csv',
-    url: './data/historico.csv', coverageLabel: 'Feb–Mar 2026',
+    url: './data/historico.csv',
+    manifestUrl: './data/historico.manifest.json',
+    coverageLabel: 'Feb–Mar 2026',
   },
   auditados: {
     id: 'auditados', label: 'Auditorías SdC', type: 'csv',

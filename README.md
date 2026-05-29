@@ -77,11 +77,19 @@ Los archivos opcionales no generan error si no están — el dashboard desactiva
 
 ---
 
+Nota: `historico.csv` tambien puede publicarse dividido en partes listadas en `historico.manifest.json`; el dashboard concatena esas partes automaticamente.
+
 ## Esquema de columnas
 
 ### `historico.csv`
 ```
 Fecha, Usuario, Flujo de Tarea, ID - LINK, Status, Iniciativa, Incidencias, IDs trabajados, Comentarios
+```
+
+Tambien se acepta la estructura nueva:
+
+```
+Fecha, Usuario, Flujo de Tarea, ID Sugerencia | ID Ticket, ID CDM, GROUP_ID, Status, Iniciativa, Incidencias, IDs trabajados, Comentarios
 ```
 
 ### `auditados.csv`
@@ -151,6 +159,19 @@ git push
 ```
 
 El workflow de GitHub Actions deployará automáticamente.
+
+### Historico mayor a 25 MB
+
+Si GitHub no permite subir `historico.csv` desde la web por superar 25 MB, dividilo en partes menores y subi esas partes a `public/data/` junto con el manifiesto:
+
+```bash
+npm run split:historico -- ~/exports/historico.csv public/data 20
+git add public/data/historico_part_*.csv public/data/historico.manifest.json
+git commit -m "datos: actualizacion historico por partes"
+git push
+```
+
+El dashboard lee `historico.manifest.json` si existe. Si el manifiesto apunta a partes, carga y concatena todas; si no existe, usa `historico.csv` como fallback.
 
 ---
 
