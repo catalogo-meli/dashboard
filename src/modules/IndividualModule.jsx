@@ -104,6 +104,9 @@ const MODOS = [
   { id: 'comparar',   label: 'Comparar' },
 ]
 
+const MAX_COMPARE_PROFILES = 7
+const emptyCompareSlots = () => Array(MAX_COMPARE_PROFILES).fill('')
+
 function ColaboradorSelector({ search, onSearch, selectedUser, onSelect, usuarios, label, placeholder }) {
   // usuarios: array de { id, nombre } ordenado por nombre
   const [open, setOpen] = useState(false)
@@ -557,13 +560,9 @@ export function IndividualModule({ model, equipo, options, filteredHistorico, au
   const [search1, setSearch1] = useState('')
   const [user1, setUser1]     = useState('')
 
-  // Comparar (hasta 3)
-  const [search2, setSearch2] = useState('')
-  const [search3, setSearch3] = useState('')
-  const [search4, setSearch4] = useState('')
-  const [userA, setUserA] = useState('')
-  const [userB, setUserB] = useState('')
-  const [userC, setUserC] = useState('')
+  // Comparar
+  const [compareSearches, setCompareSearches] = useState(emptyCompareSlots)
+  const [compareUsers, setCompareUsers] = useState(emptyCompareSlots)
 
   // Build enriched user list: { id, nombre } sorted by nombre
   const todosUsuarios = useMemo(() => {
@@ -576,15 +575,39 @@ export function IndividualModule({ model, equipo, options, filteredHistorico, au
 
   // Perfiles
   const perfilIndividual = usePerfilColaborador(user1, model, equipo, todosUsuarios)
-  const comparA = usePerfilColaborador(userA, model, equipo, todosUsuarios)
-  const comparB = usePerfilColaborador(userB, model, equipo, todosUsuarios)
-  const comparC = usePerfilColaborador(userC, model, equipo, todosUsuarios)
+  const compar0 = usePerfilColaborador(compareUsers[0], model, equipo, todosUsuarios)
+  const compar1 = usePerfilColaborador(compareUsers[1], model, equipo, todosUsuarios)
+  const compar2 = usePerfilColaborador(compareUsers[2], model, equipo, todosUsuarios)
+  const compar3 = usePerfilColaborador(compareUsers[3], model, equipo, todosUsuarios)
+  const compar4 = usePerfilColaborador(compareUsers[4], model, equipo, todosUsuarios)
+  const compar5 = usePerfilColaborador(compareUsers[5], model, equipo, todosUsuarios)
+  const compar6 = usePerfilColaborador(compareUsers[6], model, equipo, todosUsuarios)
+  const compareProfiles = useMemo(() => [compar0, compar1, compar2, compar3, compar4, compar5, compar6],
+    [compar0, compar1, compar2, compar3, compar4, compar5, compar6])
+  const selectedCompareCount = compareUsers.filter(Boolean).length
 
   const perfilEqInd  = equipo?.find(e => e.idMeli === user1) || null
   const comparaciones = useComparaciones(perfilEqInd, user1, model, equipo)
 
-  const insights = useMemo(() => generarInsightsComparacion([comparA, comparB, comparC]),
-    [comparA, comparB, comparC])
+  const insights = useMemo(() => generarInsightsComparacion(compareProfiles), [compareProfiles])
+
+  function setCompareSearch(index, value) {
+    setCompareSearches(prev => prev.map((item, i) => i === index ? value : item))
+  }
+
+  function setCompareUser(index, value) {
+    setCompareUsers(prev => prev.map((item, i) => i === index ? value : item))
+  }
+
+  function usuariosDisponiblesParaSlot(index) {
+    const currentUser = compareUsers[index]
+    return todosUsuarios.filter(u => u.id === currentUser || !compareUsers.includes(u.id))
+  }
+
+  function clearCompare() {
+    setCompareUsers(emptyCompareSlots())
+    setCompareSearches(emptyCompareSlots())
+  }
 
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:'1.25rem' }}>
@@ -826,32 +849,37 @@ export function IndividualModule({ model, equipo, options, filteredHistorico, au
       {modo === 'comparar' && (
         <>
           <div className="metric-note metric-note-important">
-            Seleccioná hasta 3 colaboradores para comparar su productividad, calidad y fricción en paralelo.
+            Seleccioná hasta 7 colaboradores para comparar su productividad, calidad y fricción en paralelo.
           </div>
 
           {/* Selectores de colaboradores */}
           <div className="card" style={{ padding:'1rem 1.25rem' }}>
             <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
-              <ColaboradorSelector search={search2} onSearch={setSearch2} selectedUser={userA} onSelect={setUserA}
-                usuarios={todosUsuarios.filter(u=>u.id!==userB&&u.id!==userC)} label="Colaborador 1" />
-              <ColaboradorSelector search={search3} onSearch={setSearch3} selectedUser={userB} onSelect={setUserB}
-                usuarios={todosUsuarios.filter(u=>u.id!==userA&&u.id!==userC)} label="Colaborador 2" />
-              <ColaboradorSelector search={search4} onSearch={setSearch4} selectedUser={userC} onSelect={setUserC}
-                usuarios={todosUsuarios.filter(u=>u.id!==userA&&u.id!==userB)} label="Colaborador 3 (opcional)" />
+              {compareUsers.map((selectedUser, index) => (
+                <ColaboradorSelector
+                  key={index}
+                  search={compareSearches[index]}
+                  onSearch={value => setCompareSearch(index, value)}
+                  selectedUser={selectedUser}
+                  onSelect={value => setCompareUser(index, value)}
+                  usuarios={usuariosDisponiblesParaSlot(index)}
+                  label={`Colaborador ${index + 1}${index > 1 ? ' (opcional)' : ''}`}
+                />
+              ))}
             </div>
-            {(userA||userB||userC) && (
+            {selectedCompareCount > 0 && (
               <button className="btn" style={{ marginTop:'0.75rem' }}
-                onClick={() => { setUserA('');setUserB('');setUserC('');setSearch2('');setSearch3('');setSearch4('') }}>
+                onClick={clearCompare}>
                 ✕ Limpiar comparación
               </button>
             )}
           </div>
 
-          {!userA && !userB && (
+          {selectedCompareCount < 2 && (
             <EmptyState message="Seleccioná al menos 2 colaboradores para comparar." />
           )}
 
-          {(userA || userB) && (
+          {selectedCompareCount >= 2 && (
             <>
               {/* Insights automáticos */}
               {insights.length > 0 && (
@@ -873,14 +901,12 @@ export function IndividualModule({ model, equipo, options, filteredHistorico, au
               {/* Columnas de comparación */}
               <div className="indiv-compare-grid" style={{
                 display:'grid',
-                gridTemplateColumns:`repeat(${[userA,userB,userC].filter(Boolean).length}, 1fr)`,
+                gridTemplateColumns:`repeat(${selectedCompareCount}, minmax(210px, 1fr))`,
                 gap:'0.75rem',
+                overflowX:'auto',
+                paddingBottom:'0.25rem',
               }}>
-                {[
-                  { perfil: comparA, user: userA },
-                  { perfil: comparB, user: userB },
-                  { perfil: comparC, user: userC },
-                ].filter(x => x.user).map(({ perfil, user }) => (
+                {compareUsers.map((user, index) => ({ perfil: compareProfiles[index], user })).filter(x => x.user).map(({ perfil, user }) => (
                   <ColaboradorCol key={user} perfil={perfil || { usuario: user, perfilEq:null, finUser:null, audUser:null, holdUser:null }} />
                 ))}
               </div>
