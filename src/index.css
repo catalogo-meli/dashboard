@@ -509,6 +509,62 @@ tbody td.bold { color: var(--text); font-weight: 600; }
   margin-bottom: 0.75rem;
 }
 
+/* Personas: comparación */
+.compare-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  gap: 1rem;
+}
+
+.colaborador-selector {
+  min-width: 0;
+}
+
+.indiv-compare-grid {
+  align-items: stretch;
+}
+
+.indiv-col {
+  min-width: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.indiv-col-header {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.75rem 0.85rem 0.55rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.indiv-col-header > div:last-child {
+  min-width: 0;
+}
+
+.indiv-col-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.indiv-col-section {
+  padding: 0.65rem 0.75rem 0.25rem;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
 /* ─── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
@@ -517,6 +573,8 @@ tbody td.bold { color: var(--text); font-weight: 600; }
 @media (max-width: 640px) {
   .main { padding: 0.75rem; }
   .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .compare-selector-grid,
+  .indiv-compare-grid { grid-template-columns: 1fr !important; }
   .header { padding: 0 0.75rem; }
   .filters-bar { padding: 0.5rem 0.75rem; }
   .nav { padding: 0 0.75rem; }

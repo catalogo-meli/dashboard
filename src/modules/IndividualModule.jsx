@@ -143,7 +143,7 @@ function ColaboradorSelector({ search, onSearch, selectedUser, onSelect, usuario
   }
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:'0.35rem', flex:'1 1 220px', minWidth:200, position:'relative' }}>
+    <div className="colaborador-selector" style={{ display:'flex', flexDirection:'column', gap:'0.35rem', flex:'1 1 220px', minWidth:0, width:'100%', position:'relative' }}>
       {label && <div style={{ fontSize:'0.72rem', color:'var(--text3)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.05em' }}>{label}</div>}
 
       {/* Input de búsqueda */}
@@ -337,12 +337,12 @@ function ColaboradorCol({ perfil, rank, comparaciones }) {
           {(perfilEq?.nombre||usuario).replace('ext_','')[0]?.toUpperCase()||'?'}
         </div>
         <div>
-          <div style={{ fontWeight:700, fontSize:'0.85rem', color:'var(--text)' }}>{perfilEq?.nombre||usuario}</div>
-          <div style={{ fontSize:'0.68rem', color:'var(--text3)' }}>
+          <div style={{ fontWeight:700, fontSize:'0.85rem', color:'var(--text)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{perfilEq?.nombre||usuario}</div>
+          <div style={{ fontSize:'0.68rem', color:'var(--text3)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
             {[perfilEq?.rol, perfilEq?.equipo].filter(Boolean).join(' · ')||usuario}
           </div>
           {perfilEq?.segmentoAntiguedad && (
-            <div style={{ fontSize:'0.65rem', color:'var(--text3)' }}>
+            <div style={{ fontSize:'0.65rem', color:'var(--text3)', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
               {labelSegmento(perfilEq.segmentoAntiguedad)}
               {perfilEq.antiguedadDias != null ? ` (${perfilEq.antiguedadDias}d)` : ''}
             </div>
@@ -854,7 +854,7 @@ export function IndividualModule({ model, equipo, options, filteredHistorico, au
 
           {/* Selectores de colaboradores */}
           <div className="card" style={{ padding:'1rem 1.25rem' }}>
-            <div style={{ display:'flex', gap:'1rem', flexWrap:'wrap' }}>
+            <div className="compare-selector-grid">
               {compareUsers.map((selectedUser, index) => (
                 <ColaboradorSelector
                   key={index}
@@ -901,10 +901,10 @@ export function IndividualModule({ model, equipo, options, filteredHistorico, au
               {/* Columnas de comparación */}
               <div className="indiv-compare-grid" style={{
                 display:'grid',
-                gridTemplateColumns:`repeat(${selectedCompareCount}, minmax(210px, 1fr))`,
+                gridTemplateColumns: selectedCompareCount <= 3
+                  ? `repeat(${selectedCompareCount}, minmax(0, 1fr))`
+                  : 'repeat(auto-fill, minmax(230px, 1fr))',
                 gap:'0.75rem',
-                overflowX:'auto',
-                paddingBottom:'0.25rem',
               }}>
                 {compareUsers.map((user, index) => ({ perfil: compareProfiles[index], user })).filter(x => x.user).map(({ perfil, user }) => (
                   <ColaboradorCol key={user} perfil={perfil || { usuario: user, perfilEq:null, finUser:null, audUser:null, holdUser:null }} />
