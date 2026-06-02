@@ -1,7 +1,7 @@
 ID_MELI,Nombre,Slack_ID,Rol,Equipo,Ubicación,Fecha Ingreso,CUIL,Mail Productora,Mail Externo
 ext_agfasson,Agustina Fassone,U09FLEXQHMZ,Analista Validaciones,Matías Minczuk,TANDIL,29-09-2025,27405803521,agustina.fassone@grupokelsoft.com,ext_agfasson@mercadolibre.com
 ext_aglugone,Agostina Lugones,U03NYQQTNSC,Analista KV,Celeste Cignoli,MDP,04-07-2022,27378677276,agostina.lugones@grupokelsoft.com,ext_aglugone@mercadolibre.com
-ext_agnovare,Agustín Novarese,U07LXESKTG9,Analista PM,Matías Minczuk,AMBA,09-09-2024,20410247373,agustin.novarese@grupokelsoft.com,ext_agnovare@mercadolibre.com
+ext_agnovare,Agustín Novarese,U07LXESKTG9,Analista Soporte,Matías Minczuk,AMBA,09-09-2024,20410247373,agustin.novarese@grupokelsoft.com,ext_agnovare@mercadolibre.com
 ext_dadi,Daniel Díaz,U08QH830NP6,Analista PM,José Puentes,AMBA,05-05-2025,20430111516,daniel.diaz@grupokelsoft.com,ext_dadi@mercadolibre.com
 ext_damercur,Daniela Mercurio,U02KK0UBBU6,Analista PM,Celeste Cignoli,MDP,01-11-2021,27396708987,daniela.mercurio@grupokelsoft.com,ext_damercur@mercadolibre.com
 ext_deparede,Deisy Paredes,U01BW47CV5Z,Analista Soporte,Matías López,AMBA,05-10-2020,27940954857,deisy.paredes@grupokelsoft.com,ext_deparede@mercadolibre.com
@@ -19,12 +19,12 @@ ext_igjerez,Ignacio Jerez,U077R5MVAMP,Analista PM,Matías López,AMBA,10-06-2024
 ext_jemazzac,Jeronimo Mazzacane,U0AUUEZRU30,Analista PM,José Puentes,AMBA,27-04-2026,23424141089,jeronimo.mazzacane@grupokelsoft.com,ext_jemazzac@mercadolibre.com
 ext_joastori,Joaquín Astorino,U07LJQC65KL,Analista PM,Matías López,AMBA,09-09-2024,20466872378,joaquin.astorino@grupokelsoft.com,ext_joastori@mercadolibre.com
 ext_joavgust,Joel Avgustin,U0733526AHK,Analista PM,Matías Minczuk,AMBA,13-05-2024,20428219687,joel.avgustin@grupokelsoft.com,ext_joavgust@mercadolibre.com
-ext_jocambar,Joaquín Cambareri,U088UQYLJ4U,Analista Soporte,Matías López,TANDIL,15-01-2025,20440469990,joaquin.cambareri@grupokelsoft.com,ext_jocambar@mercadolibre.com
-ext_jotrimar,Joel Trimarco,U06DSNUAY3E,Analista PM,Matías Minczuk,AMBA,15-01-2024,20410484359,joel.trimarco@grupokelsoft.com,ext_jotrimar@mercadolibre.com
+ext_jocambar,Joaquín Cambareri,U088UQYLJ4U,Analista PM,Matías López,TANDIL,15-01-2025,20440469990,joaquin.cambareri@grupokelsoft.com,ext_jocambar@mercadolibre.com
+ext_jotrimar,Joel Trimarco,U06DSNUAY3E,Analista Soporte,Matías Minczuk,AMBA,15-01-2024,20410484359,joel.trimarco@grupokelsoft.com,ext_jotrimar@mercadolibre.com
 ext_juawagne,Juan Wagner,U08950SLKKK,Analista Validaciones,Matías López,TANDIL,15-01-2025,20448427863,juan.wagner@grupokelsoft.com,ext_juawagne@mercadolibre.com
 ext_julieflo,Julieta Flores,U028JR0DD2A,Analista PM,Celeste Cignoli,AMBA,21-07-2021,27382460044,julieta.flores@grupokelsoft.com,ext_julieflo@mercadolibre.com
 ext_maseinha,Marcos Seinhart,U02PJMP7SG5,Analista KV,Celeste Cignoli,MDP,06-12-2021,20315605998,marcos.seinhart@grupokelsoft.com,ext_maseinha@mercadolibre.com
-ext_matiam,Matías Martinez,U073352K69K,Analista PM,José Puentes,AMBA,13-05-2024,20452902355,matias.martinez@grupokelsoft.com,ext_matiam@mercadolibre.com
+ext_matiam,Matías Martinez,U073352K69K,Analista Soporte,José Puentes,AMBA,13-05-2024,20452902355,matias.martinez@grupokelsoft.com,ext_matiam@mercadolibre.com
 ext_matvalle,Matías Del Valle,U08FU6T3RP1,Analista PM,Celeste Cignoli,TANDIL,05-03-2025,20423436124,matias.delvalle@grupokelsoft.com,ext_matvalle@mercadolibre.com
 ext_mibrizue,Micaela Brizuela,U07L4DC9SR5,Analista PM,José Puentes,AMBA,09-09-2024,27376177357,micaela.brizuela@grupokelsoft.com,ext_mibrizue@mercadolibre.com
 ext_nadsosa,Nadia Sosa,U05VA67M2DV,Analista PM,Matías López,AMBA,09-10-2023,20386042722,nadia.sosa@grupokelsoft.com,ext_nadsosa@mercadolibre.com
