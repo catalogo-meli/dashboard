@@ -1,160 +1,181 @@
 Fecha,Usuario,Flujo de Tarea,ID Sugerencia | ID Ticket,ID CDM,GROUP_ID,Status,Iniciativa,Incidencias,IDs trabajados,Comentarios
-12/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS411895575,17742685,,HOLD,,,1,
-12/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS413600188,17860807,88813051,HOLD,,Activar,1,
-12/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS413804923,17866902,88805071,HOLD,,Activar,1,Creación de Hijo -
-12/06/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10860,17809600,,HOLD,,,1,"Esta en Ready_To_Import con suggestion id MLM2964981873, se levanto en file de SUBA"
-12/06/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11212,17892501,,HOLD,Sugerencias de Corrección,Activar,1,Se espera impacto en creacion MLB4732261405
-12/06/2026,ext_dadi,Enhancement,,17848639,88941053,HOLD,MAO,Activar,1,
-12/06/2026,ext_dadi,Enhancement,,17848699,88945601,HOLD,MAO,Activar,1,
-12/06/2026,ext_dadi,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS415058440,17903533,,HOLD,Sugerencia de corrección,Unificación/Separación,,
-12/06/2026,ext_daiperey,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS411977801,17762048,38284573,HOLD,,Merge,2,
-12/06/2026,ext_daiperey,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412071817,17770284,,HOLD,,,,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13721
-12/06/2026,ext_daiperey,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS412330008,17781063,,HOLD,,Unificación/Separación,2,
-12/06/2026,ext_damercur,Demanda,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLBS415359411,17910049,,HOLD,,,,Herramienta caida
-12/06/2026,ext_damercur,Demanda,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLMS415394069,17913364,,HOLD,,,,Herramienta caida
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10188,17598469,,HOLD,Unificación de familias,Impacto BC/CMS,2,"Derivado - lo toma PAO Se modifican childs para poder unificar: id de grupo 86649599
+16/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS411895575,17742685,,HOLD,,,1,
+16/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS413600188,17860807,88813051,HOLD,,Activar,1,
+16/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS413804923,17866902,88805071,HOLD,,Activar,1,Creación de Hijo -
+16/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415772582,17917340,89064181,HOLD,,Activar,1,Creación de Hijo -
+16/06/2026,ext_agfasson,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416483976,17934521,,HOLD,,Unificación/Separación,1,
+16/06/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10860,17809600,,HOLD,,,1,"Esta en Ready_To_Import con suggestion id MLM2964981873, se levanto en file de SUBA"
+16/06/2026,ext_agnovare,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11212,17892501,,HOLD,Sugerencias de Corrección,Activar,1,Se espera impacto en creacion MLB4732261405
+16/06/2026,ext_agnovare,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS416087668,17918950,89131125/89197173,HOLD,,Impacto BC/CMS,1,"Hay que esperar a impactar familys y luego crear hijo
+
+Se espera impacto creacion GROUP ID 89197523"
+16/06/2026,ext_dadi,Enhancement,,17848639,88941053,HOLD,MAO,Activar,1,
+16/06/2026,ext_dadi,Enhancement,,17848699,88945601,HOLD,MAO,Activar,1,
+16/06/2026,ext_dadi,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS415058440,17903533,,HOLD,Sugerencia de corrección,Unificación/Separación,1,
+16/06/2026,ext_dadi,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS416471248,17925529,,HOLD,Sugerencia de corrección,Impacto BC/CMS,1,
+16/06/2026,ext_dadi,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS416655050,17935649,,HOLD,Sugerencia de corrección,Unificación/Separación,1,
+16/06/2026,ext_daiperey,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS411977801,17762048,38284573,HOLD,,Merge,2,
+16/06/2026,ext_daiperey,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412071817,17770284,,HOLD,,,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13721
+16/06/2026,ext_daiperey,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS412330008,17781063,,HOLD,,Unificación/Separación,2,
+16/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10188,17598469,,HOLD,Unificación de familias,Impacto BC/CMS,2,"Derivado - lo toma PAO Se modifican childs para poder unificar: id de grupo 86649599
 #7346714
 Revisar flia: 12350944 (se migra child:44623890)
 
 Se mergean los productos de 25 ml - se debe conservar por plan de marca: MLA44623890 (se mergea 6316071) - luego se deben unificar las flias
 los parent 12350944 - 44623887) - se vuelve a enviar merge 26/5"
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10285,17629889,86845283,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"SDC 22/5
+16/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10285,17629889,86845283,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"SDC 22/5
 https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS410693256
 Se envia un solo cambio - luego enviar el otro porq da error de impacto group id: 57439592"
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10849,17798599,88362303,HOLD,Denuncias BPP,Soporte,1,"sunglasses quisviker - se vuelve a enviar group ID -  88362303
+16/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10849,17798599,88362303,HOLD,Denuncias BPP,Soporte,1,"sunglasses quisviker - se vuelve a enviar group ID -  88362303
 MLA64424224
 https://www.mercadolibre.com.ar/lentes-de-sol-vaghoz-hombre-mujer-deportivo-polarizado-uv400-lente-negro-g-varilla-unico-armazon-negro-diseno-quisviker/p/MLA64424224"
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10929,17871682,,HOLD,Sugerencias de Creación,Inactivar,13,
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11346,17912244,58027170,HOLD,Inf. Oportunidad de Mejora,Impacto BC/CMS,2,"https://www.mercadolibre.com.ar/cargador-micro-usb-para-auto-12v-rapido-samsung-motorola-color-colores/p/MLA35277148 
-marca samsung"
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11345,17912244,58027214,HOLD,Denuncias BPP,Impacto BC/CMS,2,"samsung
-https://www.mercadolivre.com.br/carregador-veicular-turbo-38w-pd-usb-c-iphone-samsung-xiaomi-rapido/p/MLB23262002"
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11086,,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"Creacion de producto - woody por separado
+16/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10929,17871682,,HOLD,Sugerencias de Creación,Inactivar,13,
+16/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11086,,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"Creacion de producto - woody por separado
 https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS413116979 esta es la suge"
-12/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10845,,57855826,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"sdc - SIN TARJETA DE CDM - MOCHILA ROJA - se envia de vuelta 88759257 - sigue dando error 10/06
+16/06/2026,ext_deparede,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10845,,57855826,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"sdc - SIN TARJETA DE CDM - MOCHILA ROJA - se envia de vuelta 88759257 - sigue dando error 10/06
 CORRESPONDEN LOS CAMBIOS
 https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS412227677"
-12/06/2026,ext_elgramug,Demanda,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLMS415360113,17910051,,HOLD,,,,
-12/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS414600109,17894469,88759799,HOLD,,,,Rechazar  mod excepto fotos
-12/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS415655960,17915123,88945983,HOLD,,,,
-12/06/2026,ext_flagusti,Enhancement,,17398061,,HOLD,MAO,Impacto BC/CMS,1,
-12/06/2026,ext_flagusti,Enhancement,,17847274,88908563,HOLD,MAO,Activar,1,
-12/06/2026,ext_flagusti,Enhancement,,17847970,88935031,HOLD,MAO,Activar,1,
-12/06/2026,ext_flagusti,Enhancement,,17848466,88946183,HOLD,MAO,Activar,2,
-12/06/2026,ext_flagusti,Enhancement,,17848492,88946039,HOLD,MAO,Activar,1,
-12/06/2026,ext_flagusti,Enhancement,,17849234,88946257,HOLD,MAO,Activar,1,
-12/06/2026,ext_flagusti,Enhancement,,17849359,58027618,HOLD,MAO,Activar,1,
-12/06/2026,ext_flagusti,Enhancement,,17849369,88946519,HOLD,MAO,Activar,3,
-12/06/2026,ext_flagusti,Demanda,,MLBS415516363,,HOLD,,Impacto BC/CMS,,
-12/06/2026,ext_flagusti,Demanda,,MLM5488847616,,HOLD,,Impacto BC/CMS,,
-12/06/2026,ext_fltangor,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS414509041,414509041,,HOLD,,Soporte,62,Modificaciones masivas en childs
-12/06/2026,ext_fltangor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS414615476,414615476,,HOLD,,Merge,,Looker:  44524879
-12/06/2026,ext_francof,Demanda,https://catalog-domains.adminml.com/catalogo/bc-admin/crear-productos/88906259,17908744,88906259,HOLD,,Activar,,"Creacion hijo, padre ID MLM15341917"
-12/06/2026,ext_hernflor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412201584,17775606,,HOLD,,,,Modificacion masiva
-12/06/2026,ext_hernflor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415456726,17913560,88941005,HOLD,,,,
-12/06/2026,ext_igjerez,Enhancement,,17849220,,HOLD,MAO,Activar,1,ID del grupo: 58027580
-12/06/2026,ext_igjerez,Demanda,,17915391,,HOLD,Sugerencia de creación,,,
-12/06/2026,ext_igjerez,Demanda,,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS412346088,,HOLD,Sugerencia de corrección,Unificación/Separación,1,"https://shield.adminml.com/requests/7416022
+16/06/2026,ext_ensole,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416267779,17927204,89135497,HOLD,,Activar,1,Parent MLB29151673 - Variante Dorado - ID Group 89135497
+16/06/2026,ext_ensole,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416484782,17927324,89135505,HOLD,,Activar,1,Parent MLB23199322 - Variante Año 1998 - ID Group 89135505
+16/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS414600109,17894469,88759799,HOLD,,,1,Rechazar  mod excepto fotos
+16/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415672178,17916845,89066057,HOLD,,,1,
+16/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS415058426,17917624,89066049,HOLD,,,1,
+16/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416509654,17927835,89135797,HOLD,,,1,ID HIJO 73871012
+16/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416317123,17927922,89131781,HOLD,,,1,
+16/06/2026,ext_esguadal,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416833204,17929824,89197273,HOLD,,,1,
+16/06/2026,ext_flagusti,Enhancement,,17398061,,HOLD,MAO,Impacto BC/CMS,1,
+16/06/2026,ext_flagusti,Enhancement,,17847274,88908563,HOLD,MAO,Activar,1,
+16/06/2026,ext_flagusti,Enhancement,,17847970,88935031,HOLD,MAO,Activar,1,
+16/06/2026,ext_flagusti,Enhancement,,17848466,88946183,HOLD,MAO,Activar,2,
+16/06/2026,ext_flagusti,Enhancement,,17848492,88946039,HOLD,MAO,Activar,1,
+16/06/2026,ext_flagusti,Enhancement,,17849234,88946257,HOLD,MAO,Activar,1,
+16/06/2026,ext_flagusti,Enhancement,,17849359,58027618,HOLD,MAO,Activar,1,
+16/06/2026,ext_flagusti,Enhancement,,17849369,88946519,HOLD,MAO,Activar,3,
+16/06/2026,ext_flagusti,Demanda,,MLM5488847616,,HOLD,,Impacto BC/CMS,1,
+16/06/2026,ext_fltangor,Soporte,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS414509041,414509041,,HOLD,,Soporte,62,Modificaciones masivas en childs
+16/06/2026,ext_fltangor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS414615476,414615476,,HOLD,,Merge,1,Looker:  44524879
+16/06/2026,ext_francof,Demanda,,17934218,,HOLD,,,1,Almuerzo
+16/06/2026,ext_hernflor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412201584,17775606,,HOLD,,,1,Modificacion masiva
+16/06/2026,ext_hernflor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415456726,17913560,88941005,HOLD,,,1,
+16/06/2026,ext_hernflor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS415484075,17916719,89135079,HOLD,,,1,Variante
+16/06/2026,ext_hernflor,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS416217986,17919365,89131195,HOLD,,,1,Variante
+16/06/2026,ext_igjerez,Enhancement,,17849220,,HOLD,MAO,Activar,1,ID del grupo: 58027580
+16/06/2026,ext_igjerez,Demanda,,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS412346088,,HOLD,Sugerencia de corrección,Unificación/Separación,1,"https://shield.adminml.com/requests/7416022
 
 Hijo candidato a migrar	:  64529598	
 Padre del candidato:  64529597
 Padre familia destino: 36497291"
-12/06/2026,ext_jemazzac,Enhancement,,17517277,,HOLD,MAO,,2,DEL FILE. CORREGIR FALLOS
-12/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS409957681,17560588,,HOLD,Sugerencia de corrección,Activar,,DEL FILE. PRIMITIVO. Corregir el modelo
-12/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS413373146,17839695,,HOLD,Sugerencia de corrección,Activar,,ENVIADO CREADO PARA HACER UNIFICACION
-12/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS413600036,17858424,,HOLD,Sugerencia de corrección,,,Unificacion HACER CAMBIOS EN LIGTH COLOR
-12/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415601302,17913791,,HOLD,Sugerencia de corrección,Activar,,SMARTWACH. SE CREO HIJO PARA AGREGAR CHILDS
-12/06/2026,ext_jemazzac,Demanda,MLBS415357859,17914399,,HOLD,Sugerencia de creación,,,HOLD POR EL ERROR
-12/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415635778,17915423,,HOLD,Sugerencia de corrección,Merge,,ID PIVOT: 53972001
-12/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS415683324,17916425,,HOLD,Sugerencia de creación,,,Se creo hijos para sumar child
-12/06/2026,ext_joavgust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS413123250,,,HOLD,,Activar,1,"ID del grupo: 88061047
+16/06/2026,ext_igjerez,Demanda,,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS416087584,,HOLD,Sugerencia de corrección,Unificación/Separación,1,"https://shield.adminml.com/requests/7504892
+
+Hijo candidato a migrar: 22686492
+Padre del candidato: 22686476	
+Padre familia destino: 64210545"
+16/06/2026,ext_jemazzac,Enhancement,,17517277,,HOLD,MAO,,2,DEL FILE. CORREGIR FALLOS
+16/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS409957681,17560588,,HOLD,Sugerencia de corrección,Activar,1,DEL FILE. PRIMITIVO. Corregir el modelo
+16/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS413373146,17839695,,HOLD,Sugerencia de corrección,Activar,1,FEFE-13727
+16/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415635778,17915423,,HOLD,Sugerencia de corrección,Merge,1,ID PIVOT: 53972001
+16/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS415683324,17916425,,HOLD,Sugerencia de creación,,1,FEFE-13727
+16/06/2026,ext_jemazzac,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416982952,17933297,,HOLD,Sugerencia de corrección,,1,Se creo hijo para childs
+16/06/2026,ext_joavgust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS413123250,,,HOLD,,Activar,1,"ID del grupo: 88061047
 
 ID del padre: MLB22023856"
-12/06/2026,ext_joavgust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS413126763,,,HOLD,,Activar,,ID del grupo: 88193083
-12/06/2026,ext_jocambar,Demanda,,17500398,,HOLD,,Merge,1,
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10452,17739664,,HOLD,Sugerencias de Creación,Soporte,7,derivado en file de creaciones trabadas (SUBA)
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10594,17739676,70071460,HOLD,Sugerencias de Corrección,Soporte,2,derivado en file de creaciones trabadas (SUBA)
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10719,17771204,,HOLD,Sugerencias de Creación,Soporte,1,FEFE
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11169,17883119,,HOLD,Merge,Esperando respuesta,,
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11239,17894971,,HOLD,Sugerencias de Corrección,Soporte,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13727
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11240,17894972,,HOLD,Sugerencias de Corrección,Soporte,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13727
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11291,17903319,,HOLD,Sugerencias de Creación,Esperando respuesta,,
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11296,17903321,,HOLD,Unificación de familias,Esperando respuesta,1,
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11318,17912238,,HOLD,Sugerencias de Creación,Esperando respuesta,,
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11362,17912253,63329341,HOLD,Sugerencias de Creación,Impacto BC/CMS,19,
-12/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10930,,,HOLD,Sugerencias de Creación,Soporte,1,
-12/06/2026,ext_juawagne,Enhancement,,17541509,87057119,HOLD,MAO,,1,Creacion de familia group id 87057119
-12/06/2026,ext_juawagne,Fallos,https://catalog-domains.adminml.com/catalogo/bc-admin/crear-productos/87025583,17687894,87025583,HOLD,,,,Solo lectura
-12/06/2026,ext_juawagne,Fallos,https://catalog-domains.adminml.com/catalogo/bc-admin/crear-productos/87027565,17687901,87027565,HOLD,,,,solo lectura
-12/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS411502674,17693478,MLAS411502674,HOLD,,,,Activar creacion de variante group id 87317013
-12/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412423157,17798049,MLBS412423157,HOLD,,,,unificacion de familias
-12/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLM2803268113,17844735,MLM2803268113,HOLD,Sugerencia de corrección,,,pharma
-12/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS413277573,17845869,MLMS413277573,HOLD,Sugerencia de corrección,,,activar child group id 88303025
-12/06/2026,ext_juawagne,Enhancement,,17848746,MLM47790626,HOLD,MAO,,1,Creacion de familia group id 88908751
-12/06/2026,ext_juawagne,Enhancement,,17848769,MLM23772752,HOLD,MAO,,1,creacion de familia group id 88908721
-12/06/2026,ext_juawagne,Enhancement,,17849403,MLM37130777,HOLD,MAO,,1,creacion de familai group id 58027710
-12/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS414798440,17890265,MLBS414798440,HOLD,Sugerencia de corrección,,,unificacion de familias
-12/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS414506841,17893688,MLMS414506841,HOLD,Sugerencia de corrección,,,unif de familias padre id destino 25889279
-12/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS414654081,17894837,MLAS414654081,HOLD,Sugerencia de corrección,,,bc en solo lectura
-12/06/2026,ext_julieflo,Enhancement,,17847709,88797243,HOLD,MAO,Activar,1,
-12/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10903,17811969,,HOLD,Sugerencias de Creación,Soporte,1,Derivado a SUBA.
-12/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11194,17885665,"58,003,614,888,492,500,000,000,000,000,000",HOLD,Sugerencias de Corrección,Soporte,3,Se espera respuesta de meli. Merge familia 68575834 a 10201404.
-12/06/2026,ext_matiam,Soporte,"https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11281,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11268",17903311,88908857,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,Lentes de sol
-12/06/2026,ext_matiam,Soporte,"https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11341,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11319,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11348,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11323",17912239,"58,027,818,889,466,800,000,000,000,000,000",HOLD,Sugerencias de Corrección,Impacto BC/CMS,4,Cartas. 88943153
-12/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11368,17912256,,HOLD,KV,Soporte,1,Consulta a meli.
-12/06/2026,ext_matvalle,Enhancement,,17848620,88945653,HOLD,MAO,Activar,1,
-12/06/2026,ext_matvalle,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS414052483,17877604,88500845,HOLD,,,1,
-12/06/2026,ext_mibrizue,Enhancement,,17849159,58027604,HOLD,MAO,Activar,1,Se crea familia dremel 225-02
-12/06/2026,ext_mibrizue,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS414261022,17877686,,HOLD,,Impacto BC/CMS,,luces
-12/06/2026,ext_mibrizue,Demanda,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLC2001160313,17916230,58027900,HOLD,,,,gtin
-12/06/2026,ext_mibrizue,Demanda,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLB6956728012,17916298,58028026,HOLD,,,,gtin
-12/06/2026,ext_namangas,Demanda,MLMS415421639,,,HOLD,Sugerencia de creación,Herramientas,,
-12/06/2026,ext_peragust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415067318,17905268,,HOLD,Sugerencia de corrección,Unificación/Separación,,"30027887,MLB45812544"
-12/06/2026,ext_peragust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415067318,17905268,,HOLD,Sugerencia de corrección,Unificación/Separación,,"3,002,788,745,812,540"
-12/06/2026,ext_peragust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLCS415458831,17915835,,HOLD,Sugerencia de corrección,Activar,,
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10830,17798585,,HOLD,Sugerencias de Corrección,,1,"la tomo Carla, P1"
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10999,17843742,,HOLD,Unificación de familias,,5,"Derivado, se mergea, esperando unif 7461893"
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11063,17856687,,HOLD,,,,"WFValidation, no se admite voltaje, voltaje 7483901, WFImpact 88797687"
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11192,17885663,,HOLD,Sugerencias de Corrección,,1,
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11251,17894980,,HOLD,,,,WFImpact
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11287,17903316,,HOLD,Sugerencias de Corrección,,,WFI
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11309,17912235,,HOLD,Sugerencias de Corrección,,1,
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11321,17912240,,HOLD,Sugerencias de Corrección,,1,WFImpact
-12/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11352,17912246,,HOLD,Sugerencias de Corrección,,1,WFValidation
-12/06/2026,ext_sancjoaq,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS384178504,16608182,,HOLD,,Herramientas,1,FEFE-13651
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10021,17552812,,HOLD,Sugerencias de Creación,Soporte,1,Derivado a equipo interno
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10241,17612044,,HOLD,Sugerencias de Corrección,Merge,2,36581237 a 14214629
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10240,17612044,,HOLD,Sugerencias de Corrección,,2,
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10858,17809598,,HOLD,KV,Merge,3,Merge: 47820524 a 19603205
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10905,17811966,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,Se consulta con Meli
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10988,17843732,,HOLD,Sugerencias de Corrección,Soporte,1,Se consulta con Meli
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10931,17871683,,HOLD,Sugerencias de Corrección,Soporte,1,"Se levanta con SUBA, sugerencia de creacion en Ready to import"
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11255,17894984,,HOLD,Sugerencias de Corrección,Esperando respuesta,1,wfi
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11380,17914488,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"ID del grupo: 88946853
+16/06/2026,ext_joavgust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS413126763,,,HOLD,,Activar,1,ID del grupo: 88193083
+16/06/2026,ext_jocambar,Demanda,,17500398,,HOLD,,Merge,1,
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10452,17739664,,HOLD,Sugerencias de Creación,Soporte,7,derivado en file de creaciones trabadas (SUBA)
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10594,17739676,70071460,HOLD,Sugerencias de Corrección,Soporte,2,derivado en file de creaciones trabadas (SUBA)
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10719,17771204,,HOLD,Sugerencias de Creación,Soporte,1,FEFE
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11239,17894971,,HOLD,Sugerencias de Corrección,Soporte,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13727
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11240,17894972,,HOLD,Sugerencias de Corrección,Soporte,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13727
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11318,17912238,,HOLD,Sugerencias de Creación,Soporte,4,Reportado con SUBA
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11362,17912253,63329341,HOLD,Sugerencias de Creación,Soporte,19,Reportado a SUBA
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11384,17917920,89191535,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11393,17917925,,HOLD,Unificación de familias,Merge,2,MERGE 28020310
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11398,17917927,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11431,17917938,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11313,SOPM-11313,,HOLD,Inf. Oportunidad de Mejora,Esperando respuesta,1,P1
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11322,SOPM-11322,,HOLD,Inf. Oportunidad de Mejora,Esperando respuesta,1,P1
+16/06/2026,ext_jotrimar,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10930,,,HOLD,Sugerencias de Creación,Soporte,1,
+16/06/2026,ext_juawagne,Enhancement,,17541509,87057119,HOLD,MAO,,1,Creacion de familia group id 87057119
+16/06/2026,ext_juawagne,Fallos,https://catalog-domains.adminml.com/catalogo/bc-admin/crear-productos/87025583,17687894,87025583,HOLD,,,1,Solo lectura
+16/06/2026,ext_juawagne,Fallos,https://catalog-domains.adminml.com/catalogo/bc-admin/crear-productos/87027565,17687901,87027565,HOLD,,,1,solo lectura
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS411502674,17693478,MLAS411502674,HOLD,,,1,Activar creacion de variante group id 87317013
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412423157,17798049,MLBS412423157,HOLD,,,1,unificacion de familias
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLM2803268113,17844735,MLM2803268113,HOLD,Sugerencia de corrección,,1,pharma
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS413277573,17845869,MLMS413277573,HOLD,Sugerencia de corrección,,1,activar child group id 88303025
+16/06/2026,ext_juawagne,Enhancement,,17848746,MLM47790626,HOLD,MAO,,1,Creacion de familia group id 88908751
+16/06/2026,ext_juawagne,Enhancement,,17848769,MLM23772752,HOLD,MAO,,1,creacion de familia group id 88908721
+16/06/2026,ext_juawagne,Enhancement,,17849403,MLM37130777,HOLD,MAO,,1,creacion de familai group id 58027710
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS414798440,17890265,MLBS414798440,HOLD,Sugerencia de corrección,,1,unificacion de familias
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS414506841,17893688,MLMS414506841,HOLD,Sugerencia de corrección,,1,unif de familias padre id destino 25889279
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS414654081,17894837,MLAS414654081,HOLD,Sugerencia de corrección,,1,bc en solo lectura
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416562487,17929666,MLBS416562487,HOLD,Sugerencia de corrección,,1,creacion de child group id 89197225
+16/06/2026,ext_juawagne,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416425767,17935785,MLBS416425767,HOLD,Sugerencia de corrección,,1,unificacion de familias
+16/06/2026,ext_julieflo,Enhancement,,17847709,88797243,HOLD,MAO,Activar,1,
+16/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10903,17811969,,HOLD,Sugerencias de Creación,Soporte,1,Derivado a SUBA.
+16/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11194,17885665,"58,003,614,888,492,500,000,000,000,000,000",HOLD,Sugerencias de Corrección,Soporte,3,Se espera respuesta de meli. Merge familia 68575834 a 10201404.
+16/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11368,17912256,,HOLD,KV,Soporte,1,Consulta a meli.
+16/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11413,17917931,,HOLD,Sugerencias de Corrección,Merge,4,JBL
+16/06/2026,ext_matiam,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11349,,89183053,HOLD,Inf. Oportunidad de Mejora,Soporte,1,Sonic. Creaciones bugeadas.
+16/06/2026,ext_matvalle,Enhancement,,17848620,88945653,HOLD,MAO,Activar,1,
+16/06/2026,ext_matvalle,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS414052483,17877604,88500845,HOLD,,,1,
+16/06/2026,ext_matvalle,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416000607,17919220,89149059,HOLD,,Activar,1,
+16/06/2026,ext_matvalle,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416401005,17928395,,HOLD,,Merge,1,Merge
+16/06/2026,ext_mibrizue,Enhancement,,17849159,58027604,HOLD,MAO,Activar,1,Se crea familia dremel 225-02
+16/06/2026,ext_mibrizue,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLAS414261022,17877686,,HOLD,,Impacto BC/CMS,1,luces
+16/06/2026,ext_mibrizue,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS416503825,17929268,89191131,HOLD,,Activar,1,Se crea hijo estante
+16/06/2026,ext_nadsosa,Demanda,,17929213,,HOLD,,,1,
+16/06/2026,ext_namangas,Demanda,MLMS415421639,,,HOLD,Sugerencia de creación,Herramientas,1,
+16/06/2026,ext_peragust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLCS415458831,17915835,,HOLD,Sugerencia de corrección,Activar,1,
+16/06/2026,ext_peragust,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS416452859,17929013,,HOLD,Sugerencia de corrección,Activar,1,
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10999,17843742,,HOLD,Unificación de familias,,5,"Derivado, se mergea, esperando unif 7461893"
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11192,17885663,,HOLD,Sugerencias de Corrección,,1,WFI
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11251,17894980,,HOLD,Sugerencias de Corrección,,1,WFImpact
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11287,17903316,,HOLD,Sugerencias de Corrección,,1,"WFImpact, WFI"
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11309,17912235,,HOLD,Sugerencias de Corrección,,1,WFimpact
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11374,17914482,,HOLD,,,1,WFIMpact
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11377,17914485,,HOLD,Sugerencias de Corrección,,1,WFI
+16/06/2026,ext_ramiherr,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11432,17917939,,HOLD,Sugerencias de Corrección,,1,WFI
+16/06/2026,ext_sancjoaq,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLMS384178504,16608182,,HOLD,,Herramientas,1,FEFE-13651
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10021,17552812,,HOLD,Sugerencias de Creación,Soporte,1,Derivado a equipo interno
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10240,17612044,,HOLD,Sugerencias de Corrección,,2,
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10241,17612044,,HOLD,Sugerencias de Corrección,Merge,2,36581237 a 14214629
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10858,17809598,,HOLD,KV,Merge,3,Merge: 47820524 a 19603205
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10905,17811966,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,Se consulta con Meli
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10988,17843732,,HOLD,Sugerencias de Corrección,Soporte,1,Se consulta con Meli
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10931,17871683,,HOLD,Sugerencias de Corrección,Soporte,1,"Se levanta con SUBA, sugerencia de creacion en Ready to import"
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11378,17914486,,HOLD,Sugerencias de Corrección,Esperando respuesta,1,WFI
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11382,17914489,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,"ID del grupo: 89135289
 
-ID del padre: MLB42886147"
-12/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9841,,,HOLD,Inf. Oportunidad de Mejora,Impacto BC/CMS,1,"ID del grupo: 86649687
+ID del padre: MLB60293114"
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11389,17917923,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,ID del grupo: 89191429  ID del padre: MLB59802578
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11429,17917937,,HOLD,Sugerencias de Corrección,Impacto BC/CMS,1,Group ID: 89211763 / 61058264
+16/06/2026,ext_siosanch,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-9841,,,HOLD,Inf. Oportunidad de Mejora,Impacto BC/CMS,1,"ID del grupo: 86649687
 
 ID del padre: MLB33240489"
-12/06/2026,ext_soliscam,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412344542,17772844,MLBS412344542,HOLD,,Esperando respuesta,,modificacion masiva
-12/06/2026,ext_soliscam,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412179502,17785842,MLBS412179502,HOLD,,Esperando respuesta,,modificacion masiva tamaño pulsera
-12/06/2026,ext_soliscam,Enhancement,,17848660,,HOLD,MAO,,3,caso de tobogan
-12/06/2026,ext_tamonten,Demanda,MAO,17849227,,HOLD,,Activar,,
-12/06/2026,ext_tamonten,Soporte,https://catalog-domains.adminml.com/catalog-tools-admin/product-reviewer/cdm-task-revision/MLAS415428199,17914186,,HOLD,,,,FEFE-13729
-12/06/2026,ext_tibareir,Demanda,,MLAS408072010,,HOLD,,,,
-12/06/2026,ext_tibareir,Demanda,,MLBS414256000,,HOLD,,,,
-12/06/2026,ext_tibareir,Demanda,,MLBS415030160,,HOLD,,,,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13726
-12/06/2026,ext_tibareir,Demanda,,MLBS415424885,,HOLD,,,,
-12/06/2026,ext_tibareir,Demanda,,MLBS415447769,,HOLD,,,,
-12/06/2026,ext_tibareir,Demanda,,MLBS415465392,,HOLD,,,,
-12/06/2026,ext_tibareir,Demanda,,MLUS415401381,,HOLD,,,,
-12/06/2026,ext_toarruss,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10932,17819876,57809008,HOLD,Sugerencias de Corrección,,,"Vino espumante, quedo en ready to import"
-12/06/2026,ext_toarruss,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11302,17905886,88945683,HOLD,Sugerencias de Corrección,Unificación/Separación,,7492774
-12/06/2026,ext_yaportas,Demanda,MLAS412700656,17786111,,HOLD,,,,"Error ""E-bowb"""
-12/06/2026,ext_yaportas,Demanda,MLCS413426978,17845127,,HOLD,,,,Impacto CDM
-12/06/2026,ext_zograzia,Demanda,,CBTS415379549,,HOLD,,,,
-12/06/2026,ext_zograzia,Demanda,,CBTS415582762,,HOLD,,,,
-12/06/2026,ext_igjerez,Demanda,,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS411228589,,HOLD,,Unificación/Separación,1,"https://shield.adminml.com/requests/7380467
+16/06/2026,ext_soliscam,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412344542,17772844,MLBS412344542,HOLD,,Esperando respuesta,1,modificacion masiva
+16/06/2026,ext_soliscam,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS412179502,17785842,MLBS412179502,HOLD,,Esperando respuesta,1,modificacion masiva tamaño pulsera
+16/06/2026,ext_soliscam,Enhancement,,17848660,,HOLD,MAO,,3,caso de tobogan
+16/06/2026,ext_tamonten,Demanda,MAO,17849227,,HOLD,,Activar,1,
+16/06/2026,ext_tibareir,Demanda,,MLAS408072010,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLBS414256000,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLBS415030160,,HOLD,,,1,https://mercadolibre.atlassian.net/servicedesk/customer/portal/121/FEFE-13726
+16/06/2026,ext_tibareir,Demanda,,MLBS415424885,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLBS415447769,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLBS415465392,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLBS416294557,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLBS416330382,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLBS416951120,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLMS416761041,,HOLD,,,1,
+16/06/2026,ext_tibareir,Demanda,,MLUS415401381,,HOLD,,,1,
+16/06/2026,ext_toarruss,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-10932,17819876,57809008,HOLD,Sugerencias de Corrección,,1,"Vino espumante, quedo en ready to import"
+16/06/2026,ext_toarruss,Soporte,https://mercadolibre.atlassian.net/servicedesk/customer/portal/5525/SOPM-11302,17905886,88945683,HOLD,Sugerencias de Corrección,Unificación/Separación,1,7492774
+16/06/2026,ext_toarruss,Demanda,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS415515739,17916944,89129003,HOLD,,Activar,1,
+16/06/2026,ext_yaportas,Demanda,MLAS412700656,17786111,,HOLD,,,1,"Error ""E-bowb"""
+16/06/2026,ext_yaportas,Demanda,MLCS413426978,17845127,,HOLD,,,1,Impacto CDM
+16/06/2026,ext_zograzia,Demanda,,17916582,,HOLD,,,1,
+16/06/2026,ext_zograzia,Demanda,,CBTS415379549,,HOLD,,,1,
+16/06/2026,ext_zograzia,Demanda,,CBTS415582762,,HOLD,,,1,
+16/06/2026,ext_igjerez,Demanda,,https://catalog-domains.adminml.com/ruler/product-suggestions/MLBS411228589,,HOLD,,Unificación/Separación,1,"https://shield.adminml.com/requests/7380467
 
 Padre familia destino
 67734995"
